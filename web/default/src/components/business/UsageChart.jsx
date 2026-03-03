@@ -10,7 +10,7 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
-const UsageChart = ({ data, title, dataKey = 'requests', color = '#4318FF', height = 300 }) => {
+const UsageChart = ({ data, title, dataKey = 'requests', color = '#1677ff', height = 300 }) => {
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);

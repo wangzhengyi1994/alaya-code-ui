@@ -12,8 +12,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 const COLORS = [
-  '#4318FF', '#00B5D8', '#6C63FF', '#05CD99', '#FFB547',
-  '#FF5E7D', '#41B883', '#7983FF', '#FF8F6B', '#49BEFF',
+  '#1677ff', '#00B5D8', '#52c41a', '#faad14', '#ff4d4f',
+  '#722ED1', '#13c2c2', '#2F54EB', '#eb2f96', '#fa8c16',
 ];
 
 const ModelUsageChart = ({ data, title = '模型用量分布', height = 350 }) => {

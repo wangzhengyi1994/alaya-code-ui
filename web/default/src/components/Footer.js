@@ -37,16 +37,10 @@ const Footer = () => {
           ></div>
         ) : (
           <div className='text-sm'>
-            <a href='https://github.com/songquanpeng/one-api' target='_blank' rel='noreferrer'>
-              {systemName} {process.env.REACT_APP_VERSION}{' '}
-            </a>
-            {t('footer.built_by')}{' '}
-            <a href='https://github.com/songquanpeng' target='_blank' rel='noreferrer'>
-              {t('footer.built_by_name')}
-            </a>{' '}
-            {t('footer.license')}{' '}
-            <a href='https://opensource.org/licenses/mit-license.php'>
-              {t('footer.mit')}
+            &copy; {new Date().getFullYear()} 九章云极 DataCanvas. All rights reserved.
+            {' | '}
+            <a href='https://alayanew.com' target='_blank' rel='noreferrer'>
+              Alaya NeW
             </a>
           </div>
         )}

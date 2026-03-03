@@ -624,7 +624,7 @@
         },
         "completion": {
           "title": "补全倍率",
-          "placeholder": "为一个 JSON 文本，键为模型名称，值为倍率，此处的倍率设置是模型补全倍率相较于提示倍率的比例，使用该设置可强制覆盖 One API 的内部比例"
+          "placeholder": "为一个 JSON 文本，键为模型名称，值为倍率，此处的倍率设置是模型补全倍率相较于提示倍率的比例，使用该设置可强制覆盖系统的内部比例"
         },
         "group": {
           "title": "分组倍率",
@@ -719,26 +719,26 @@
         }
       },
       "copyright": {
-        "notice": "移除 One API 的版权标识必须首先获得授权，项目维护需要花费大量精力，如果本项目对你有意义，请主动支持本项目。"
+        "notice": "CodingPlan 由九章云极 DataCanvas 提供技术支持，Alaya NeW 智算算力服务平台。"
       }
     }
   },
   "about": {
     "title": "关于",
-    "description": "One API 是一个开源的接口管理和代理平台。",
-    "repository": "项目地址：",
+    "description": "CodingPlan 是 Alaya NeW 旗下的AI编程助手订阅服务平台，由九章云极 DataCanvas 提供，支持大模型推理API、订阅管理、用量统计等服务。",
+    "repository": "官网：",
     "loading_failed": "加载失败"
   },
   "footer": {
     "built_by": "由",
-    "built_by_name": "JustSong",
-    "license": "构建，源代码遵循",
-    "mit": "MIT 协议"
+    "built_by_name": "九章云极 DataCanvas",
+    "license": "提供技术支持",
+    "mit": ""
   },
   "home": {
     "welcome": {
-      "title": "欢迎使用 One API",
-      "description": "One API 是一个 LLM API 接口管理和分发系统，可以帮助您更好地管理和使用各大厂商的 LLM API。",
+      "title": "欢迎使用 CodingPlan",
+      "description": "CodingPlan 是 Alaya NeW 旗下的AI编程助手平台，聚合国产大模型，提供 OpenAI 兼容API接口，支持 Cursor、Claude Code 等主流AI工具无缝接入。",
       "login_notice": "如需使用，请先登录或注册。"
     },
     "system_status": {
@@ -747,8 +747,8 @@
         "title": "系统信息",
         "name": "名称：",
         "version": "版本：",
-        "source": "源码：",
-        "source_link": "GitHub 仓库",
+        "source": "平台：",
+        "source_link": "Alaya NeW",
         "start_time": "启动时间："
       },
       "config": {

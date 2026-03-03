@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+
 	"github.com/songquanpeng/one-api/common/helper"
 	"github.com/songquanpeng/one-api/common/logger"
 )
@@ -23,6 +25,7 @@ type Plan struct {
 	PriceCentsMonthly      int64  `json:"price_cents_monthly" gorm:"bigint"`
 	WindowLimitCount       int    `json:"window_limit_count" gorm:"default:0"`
 	WindowDurationSec      int64  `json:"window_duration_sec" gorm:"bigint;default:18000"`
+	WeeklyLimitCount       int    `json:"weekly_limit_count" gorm:"default:0"`
 	MonthlySpendLimitCents int64  `json:"monthly_spend_limit_cents" gorm:"bigint;default:0"`
 	OverageRateType        string `json:"overage_rate_type" gorm:"type:varchar(32);default:'api'"`
 	AllowedModels          string `json:"allowed_models" gorm:"type:text"`
@@ -86,6 +89,7 @@ func InitDefaultPlans() {
 			PriceCentsMonthly:      0,
 			WindowLimitCount:       10,
 			WindowDurationSec:      18000,
+			WeeklyLimitCount:       200,
 			MonthlySpendLimitCents: 0,
 			OverageRateType:        OverageRateTypeBlocked,
 			AllowedModels:          "",
@@ -102,6 +106,7 @@ func InitDefaultPlans() {
 			PriceCentsMonthly:      14000,
 			WindowLimitCount:       45,
 			WindowDurationSec:      18000,
+			WeeklyLimitCount:       1000,
 			MonthlySpendLimitCents: 0,
 			OverageRateType:        OverageRateTypeAPI,
 			AllowedModels:          "",
@@ -118,6 +123,7 @@ func InitDefaultPlans() {
 			PriceCentsMonthly:      70000,
 			WindowLimitCount:       225,
 			WindowDurationSec:      18000,
+			WeeklyLimitCount:       5000,
 			MonthlySpendLimitCents: 0,
 			OverageRateType:        OverageRateTypeAPI,
 			AllowedModels:          "",
@@ -134,6 +140,7 @@ func InitDefaultPlans() {
 			PriceCentsMonthly:      140000,
 			WindowLimitCount:       900,
 			WindowDurationSec:      18000,
+			WeeklyLimitCount:       20000,
 			MonthlySpendLimitCents: 0,
 			OverageRateType:        OverageRateTypeAPI,
 			AllowedModels:          "",
@@ -150,4 +157,24 @@ func InitDefaultPlans() {
 		}
 	}
 	logger.SysLog("default plans created")
+}
+
+// MigratePlanWeeklyLimits updates existing plans in the database to have weekly limits
+// if they currently have none set (weekly_limit_count = 0).
+func MigratePlanWeeklyLimits() {
+	weeklyLimits := map[string]int{
+		"lite":   200,
+		"pro":    1000,
+		"max5x":  5000,
+		"max20x": 20000,
+	}
+	for name, limit := range weeklyLimits {
+		result := DB.Model(&Plan{}).Where("name = ? AND weekly_limit_count = 0", name).
+			Update("weekly_limit_count", limit)
+		if result.Error != nil {
+			logger.SysError("failed to migrate weekly limit for plan " + name + ": " + result.Error.Error())
+		} else if result.RowsAffected > 0 {
+			logger.SysLog("migrated weekly limit for plan " + name + ": " + fmt.Sprintf("%d", limit))
+		}
+	}
 }

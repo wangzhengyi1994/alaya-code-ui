@@ -626,7 +626,7 @@
         },
         "completion": {
           "title": "Completion Ratio",
-          "placeholder": "A JSON text where keys are model names and values are ratios. These ratios are the proportion of completion to prompt ratio, which can override One API's internal ratios"
+          "placeholder": "A JSON text where keys are model names and values are ratios. These ratios are the proportion of completion to prompt ratio, which can override the system's internal ratios"
         },
         "group": {
           "title": "Group Ratio",
@@ -709,7 +709,7 @@
         "about": {
           "title": "About System",
           "description": "You can set about content in settings page, supports HTML & Markdown",
-          "repository": "Project Repository:",
+          "repository": "Website:",
           "loading_failed": "Failed to load about content..."
         },
         "footer": {
@@ -723,20 +723,20 @@
         }
       },
       "copyright": {
-        "notice": "Removing One API's copyright notice requires authorization. Project maintenance requires significant effort, if this project is meaningful to you, please actively support it."
+        "notice": "CodingPlan is powered by 九章云极 DataCanvas, Alaya NeW AI Computing Platform."
       }
     }
   },
   "footer": {
-    "built_by": "built by",
-    "built_by_name": "JustSong",
-    "license": ", source code is licensed under the",
-    "mit": "MIT License"
+    "built_by": "Powered by",
+    "built_by_name": "九章云极 DataCanvas",
+    "license": "",
+    "mit": ""
   },
   "home": {
     "welcome": {
-      "title": "Welcome to One API",
-      "description": "One API is a LLM API management and distribution system that helps you better manage and use LLM APIs from various providers.",
+      "title": "Welcome to CodingPlan",
+      "description": "CodingPlan is an AI coding assistant platform by Alaya NeW, aggregating top LLMs with OpenAI-compatible APIs for seamless integration with Cursor, Claude Code and more.",
       "login_notice": "To use the service, please login or register first."
     },
     "system_status": {
@@ -745,8 +745,8 @@
         "title": "System Information",
         "name": "Name: ",
         "version": "Version: ",
-        "source": "Source: ",
-        "source_link": "GitHub Repository",
+        "source": "Platform: ",
+        "source_link": "Alaya NeW",
         "start_time": "Start Time: "
       },
       "config": {
@@ -806,8 +806,8 @@
   },
   "about": {
     "title": "About",
-    "description": "One API is an open-source API management and proxy platform.",
-    "repository": "Repository: ",
+    "description": "CodingPlan is an AI coding assistant subscription platform by Alaya NeW (九章云极 DataCanvas), providing LLM inference APIs, subscription management, and usage analytics.",
+    "repository": "Website: ",
     "loading_failed": "Loading failed"
   },
   "messages": {

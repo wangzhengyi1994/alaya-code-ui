@@ -76,7 +76,7 @@ const MarketingFooter = () => {
         <Separator className='my-6' />
         <div className='flex flex-col items-center justify-between gap-4 md:flex-row'>
           <p className='text-sm text-muted-foreground'>
-            &copy; {new Date().getFullYear()} CodingPlan. 保留所有权利。
+            &copy; {new Date().getFullYear()} 九章云极 DataCanvas. All rights reserved.
           </p>
         </div>
       </div>

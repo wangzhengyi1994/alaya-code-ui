@@ -5,7 +5,7 @@
 }
 
 .stat-card {
-    background: linear-gradient(135deg, #2185d0 0%, #1678c2 100%) !important;
+    background: linear-gradient(135deg, #4096ff 0%, #1677ff 100%) !important;
     color: white !important;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
     transition: transform 0.2s ease !important;
@@ -41,7 +41,7 @@
 }
 
 .ui.card > .content > .header {
-    color: #2B3674;
+    color: rgba(0, 0, 0, 0.88);
     font-size: 1.2em;
     margin-bottom: 15px;
     display: flex;
@@ -52,10 +52,10 @@
 }
 
 .stat-value {
-    color: #4318FF;
+    color: #1677ff;
     font-weight: bold;
     font-size: 1.1em;
-    background: rgba(67, 24, 255, 0.1);
+    background: rgba(22, 119, 255, 0.1);
     padding: 4px 12px;
     border-radius: 8px;
     white-space: nowrap; /* 防止数值换行 */

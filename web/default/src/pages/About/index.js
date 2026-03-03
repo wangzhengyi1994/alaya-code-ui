@@ -49,10 +49,10 @@ const About = () => {
               <p className='mt-2'>
                 {t('about.repository')}
                 <a
-                  href='https://github.com/songquanpeng/one-api'
+                  href='https://alayanew.com'
                   className='ml-1 text-primary hover:underline'
                 >
-                  https://github.com/songquanpeng/one-api
+                  alayanew.com
                 </a>
               </p>
             </CardContent>

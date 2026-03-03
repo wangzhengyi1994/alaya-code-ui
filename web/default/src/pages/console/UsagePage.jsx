@@ -170,13 +170,31 @@ const UsagePage = () => {
   // Countdown timer
   useEffect(() => {
     const updateCountdown = () => {
-      if (!quotaData || !quotaData.window_start_time || !quotaData.window_duration_sec) {
+      if (!quotaData) {
         setCountdown('');
         return;
       }
-      const windowEndMs = (quotaData.window_start_time + quotaData.window_duration_sec) * 1000;
-      const now = Date.now();
-      const remainMs = windowEndMs - now;
+      // Use window_end_time directly from API
+      if (quotaData.window_end_time) {
+        const remainMs = quotaData.window_end_time * 1000 - Date.now();
+        if (remainMs <= 0) {
+          setCountdown('即将重置');
+          return;
+        }
+        const h = Math.floor(remainMs / 3600000);
+        const m = Math.floor((remainMs % 3600000) / 60000);
+        const s = Math.floor((remainMs % 60000) / 1000);
+        setCountdown(`${h}h ${m}m ${s}s`);
+        return;
+      }
+      // Fallback: compute from start + duration
+      const wdSec = quotaData.window_duration_sec || quotaData.window_duration;
+      const wStart = quotaData.window_start_time;
+      if (!wStart || !wdSec) {
+        setCountdown('');
+        return;
+      }
+      const remainMs = (wStart + wdSec) * 1000 - Date.now();
       if (remainMs <= 0) {
         setCountdown('即将重置');
         return;
@@ -254,7 +272,8 @@ const UsagePage = () => {
   };
 
   // Compute window usage status
-  const windowHours = quotaData ? Math.floor(quotaData.window_duration_sec / 3600) : 5;
+  const windowDurationSec = quotaData?.window_duration_sec || quotaData?.window_duration || 18000;
+  const windowHours = Math.floor(windowDurationSec / 3600);
   const windowUsed = quotaData?.window_used || 0;
   const windowLimit = quotaData?.window_limit || 0;
   const usagePercent = windowLimit > 0 ? Math.min(100, (windowUsed / windowLimit) * 100) : 0;
@@ -331,7 +350,7 @@ const UsagePage = () => {
                   <p className='text-sm text-muted-foreground'>窗口重置倒计时</p>
                 </div>
                 <p className='text-2xl font-mono font-bold'>
-                  {countdown || '--:--:--'}
+                  {countdown || '加载中...'}
                 </p>
                 <p className='text-xs text-muted-foreground mt-1'>每30秒自动刷新</p>
               </div>
@@ -367,14 +386,14 @@ const UsagePage = () => {
           data={chartData}
           title='近 7 天请求趋势'
           dataKey='requests'
-          color='#4318FF'
+          color='#1677ff'
           height={250}
         />
         <UsageChart
           data={chartData}
           title='近 7 天 Token 消耗'
           dataKey='tokens'
-          color='#00B5D8'
+          color='#13c2c2'
           height={250}
         />
       </div>

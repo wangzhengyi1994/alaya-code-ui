@@ -135,6 +135,7 @@ func InitDB() {
 	}
 	logger.SysLog("database migrated")
 	InitDefaultPlans()
+	MigratePlanWeeklyLimits()
 }
 
 func migrateDB() error {

@@ -28,13 +28,12 @@ import {
   Zap,
   Hash,
   DollarSign,
-  Clock,
   RefreshCw,
 } from 'lucide-react';
 
 const BAR_COLORS = [
-  '#4318FF', '#00B5D8', '#6C63FF', '#05CD99', '#FFB547',
-  '#FF5E7D', '#41B883', '#7983FF', '#FF8F6B', '#49BEFF',
+  '#1677ff', '#00B5D8', '#52c41a', '#faad14', '#ff4d4f',
+  '#722ED1', '#13c2c2', '#2F54EB', '#eb2f96', '#fa8c16',
 ];
 
 const formatDate = (dateStr) => {
@@ -150,63 +149,6 @@ const DashboardPage = () => {
     { name: '加油包', to: '/booster', icon: Rocket },
   ];
 
-  // Window status summary
-  const renderWindowSummary = () => {
-    if (!quotaInfo || !quotaInfo.has_subscription) return null;
-
-    const total = quotaInfo.window_limit + (quotaInfo.booster_extra || 0);
-    const used = quotaInfo.window_used || 0;
-    const remaining = quotaInfo.remaining || 0;
-    const percentage = total > 0 ? Math.min((used / total) * 100, 100) : 0;
-    const windowSec = quotaInfo.window_duration || 18000;
-    const hours = Math.floor(windowSec / 3600);
-
-    return (
-      <Card>
-        <CardHeader className='pb-2'>
-          <div className='flex items-center gap-2'>
-            <Clock className='h-4 w-4 text-muted-foreground' />
-            <CardTitle className='text-sm font-medium'>
-              {hours}小时窗口状态
-            </CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'>
-            <div>
-              <p className='text-xs text-muted-foreground'>窗口总额</p>
-              <p className='text-lg font-bold'>{total.toLocaleString()}</p>
-            </div>
-            <div>
-              <p className='text-xs text-muted-foreground'>已使用</p>
-              <p className='text-lg font-bold'>{used.toLocaleString()}</p>
-            </div>
-            <div>
-              <p className='text-xs text-muted-foreground'>剩余</p>
-              <p className='text-lg font-bold text-green-600'>{remaining.toLocaleString()}</p>
-            </div>
-            <div>
-              <p className='text-xs text-muted-foreground'>使用率</p>
-              <p className={`text-lg font-bold ${percentage >= 90 ? 'text-red-600' : percentage >= 70 ? 'text-orange-500' : 'text-green-600'}`}>
-                {percentage.toFixed(1)}%
-              </p>
-            </div>
-          </div>
-          {quotaInfo.booster_extra > 0 && (
-            <p className='text-xs text-muted-foreground mt-2'>
-              含加油包额度 +{quotaInfo.booster_extra}
-            </p>
-          )}
-          {quotaInfo.plan_name && (
-            <p className='text-xs text-muted-foreground mt-1'>
-              当前套餐: {quotaInfo.plan_name}
-            </p>
-          )}
-        </CardContent>
-      </Card>
-    );
-  };
-
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
@@ -251,9 +193,6 @@ const DashboardPage = () => {
         />
       </div>
 
-      {/* Window status summary */}
-      {renderWindowSummary()}
-
       {/* Quick links */}
       <Card>
         <CardHeader className='pb-2'>
@@ -286,7 +225,7 @@ const DashboardPage = () => {
         data={chartData}
         title='近 7 天请求趋势'
         dataKey='requests'
-        color='#4318FF'
+        color='#1677ff'
         height={250}
       />
 
@@ -295,7 +234,7 @@ const DashboardPage = () => {
         data={chartData}
         title='近 7 天 Token 消耗趋势'
         dataKey='tokens'
-        color='#6C63FF'
+        color='#13c2c2'
         height={250}
       />
 
@@ -333,7 +272,7 @@ const DashboardPage = () => {
               <Line
                 type='monotone'
                 dataKey='quota'
-                stroke='#00B5D8'
+                stroke='#52c41a'
                 strokeWidth={2}
                 dot={false}
                 activeDot={{ r: 4 }}

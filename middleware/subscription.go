@@ -72,8 +72,8 @@ func SubscriptionCheck() func(c *gin.Context) {
 			return
 		}
 
-		// Count usage within the window
-		windowCount, err := model.GetWindowUsageCount(userId, plan.WindowDurationSec)
+		// Count usage within the aligned fixed window
+		windowCount, err := model.GetAlignedWindowUsageCount(userId, plan.WindowDurationSec)
 		if err != nil {
 			logger.SysError(fmt.Sprintf("failed to get window usage for user %d: %s", userId, err.Error()))
 			// On error, be lenient and allow the request
@@ -92,6 +92,19 @@ func SubscriptionCheck() func(c *gin.Context) {
 			logger.SysError(fmt.Sprintf("failed to get booster extra count for user %d: %s", userId, err.Error()))
 		} else {
 			effectiveLimit += boosterExtra
+		}
+
+		// Check weekly limit (applies regardless of window status)
+		if plan.WeeklyLimitCount > 0 {
+			weeklyCount, weeklyErr := model.GetWeeklyUsageCount(userId)
+			if weeklyErr != nil {
+				logger.SysError(fmt.Sprintf("failed to get weekly usage for user %d: %s", userId, weeklyErr.Error()))
+			} else if weeklyCount >= int64(plan.WeeklyLimitCount) {
+				abortWithMessage(c, http.StatusTooManyRequests,
+					fmt.Sprintf("已超出套餐每周限制（%d次/周），请等待下周重置或升级套餐",
+						plan.WeeklyLimitCount))
+				return
+			}
 		}
 
 		if int(windowCount) < effectiveLimit {

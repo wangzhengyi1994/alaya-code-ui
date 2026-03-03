@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
-import { Info, GitBranch, Github, Clock, Mail, Shield } from 'lucide-react';
+import { Info, GitBranch, Github, Globe, Clock, Mail, Shield } from 'lucide-react';
 
 const Home = () => {
   const { t } = useTranslation();
@@ -124,12 +124,12 @@ const Home = () => {
                       value={statusState?.status?.version || 'unknown'}
                     />
                     <div className='flex items-center gap-2'>
-                      <Github className='h-4 w-4 text-muted-foreground' />
+                      <Globe className='h-4 w-4 text-muted-foreground' />
                       <span className='font-medium'>
                         {t('home.system_status.info.source')}
                       </span>
                       <a
-                        href='https://github.com/songquanpeng/one-api'
+                        href='https://alayanew.com'
                         target='_blank'
                         rel='noreferrer'
                         className='text-primary hover:underline'

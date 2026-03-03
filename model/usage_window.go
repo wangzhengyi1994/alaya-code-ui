@@ -45,8 +45,8 @@ func RecordUsageWindow(userId int, modelName string, tokensUsed int, quotaUsed i
 		if err != nil {
 			logger.SysError(fmt.Sprintf("Redis ZAdd usage_window error for user %d: %s", userId, err.Error()))
 		} else {
-			// Set TTL to 2x the default window duration (5h) to ensure data availability
-			ttl := time.Duration(18000*2) * time.Second
+			// Set TTL to 8 days to ensure data availability for weekly counting
+			ttl := time.Duration(8*24*3600) * time.Second
 			common.RDB.Expire(ctx, key, ttl)
 		}
 	}
@@ -82,6 +82,84 @@ func GetWindowUsageCount(userId int, windowDurationSec int64) (int64, error) {
 	var count int64
 	err := DB.Model(&UsageWindow{}).
 		Where("user_id = ? AND request_time >= ?", userId, windowStart).
+		Count(&count).Error
+	return count, err
+}
+
+// GetAlignedWindowStart returns the start timestamp for a fixed (aligned) window.
+// Windows are aligned to epoch boundaries: windowStart = floor(now / duration) * duration.
+// This ensures predictable, non-sliding windows with clear start/end times.
+func GetAlignedWindowStart(windowDurationSec int64) int64 {
+	now := time.Now().Unix()
+	return (now / windowDurationSec) * windowDurationSec
+}
+
+// GetWeekStartTimestamp returns the Unix timestamp of Monday 00:00:00 local time for the current week.
+func GetWeekStartTimestamp() int64 {
+	now := time.Now()
+	weekday := int(now.Weekday())
+	if weekday == 0 {
+		weekday = 7 // Sunday = 7
+	}
+	monday := now.AddDate(0, 0, -(weekday - 1))
+	monday = time.Date(monday.Year(), monday.Month(), monday.Day(), 0, 0, 0, 0, now.Location())
+	return monday.Unix()
+}
+
+// GetAlignedWindowUsageCount returns the number of requests within an aligned fixed window.
+// Uses Redis sorted set if available, falls back to database query.
+func GetAlignedWindowUsageCount(userId int, windowDurationSec int64) (int64, error) {
+	windowStart := GetAlignedWindowStart(windowDurationSec)
+
+	if common.RedisEnabled {
+		key := fmt.Sprintf("usage_window:%d", userId)
+		ctx := context.Background()
+
+		exists, existsErr := common.RDB.Exists(ctx, key).Result()
+		if existsErr == nil && exists > 0 {
+			count, err := common.RDB.ZCount(ctx, key, strconv.FormatInt(windowStart, 10), "+inf").Result()
+			if err == nil {
+				return count, nil
+			}
+			logger.SysError(fmt.Sprintf("Redis ZCount aligned window error for user %d, falling back to DB: %s", userId, err.Error()))
+		} else if existsErr != nil {
+			logger.SysError(fmt.Sprintf("Redis Exists aligned window error for user %d, falling back to DB: %s", userId, existsErr.Error()))
+		}
+	}
+
+	// Database fallback
+	var count int64
+	err := DB.Model(&UsageWindow{}).
+		Where("user_id = ? AND request_time >= ?", userId, windowStart).
+		Count(&count).Error
+	return count, err
+}
+
+// GetWeeklyUsageCount returns the number of requests since Monday 00:00:00 local time.
+// Uses Redis sorted set if available, falls back to database query.
+func GetWeeklyUsageCount(userId int) (int64, error) {
+	weekStart := GetWeekStartTimestamp()
+
+	if common.RedisEnabled {
+		key := fmt.Sprintf("usage_window:%d", userId)
+		ctx := context.Background()
+
+		exists, existsErr := common.RDB.Exists(ctx, key).Result()
+		if existsErr == nil && exists > 0 {
+			count, err := common.RDB.ZCount(ctx, key, strconv.FormatInt(weekStart, 10), "+inf").Result()
+			if err == nil {
+				return count, nil
+			}
+			logger.SysError(fmt.Sprintf("Redis ZCount weekly window error for user %d, falling back to DB: %s", userId, err.Error()))
+		} else if existsErr != nil {
+			logger.SysError(fmt.Sprintf("Redis Exists weekly window error for user %d, falling back to DB: %s", userId, existsErr.Error()))
+		}
+	}
+
+	// Database fallback
+	var count int64
+	err := DB.Model(&UsageWindow{}).
+		Where("user_id = ? AND request_time >= ?", userId, weekStart).
 		Count(&count).Error
 	return count, err
 }

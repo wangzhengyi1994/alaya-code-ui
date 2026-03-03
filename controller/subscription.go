@@ -501,8 +501,8 @@ func GetWindowQuota(c *gin.Context) {
 		return
 	}
 
-	// Get current window usage
-	windowCount, err := model.GetWindowUsageCount(userId, plan.WindowDurationSec)
+	// Get current aligned window usage
+	windowCount, err := model.GetAlignedWindowUsageCount(userId, plan.WindowDurationSec)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
@@ -519,21 +519,53 @@ func GetWindowQuota(c *gin.Context) {
 		remaining = 0
 	}
 
+	// Aligned window boundaries
+	alignedWindowStart := model.GetAlignedWindowStart(plan.WindowDurationSec)
+	alignedWindowEnd := alignedWindowStart + plan.WindowDurationSec
+
+	// Weekly boundaries (Monday 00:00 to Sunday 23:59:59)
+	weekStart := model.GetWeekStartTimestamp()
+	weekEnd := weekStart + 7*24*3600
+
+	data := gin.H{
+		"has_subscription":    true,
+		"plan_name":           plan.DisplayName,
+		"window_limit":        plan.WindowLimitCount,
+		"window_duration":     plan.WindowDurationSec,
+		"window_duration_sec": plan.WindowDurationSec,
+		"window_start_time":   alignedWindowStart,
+		"window_end_time":     alignedWindowEnd,
+		"window_used":         windowCount,
+		"booster_extra":       boosterExtra,
+		"remaining":           remaining,
+		"monthly_spent":       sub.MonthlySpentCents,
+		"monthly_limit":       plan.MonthlySpendLimitCents,
+		"overage_rate_type":   plan.OverageRateType,
+		"weekly_start_time":   weekStart,
+		"weekly_end_time":     weekEnd,
+	}
+
+	// Always return weekly usage stats
+	weeklyCount, weeklyErr := model.GetWeeklyUsageCount(userId)
+	if weeklyErr == nil {
+		data["weekly_used"] = weeklyCount
+		weeklyLimit := plan.WeeklyLimitCount
+		data["weekly_limit"] = weeklyLimit
+		if weeklyLimit > 0 {
+			weeklyRemaining := int64(weeklyLimit) - weeklyCount
+			if weeklyRemaining < 0 {
+				weeklyRemaining = 0
+			}
+			data["weekly_remaining"] = weeklyRemaining
+		} else {
+			data["weekly_remaining"] = -1 // unlimited
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "",
-		"data": gin.H{
-			"has_subscription":  true,
-			"plan_name":         plan.DisplayName,
-			"window_limit":      plan.WindowLimitCount,
-			"window_duration":   plan.WindowDurationSec,
-			"window_used":       windowCount,
-			"booster_extra":     boosterExtra,
-			"remaining":         remaining,
-			"monthly_spent":     sub.MonthlySpentCents,
-			"monthly_limit":     plan.MonthlySpendLimitCents,
-			"overage_rate_type": plan.OverageRateType,
-		},
+		"data":    data,
 	})
 }
 
