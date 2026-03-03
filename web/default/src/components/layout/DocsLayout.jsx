@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
-import { Menu } from 'lucide-react';
+import { Menu, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const docsSidebarItemKeys = [
@@ -44,7 +44,10 @@ const DocsSidebarNav = ({ className }) => {
 };
 
 const DocsLayout = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const toggleLanguage = () => {
+    i18n.changeLanguage(i18n.language === 'zh' ? 'en' : 'zh');
+  };
 
   return (
     <div className='flex min-h-screen flex-col'>
@@ -63,6 +66,10 @@ const DocsLayout = () => {
             </Link>
           </nav>
           <div className='ml-auto flex items-center space-x-2'>
+            <Button variant='ghost' size='sm' onClick={toggleLanguage} className='gap-1'>
+              <Globe className='h-4 w-4' />
+              <span className='text-xs'>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
+            </Button>
             <Button variant='ghost' size='sm' asChild>
               <Link to='/login'>{t('nav.login')}</Link>
             </Button>
