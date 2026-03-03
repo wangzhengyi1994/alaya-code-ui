@@ -1,329 +1,514 @@
-<p align="right">
-    <a href="./README.md">中文</a> | <strong>English</strong> | <a href="./README.ja.md">日本語</a>
-</p>
-
 <p align="center">
-  <a href="https://github.com/songquanpeng/one-api"><img src="https://raw.githubusercontent.com/songquanpeng/one-api/main/web/default/public/logo.png" width="150" height="150" alt="one-api logo"></a>
+  <a href="https://github.com/ketor/one-api"><img src="web/default/public/logo.svg" width="120" height="120" alt="Alaya Code"></a>
 </p>
 
 <div align="center">
 
-# One API
+# Alaya Code
 
-_✨ Access all LLM through the standard OpenAI API format, easy to deploy & use ✨_
+_AI coding assistant subscription platform built on [One API](https://github.com/songquanpeng/one-api)_
+
+**English** · [中文](./README.md)
 
 </div>
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/songquanpeng/one-api/main/LICENSE">
-    <img src="https://img.shields.io/github/license/songquanpeng/one-api?color=brightgreen" alt="license">
+  <a href="https://github.com/ketor/one-api/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/ketor/one-api" alt="License">
   </a>
-  <a href="https://github.com/songquanpeng/one-api/releases/latest">
-    <img src="https://img.shields.io/github/v/release/songquanpeng/one-api?color=brightgreen&include_prereleases" alt="release">
+  <a href="https://github.com/ketor/one-api/releases">
+    <img src="https://img.shields.io/github/v/release/ketor/one-api?include_prereleases" alt="Release">
   </a>
-  <a href="https://hub.docker.com/repository/docker/justsong/one-api">
-    <img src="https://img.shields.io/docker/pulls/justsong/one-api?color=brightgreen" alt="docker pull">
-  </a>
-  <a href="https://github.com/songquanpeng/one-api/releases/latest">
-    <img src="https://img.shields.io/github/downloads/songquanpeng/one-api/total?color=brightgreen&include_prereleases" alt="release">
-  </a>
-  <a href="https://goreportcard.com/report/github.com/songquanpeng/one-api">
-    <img src="https://goreportcard.com/badge/github.com/songquanpeng/one-api" alt="GoReportCard">
+  <a href="https://github.com/ketor/one-api">
+    <img src="https://img.shields.io/github/stars/ketor/one-api" alt="Stars">
   </a>
 </p>
 
 <p align="center">
-  <a href="#deployment">Deployment Tutorial</a>
-  ·
-  <a href="#usage">Usage</a>
-  ·
-  <a href="https://github.com/songquanpeng/one-api/issues">Feedback</a>
-  ·
-  <a href="#screenshots">Screenshots</a>
-  ·
-  <a href="https://openai.justsong.cn/">Live Demo</a>
-  ·
-  <a href="#faq">FAQ</a>
-  ·
-  <a href="#related-projects">Related Projects</a>
-  ·
-  <a href="https://iamazing.cn/page/reward">Donate</a>
+  <a href="#features">Features</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#deployment">Deployment</a> ·
+  <a href="#development">Development</a> ·
+  <a href="#docker">Docker</a> ·
+  <a href="#environment-variables">Environment Variables</a> ·
+  <a href="#project-structure">Project Structure</a>
 </p>
 
-> **Warning**: This README is translated by ChatGPT. Please feel free to submit a PR if you find any translation errors.
+---
 
-> **Note**: The latest image pulled from Docker may be an `alpha` release. Specify the version manually if you require stability.
+## Overview
+
+Alaya Code is a developer-facing AI coding assistant subscription platform, built on top of [One API](https://github.com/songquanpeng/one-api). It provides unified access to multiple LLMs through a standard OpenAI-compatible API, with added subscription billing, rolling window quotas, booster packs, and other commercial capabilities.
+
+- **Frontend**: React 18 + TailwindCSS + Shadcn/ui with full i18n (Chinese & English)
+- **Backend**: Go 1.20 + Gin + GORM
+- **Database**: SQLite (dev) / MySQL / PostgreSQL (production)
+- **Cache**: Redis (required for subscription window quotas)
+
+> [!WARNING]
+> After first login with the root user, make sure to change the default password `123456`!
 
 ## Features
-1. Support for multiple large models:
-   + [x] [OpenAI ChatGPT Series Models](https://platform.openai.com/docs/guides/gpt/chat-completions-api) (Supports [Azure OpenAI API](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference))
-   + [x] [Anthropic Claude Series Models](https://anthropic.com)
-   + [x] [Google PaLM2 and Gemini Series Models](https://developers.generativeai.google)
-   + [x] [Baidu Wenxin Yiyuan Series Models](https://cloud.baidu.com/doc/WENXINWORKSHOP/index.html)
-   + [x] [Alibaba Tongyi Qianwen Series Models](https://help.aliyun.com/document_detail/2400395.html)
-   + [x] [Zhipu ChatGLM Series Models](https://bigmodel.cn)
-2. Supports access to multiple channels through **load balancing**.
-3. Supports **stream mode** that enables typewriter-like effect through stream transmission.
-4. Supports **multi-machine deployment**. [See here](#multi-machine-deployment) for more details.
-5. Supports **token management** that allows setting token expiration time and usage count.
-6. Supports **voucher management** that enables batch generation and export of vouchers. Vouchers can be used for account balance replenishment.
-7. Supports **channel management** that allows bulk creation of channels.
-8. Supports **user grouping** and **channel grouping** for setting different rates for different groups.
-9. Supports channel **model list configuration**.
-10. Supports **quota details checking**.
-11. Supports **user invite rewards**.
-12. Allows display of balance in USD.
-13. Supports announcement publishing, recharge link setting, and initial balance setting for new users.
-14. Offers rich **customization** options:
-    1. Supports customization of system name, logo, and footer.
-    2. Supports customization of homepage and about page using HTML & Markdown code, or embedding a standalone webpage through iframe.
-15. Supports management API access through system access tokens.
-16. Supports Cloudflare Turnstile user verification.
-17. Supports user management and multiple user login/registration methods:
-    + Email login/registration and password reset via email.
-    + [GitHub OAuth](https://github.com/settings/applications/new).
-    + WeChat Official Account authorization (requires additional deployment of [WeChat Server](https://github.com/songquanpeng/wechat-server)).
-18. Immediate support and encapsulation of other major model APIs as they become available.
 
-## Deployment
-### Docker Deployment
+### Subscription Billing System
 
-Deployment command:
-`docker run --name one-api -d --restart always -p 3000:3000 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api`
+- **Plan management**: Lite (free) / Pro / Max 5x / Max 20x with different pricing and quotas
+- **5-hour rolling window quota**: Redis-based real-time quota control, automatically resets every 5 hours
+- **Booster packs**: One-time quota top-ups, not subject to window limits, valid for 30 days
+- **Order system**: Complete order creation and payment status tracking
+- **Monthly spending cap**: Pro and above plans can set monthly spending limits
 
-Update command: `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower -cR`
+### Multi-Model Support (inherited from One API)
 
-The first `3000` in `-p 3000:3000` is the port of the host, which can be modified as needed.
+Supports 30+ model providers including OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Qwen, GLM, Moonshot, Wenxin, SparkDesk, Baichuan, Mistral, Groq, Ollama, Cohere, xAI, and more.
 
-Data will be saved in the `/home/ubuntu/data/one-api` directory on the host. Ensure that the directory exists and has write permissions, or change it to a suitable directory.
+### Platform Capabilities
 
-Nginx reference configuration:
+- **Channel management**: Multi-channel load balancing with automatic failover and retry
+- **Token management**: Expiration, quota caps, IP whitelist, model scope
+- **User groups**: User and channel grouping with configurable rate multipliers
+- **Redemption codes**: Batch generation, user self-service top-up
+- **Usage analytics**: Per-day and per-model detailed usage and quota charts
+- **Streaming**: Full SSE streaming support
+- **Multi-node deployment**: Master-slave architecture with Redis caching
+- **Internationalization**: Full Chinese/English site-wide language switching
+
+### Frontend Pages
+
+- Marketing pages (landing, pricing, terms of service, privacy policy)
+- Documentation center (API docs, SDK guide, tool integration, billing, error codes, FAQ)
+- User console (dashboard, API keys, subscription, usage, billing, booster packs, settings)
+- Admin panel (user management, channel management, redemption codes, logs, system settings)
+
+## Quick Start
+
+### Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Go | 1.20+ | Backend compilation |
+| Node.js | 18+ | Frontend build |
+| Redis | 7+ | Subscription window counting (optional if not using subscriptions) |
+| MySQL | 8.0+ | Production database (optional, defaults to SQLite) |
+
+### Build and Run from Source
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/ketor/one-api.git
+cd one-api
+
+# 2. Build the frontend
+cd web/default
+npm install
+npm run build
+cd ../..
+
+# 3. Build the backend (embeds frontend static files automatically)
+go mod download
+go build -ldflags "-s -w" -o one-api-server
+
+# 4. Run (uses SQLite by default, no extra database needed)
+./one-api-server --port 3000
 ```
-server{
-   server_name openai.justsong.cn;  # Modify your domain name accordingly
 
-   location / {
-          client_max_body_size  64m;
-          proxy_http_version 1.1;
-          proxy_pass http://localhost:3000;  # Modify your port accordingly
-          proxy_set_header Host $host;
-          proxy_set_header X-Forwarded-For $remote_addr;
-          proxy_cache_bypass $http_upgrade;
-          proxy_set_header Accept-Encoding gzip;
-   }
+Visit `http://localhost:3000`, default credentials: `root` / `123456`.
+
+### Connect to MySQL + Redis (production)
+
+```bash
+export SQL_DSN="user:password@tcp(127.0.0.1:3306)/one-api"
+export REDIS_CONN_STRING="redis://127.0.0.1:6379"
+export SYNC_FREQUENCY=60
+export SESSION_SECRET="your-random-secret-string"
+./one-api-server --port 3000
+```
+
+## Development
+
+### Separate Frontend & Backend Development
+
+During development, the frontend and backend can run independently. The frontend dev server automatically proxies API requests to the backend.
+
+**Terminal 1 — Start the backend:**
+
+```bash
+# From the project root
+go run main.go --port 3000
+```
+
+**Terminal 2 — Start the frontend dev server:**
+
+```bash
+cd web/default
+npm install    # First time only
+npm start      # Starts at http://localhost:3001
+```
+
+The frontend dev server runs at `http://localhost:3001` and proxies `/api` and `/v1` requests to `http://localhost:3000` via the `proxy` field in `package.json`.
+
+### Frontend Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| React 18 | UI framework |
+| TailwindCSS 3 | Styling |
+| Shadcn/ui (Radix UI) | Component library |
+| CRACO | CRA config override (PostCSS + Tailwind integration) |
+| React Router 6 | Routing |
+| i18next | Internationalization |
+| Axios | HTTP client |
+| Recharts | Data visualization |
+| Lucide React | Icons |
+
+**Key config files:**
+
+- `web/default/craco.config.js` — CRACO configuration (PostCSS + Tailwind)
+- `web/default/tailwind.config.js` — Tailwind theme and plugins
+- `web/default/src/locales/` — i18n translation files (`zh/`, `en/`)
+
+### Backend Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| Go 1.20 | Programming language |
+| Gin | HTTP framework |
+| GORM | ORM |
+| go-redis | Redis client |
+| gin-contrib/sessions | Session management |
+| golang-jwt | JWT authentication |
+
+### Building All Frontend Themes
+
+The project includes three frontend themes (default, berry, air). To build all:
+
+```bash
+cd web
+./build.sh
+cd ..
+go build -ldflags "-s -w" -o one-api-server
+```
+
+### Debugging
+
+**Backend debugging:**
+
+```bash
+# Enable debug mode
+export DEBUG=true
+export DEBUG_SQL=true    # Print SQL statements
+go run main.go --port 3000
+```
+
+You can also set breakpoints on `main.go` in your IDE (GoLand, VSCode with Go extension) and run in debug mode.
+
+**Frontend debugging:**
+
+```bash
+cd web/default
+npm start
+# Open http://localhost:3001 in your browser and use DevTools
+```
+
+Hot reload is enabled by default — code changes are reflected immediately.
+
+## Docker
+
+### Building the Docker Image
+
+```bash
+# Build the image (multi-stage build, compiles frontend and backend automatically)
+docker build -t alaya-code:latest .
+
+# Cross-compile for a specific platform
+docker build --platform linux/amd64 -t alaya-code:latest .
+```
+
+The Dockerfile uses a multi-stage build:
+1. **Node.js stage**: Builds all three frontend themes (default, berry, air) in parallel
+2. **Go stage**: Compiles the backend with embedded frontend assets, produces a statically linked binary
+3. **Runtime stage**: Minimal Alpine 3.19 image, runs as non-root user
+
+### Docker Compose Deployment (Recommended)
+
+```bash
+# Copy the environment template
+cp .env.example .env
+# Edit .env to change SESSION_SECRET and database passwords
+
+# Start all services (one-api + MySQL + Redis)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f one-api
+
+# Stop services
+docker-compose down
+```
+
+`docker-compose.yml` includes three services:
+
+| Service | Image | Description |
+|---------|-------|-------------|
+| one-api | alaya-code:latest | Main application, port 3000 |
+| db | mysql:8.2.0 | Database, data persisted to `./data/mysql` |
+| redis | redis:7-alpine | Cache + subscription window counting, data persisted to `./data/redis` |
+
+### Using a Custom Image with Docker Compose
+
+If you built your own image, update the `image` field in `docker-compose.yml`:
+
+```yaml
+services:
+  one-api:
+    image: alaya-code:latest   # Replace with your image name
+    # ... rest of config unchanged
+```
+
+### Standalone Docker Run
+
+**SQLite mode (simplest deployment):**
+
+```bash
+docker run -d --name alaya-code \
+  --restart always \
+  -p 3000:3000 \
+  -e TZ=Asia/Shanghai \
+  -e SESSION_SECRET=your-random-secret \
+  -v $(pwd)/data:/data \
+  alaya-code:latest
+```
+
+**With external MySQL + Redis:**
+
+```bash
+docker run -d --name alaya-code \
+  --restart always \
+  -p 3000:3000 \
+  -e SQL_DSN="user:password@tcp(mysql-host:3306)/one-api" \
+  -e REDIS_CONN_STRING="redis://redis-host:6379" \
+  -e SYNC_FREQUENCY=60 \
+  -e SESSION_SECRET=your-random-secret \
+  -e MEMORY_CACHE_ENABLED=true \
+  -e BATCH_UPDATE_ENABLED=true \
+  -e TZ=Asia/Shanghai \
+  -v $(pwd)/data:/data \
+  alaya-code:latest
+```
+
+### Nginx Reverse Proxy
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        client_max_body_size 64m;
+        proxy_http_version 1.1;
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+    }
 }
 ```
 
-Next, configure HTTPS with Let's Encrypt certbot:
+## Environment Variables
+
+> Environment variables can be loaded from a `.env` file. See `.env.example` for the full template.
+
+### Core Configuration
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | `3000` |
+| `GIN_MODE` | Gin run mode | `debug` (set to `release` in production) |
+| `SQL_DSN` | Database connection string (empty = SQLite) | - |
+| `REDIS_CONN_STRING` | Redis connection string (required for subscriptions) | - |
+| `SESSION_SECRET` | Session secret (must change in production) | `random_string` |
+| `TZ` | Timezone | `Asia/Shanghai` |
+
+### Performance
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MEMORY_CACHE_ENABLED` | Enable in-memory caching | `false` |
+| `SYNC_FREQUENCY` | DB sync interval in seconds (enables Redis when set) | `600` |
+| `BATCH_UPDATE_ENABLED` | Enable batch update aggregation | `false` |
+| `BATCH_UPDATE_INTERVAL` | Batch update interval in seconds | `5` |
+
+### Security & Rate Limiting
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `GLOBAL_API_RATE_LIMIT` | API rate limit per 3 minutes | `480` |
+| `GLOBAL_WEB_RATE_LIMIT` | Web rate limit per 3 minutes | `240` |
+
+### Multi-Node Deployment
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `NODE_TYPE` | Node type | `master` / `slave` |
+| `FRONTEND_BASE_URL` | Redirect URL for slave nodes | `https://your-domain.com` |
+
+### Channel Management
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `CHANNEL_TEST_FREQUENCY` | Auto-test interval in minutes (0 = disabled) | `0` |
+| `RELAY_TIMEOUT` | Relay timeout in seconds (0 = unlimited) | `0` |
+| `RELAY_PROXY` | HTTP proxy for relay requests | - |
+
+### Debugging
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DEBUG` | Enable debug mode | `false` |
+| `DEBUG_SQL` | Print SQL statements | `false` |
+| `THEME` | Frontend theme | `default` (options: `berry`, `air`) |
+
+### Command-Line Arguments
+
 ```bash
-# Install certbot on Ubuntu:
-sudo snap install --classic certbot
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
-# Generate certificates & modify Nginx configuration
-sudo certbot --nginx
-# Follow the prompts
-# Restart Nginx
-sudo service nginx restart
+./one-api-server --port 3000        # Set port
+./one-api-server --log-dir ./logs   # Set log directory
+./one-api-server --version          # Print version
+./one-api-server --help             # Show help
 ```
 
-The initial account username is `root` and password is `123456`.
+## Project Structure
 
-### Manual Deployment
-1. Download the executable file from [GitHub Releases](https://github.com/songquanpeng/one-api/releases/latest) or compile from source:
-   ```shell
-   git clone https://github.com/songquanpeng/one-api.git
+```
+one-api/
+├── main.go                     # Entry point (with go:embed directive)
+├── controller/                 # API controllers
+│   ├── subscription.go         #   Subscription management
+│   ├── plan.go                 #   Plan management
+│   ├── booster.go              #   Booster packs
+│   ├── order.go                #   Orders
+│   ├── channel.go              #   Channel management
+│   ├── token.go                #   Token management
+│   └── ...
+├── model/                      # Data models
+│   ├── subscription.go         #   Subscription model
+│   ├── plan.go                 #   Plan model
+│   ├── usage_window.go         #   Usage window
+│   ├── booster_pack.go         #   Booster pack model
+│   ├── cache_subscription.go   #   Redis cache layer
+│   ├── user.go                 #   User model
+│   ├── channel.go              #   Channel model
+│   ├── token.go                #   Token model
+│   └── ...
+├── middleware/                 # Middleware
+│   ├── auth.go                 #   Authentication
+│   ├── subscription.go         #   Subscription window quota
+│   ├── rate-limit.go           #   Rate limiting
+│   └── ...
+├── relay/                      # Model relay adapters
+├── router/                     # Route definitions
+│   ├── api.go                  #   API routes
+│   ├── relay.go                #   Relay routes
+│   └── web.go                  #   Static file routes
+├── web/                        # Frontend
+│   ├── default/                #   Theme - React 18 + TailwindCSS
+│   │   ├── src/
+│   │   │   ├── components/     #     UI / business / layout / navigation
+│   │   │   ├── pages/          #     console / admin / marketing / docs
+│   │   │   ├── locales/        #     i18n translations (zh, en)
+│   │   │   └── helpers/        #     Utilities
+│   │   ├── tailwind.config.js
+│   │   └── craco.config.js
+│   ├── berry/                  #   Theme - Berry
+│   ├── air/                    #   Theme - Air
+│   ├── build/                  #   Build output (embedded by Go)
+│   └── build.sh                #   All-themes build script
+├── Dockerfile                  # Multi-stage Docker build
+├── docker-compose.yml          # Docker Compose orchestration
+├── .env.example                # Environment variable template
+├── go.mod / go.sum             # Go dependencies
+└── LICENSE                     # MIT License
+```
 
-   # Build the frontend
-   cd one-api/web/default
-   npm install
-   npm run build
+## API Endpoints
 
-   # Build the backend
-   cd ../..
-   go mod download
-   go build -ldflags "-s -w" -o one-api
-   ```
-2. Run:
-   ```shell
-   chmod u+x one-api
-   ./one-api --port 3000 --log-dir ./logs
-   ```
-3. Access [http://localhost:3000/](http://localhost:3000/) and log in. The initial account username is `root` and password is `123456`.
+### Relay API (OpenAI-Compatible)
 
-For more detailed deployment tutorials, please refer to [this page](https://iamazing.cn/page/how-to-deploy-a-website).
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/v1/chat/completions` | Chat completions |
+| POST | `/v1/completions` | Text completions |
+| POST | `/v1/embeddings` | Text embeddings |
+| POST | `/v1/images/generations` | Image generation |
+| GET | `/v1/models` | List models |
 
-### Multi-machine Deployment
-1. Set the same `SESSION_SECRET` for all servers.
-2. Set `SQL_DSN` and use MySQL instead of SQLite. All servers should connect to the same database.
-3. Set the `NODE_TYPE` for all non-master nodes to `slave`.
-4. Set `SYNC_FREQUENCY` for servers to periodically sync configurations from the database.
-5. Non-master nodes can optionally set `FRONTEND_BASE_URL` to redirect page requests to the master server.
-6. Install Redis separately on non-master nodes, and configure `REDIS_CONN_STRING` so that the database can be accessed with zero latency when the cache has not expired.
-7. If the main server also has high latency accessing the database, Redis must be enabled and `SYNC_FREQUENCY` must be set to periodically sync configurations from the database.
+### User API
 
-Please refer to the [environment variables](#environment-variables) section for details on using environment variables.
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/user/login` | Login |
+| GET | `/api/user/self` | Current user info |
+| GET | `/api/user/dashboard` | Usage dashboard |
+| GET/POST | `/api/token/` | Token CRUD |
+| GET | `/api/subscription/self` | Subscription details |
+| GET | `/api/subscription/quota` | Window quota info |
 
-### Deployment on Control Panels (e.g., Baota)
-Refer to [#175](https://github.com/songquanpeng/one-api/issues/175) for detailed instructions.
+### Admin API
 
-If you encounter a blank page after deployment, refer to [#97](https://github.com/songquanpeng/one-api/issues/97) for possible solutions.
-
-### Deployment on Third-Party Platforms
-<details>
-<summary><strong>Deploy on Sealos</strong></summary>
-<div>
-
-> Sealos supports high concurrency, dynamic scaling, and stable operations for millions of users.
-
-> Click the button below to deploy with one click.👇
-
-[![](https://raw.githubusercontent.com/labring-actions/templates/main/Deploy-on-Sealos.svg)](https://cloud.sealos.io/?openapp=system-fastdeploy?templateName=one-api)
-
-
-</div>
-</details>
-
-<details>
-<summary><strong>Deployment on Zeabur</strong></summary>
-<div>
-
-> Zeabur's servers are located overseas, automatically solving network issues, and the free quota is sufficient for personal usage.
-
-[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/7Q0KO3)
-
-1. First, fork the code.
-2. Go to [Zeabur](https://zeabur.com?referralCode=songquanpeng), log in, and enter the console.
-3. Create a new project. In Service -> Add Service, select Marketplace, and choose MySQL. Note down the connection parameters (username, password, address, and port).
-4. Copy the connection parameters and run ```create database `one-api` ``` to create the database.
-5. Then, in Service -> Add Service, select Git (authorization is required for the first use) and choose your forked repository.
-6. Automatic deployment will start, but please cancel it for now. Go to the Variable tab, add a `PORT` with a value of `3000`, and then add a `SQL_DSN` with a value of `<username>:<password>@tcp(<addr>:<port>)/one-api`. Save the changes. Please note that if `SQL_DSN` is not set, data will not be persisted, and the data will be lost after redeployment.
-7. Select Redeploy.
-8. In the Domains tab, select a suitable domain name prefix, such as "my-one-api". The final domain name will be "my-one-api.zeabur.app". You can also CNAME your own domain name.
-9. Wait for the deployment to complete, and click on the generated domain name to access One API.
-
-</div>
-</details>
-
-## Configuration
-The system is ready to use out of the box.
-
-You can configure it by setting environment variables or command line parameters.
-
-After the system starts, log in as the `root` user to further configure the system.
+| Method | Path | Description |
+|--------|------|-------------|
+| GET/POST | `/api/channel/` | Channel CRUD |
+| GET/POST | `/api/user/` | User management |
+| GET/POST | `/api/redemption/` | Redemption code management |
+| GET/PUT | `/api/option/` | System settings |
 
 ## Usage
-Add your API Key on the `Channels` page, and then add an access token on the `Tokens` page.
 
-You can then use your access token to access One API. The usage is consistent with the [OpenAI API](https://platform.openai.com/docs/api-reference/introduction).
+1. Admin adds upstream API keys in **Channel Management**
+2. Users register and create tokens on the **API Keys** page
+3. Configure your IDE or tool:
 
-In places where the OpenAI API is used, remember to set the API Base to your One API deployment address, for example: `https://openai.justsong.cn`. The API Key should be the token generated in One API.
-
-Note that the specific API Base format depends on the client you are using.
-
-```mermaid
-graph LR
-    A(User)
-    A --->|Request| B(One API)
-    B -->|Relay Request| C(OpenAI)
-    B -->|Relay Request| D(Azure)
-    B -->|Relay Request| E(Other downstream channels)
+```bash
+OPENAI_API_KEY="sk-xxxxxx"          # Token generated by Alaya Code
+OPENAI_API_BASE="https://<HOST>/v1" # Alaya Code deployment URL
 ```
 
-To specify which channel to use for the current request, you can add the channel ID after the token, for example: `Authorization: Bearer ONE_API_KEY-CHANNEL_ID`.
-Note that the token needs to be created by an administrator to specify the channel ID.
+Compatible with Cursor, Claude Code, VSCode + Cline / Continue, OpenCode, and any OpenAI API-compatible tool.
 
-If the channel ID is not provided, load balancing will be used to distribute the requests to multiple channels.
+## Multi-Node Deployment
 
-### Environment Variables
-1. `REDIS_CONN_STRING`: When set, Redis will be used as the storage for request rate limiting instead of memory.
-    + Example: `REDIS_CONN_STRING=redis://default:redispw@localhost:49153`
-2. `SESSION_SECRET`: When set, a fixed session key will be used to ensure that cookies of logged-in users are still valid after the system restarts.
-    + Example: `SESSION_SECRET=random_string`
-3. `SQL_DSN`: When set, the specified database will be used instead of SQLite. Please use MySQL version 8.0.
-    + Example: `SQL_DSN=root:123456@tcp(localhost:3306)/oneapi`
-4. `LOG_SQL_DSN`: When set, a separate database will be used for the `logs` table; please use MySQL or PostgreSQL.
-    + Example: `LOG_SQL_DSN=root:123456@tcp(localhost:3306)/oneapi-logs`
-5. `FRONTEND_BASE_URL`: When set, the specified frontend address will be used instead of the backend address.
-    + Example: `FRONTEND_BASE_URL=https://openai.justsong.cn`
-6. 'MEMORY_CACHE_ENABLED': Enabling memory caching can cause a certain delay in updating user quotas, with optional values of 'true' and 'false'. If not set, it defaults to 'false'.
-7. `SYNC_FREQUENCY`: When set, the system will periodically sync configurations from the database, with the unit in seconds. If not set, no sync will happen.
-    + Example: `SYNC_FREQUENCY=60`
-8. `NODE_TYPE`: When set, specifies the node type. Valid values are `master` and `slave`. If not set, it defaults to `master`.
-    + Example: `NODE_TYPE=slave`
-9. `CHANNEL_UPDATE_FREQUENCY`: When set, it periodically updates the channel balances, with the unit in minutes. If not set, no update will happen.
-    + Example: `CHANNEL_UPDATE_FREQUENCY=1440`
-10. `CHANNEL_TEST_FREQUENCY`: When set, it periodically tests the channels, with the unit in minutes. If not set, no test will happen.
-    + Example: `CHANNEL_TEST_FREQUENCY=1440`
-11. `POLLING_INTERVAL`: The time interval (in seconds) between requests when updating channel balances and testing channel availability. Default is no interval.
-    + Example: `POLLING_INTERVAL=5`
-12. `BATCH_UPDATE_ENABLED`: Enabling batch database update aggregation can cause a certain delay in updating user quotas. The optional values are 'true' and 'false', but if not set, it defaults to 'false'.
-    +Example: ` BATCH_UPDATE_ENABLED=true`
-    +If you encounter an issue with too many database connections, you can try enabling this option.
-13. `BATCH_UPDATE_INTERVAL=5`: The time interval for batch updating aggregates, measured in seconds, defaults to '5'.
-    +Example: ` BATCH_UPDATE_INTERVAL=5`
-14. Request frequency limit:
-    + `GLOBAL_API_RATE_LIMIT`: Global API rate limit (excluding relay requests), the maximum number of requests within three minutes per IP, default to 180.
-    + `GLOBAL_WEL_RATE_LIMIT`: Global web speed limit, the maximum number of requests within three minutes per IP, default to 60.
-15. Encoder cache settings:
-    +`TIKTOKEN_CACHE_DIR`: By default, when the program starts, it will download the encoding of some common word elements online, such as' gpt-3.5 turbo '. In some unstable network environments or offline situations, it may cause startup problems. This directory can be configured to cache data and can be migrated to an offline environment.
-    +`DATA_GYM_CACHE_DIR`: Currently, this configuration has the same function as' TIKTOKEN-CACHE-DIR ', but its priority is not as high as it.
-16. `RELAY_TIMEOUT`: Relay timeout setting, measured in seconds, with no default timeout time set.
-17. `RELAY_PROXY`: After setting up, use this proxy to request APIs.
-18. `USER_CONTENT_REQUEST_TIMEOUT`: The timeout period for users to upload and download content, measured in seconds.
-19. `USER_CONTENT_REQUEST_PROXY`: After setting up, use this agent to request content uploaded by users, such as images.
-20. `SQLITE_BUSY_TIMEOUT`: SQLite lock wait timeout setting, measured in milliseconds, default to '3000'.
-21. `GEMINI_SAFETY_SETTING`: Gemini's security settings are set to 'BLOCK-NONE' by default.
-22. `GEMINI_VERSION`: The Gemini version used by the One API, which defaults to 'v1'.
-23. `THE`: The system's theme setting, default to 'default', specific optional values refer to [here] (./web/README. md).
-24. `ENABLE_METRIC`: Whether to disable channels based on request success rate, default not enabled, optional values are 'true' and 'false'.
-25. `METRIC_QUEUE_SIZE`: Request success rate statistics queue size, default to '10'.
-26. `METRIC_SUCCESS_RATE_THRESHOLD`: Request success rate threshold, default to '0.8'.
-27. `INITIAL_ROOT_TOKEN`: If this value is set, a root user token with the value of the environment variable will be automatically created when the system starts for the first time.
-28. `INITIAL_ROOT_ACCESS_TOKEN`: If this value is set, a system management token will be automatically created for the root user with a value of the environment variable when the system starts for the first time.
-
-### Command Line Parameters
-1. `--port <port_number>`: Specifies the port number on which the server listens. Defaults to `3000`.
-    + Example: `--port 3000`
-2. `--log-dir <log_dir>`: Specifies the log directory. If not set, the logs will not be saved.
-    + Example: `--log-dir ./logs`
-3. `--version`: Prints the system version number and exits.
-4. `--help`: Displays the command usage help and parameter descriptions.
-
-## Screenshots
-![channel](https://user-images.githubusercontent.com/39998050/233837954-ae6683aa-5c4f-429f-a949-6645a83c9490.png)
-![token](https://user-images.githubusercontent.com/39998050/233837971-dab488b7-6d96-43af-b640-a168e8d1c9bf.png)
+1. Set the same `SESSION_SECRET` on all nodes
+2. Must use MySQL (`SQL_DSN`) — all nodes connect to the same database
+3. Set `NODE_TYPE=slave` on worker nodes
+4. Set `SYNC_FREQUENCY` to periodically sync configuration from the database
+5. Configure Redis (`REDIS_CONN_STRING`) on each node
 
 ## FAQ
-1. What is quota? How is it calculated? Does One API have quota calculation issues?
-    + Quota = Group multiplier * Model multiplier * (number of prompt tokens + number of completion tokens * completion multiplier)
-    + The completion multiplier is fixed at 1.33 for GPT3.5 and 2 for GPT4, consistent with the official definition.
-    + If it is not a stream mode, the official API will return the total number of tokens consumed. However, please note that the consumption multipliers for prompts and completions are different.
-2. Why does it prompt "insufficient quota" even though my account balance is sufficient?
-    + Please check if your token quota is sufficient. It is separate from the account balance.
-    + The token quota is used to set the maximum usage and can be freely set by the user.
-3. It says "No available channels" when trying to use a channel. What should I do?
-    + Please check the user and channel group settings.
-    + Also check the channel model settings.
-4. Channel testing reports an error: "invalid character '<' looking for beginning of value"
-    + This error occurs when the returned value is not valid JSON but an HTML page.
-    + Most likely, the IP of your deployment site or the node of the proxy has been blocked by CloudFlare.
-5. ChatGPT Next Web reports an error: "Failed to fetch"
-    + Do not set `BASE_URL` during deployment.
-    + Double-check that your interface address and API Key are correct.
 
-## Related Projects
-* [FastGPT](https://github.com/labring/FastGPT): Knowledge question answering system based on the LLM
-* [VChart](https://github.com/VisActor/VChart):  More than just a cross-platform charting library, but also an expressive data storyteller.
-* [VMind](https://github.com/VisActor/VMind):  Not just automatic, but also fantastic. Open-source solution for intelligent visualization.
-* * [CherryStudio](https://github.com/CherryHQ/cherry-studio):  A cross-platform AI client that integrates multiple service providers and supports local knowledge base management.
+**How is quota calculated?**
+> Quota = group multiplier × model multiplier × (prompt tokens + completion tokens × completion multiplier)
 
-## Note
-This project is an open-source project. Please use it in compliance with OpenAI's [Terms of Use](https://openai.com/policies/terms-of-use) and **applicable laws and regulations**. It must not be used for illegal purposes.
+**What is a subscription window?**
+> A 5-hour rolling window where API request count must stay within the plan's limit. After exceeding the limit, requests are either paused (Lite) or billed at API rates (Pro and above). The counter resets automatically when the window ends.
 
-This project is released under the MIT license. Based on this, attribution and a link to this project must be included at the bottom of the page.
+**Is Redis required?**
+> Yes, if you use subscription billing features (window quotas). If you only use basic token + quota mode, Redis is optional.
 
-The same applies to derivative projects based on this project.
+**How to migrate from One API?**
+> The database is fully compatible — just replace the binary. New subscription-related tables are created automatically.
 
-If you do not wish to include attribution, prior authorization must be obtained.
+**"No available channel" error?**
+> Check that user groups and channel groups match, and that the channel's model list includes the requested model.
 
-According to the MIT license, users should bear the risk and responsibility of using this project, and the developer of this open-source project is not responsible for this.
+## Acknowledgments
+
+This project is built on [One API](https://github.com/songquanpeng/one-api) by [songquanpeng](https://github.com/songquanpeng). Thank you for the excellent open-source foundation.
+
+## License
+
+[MIT License](./LICENSE)
