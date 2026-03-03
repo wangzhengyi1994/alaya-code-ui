@@ -38,15 +38,31 @@ export function getFooterHTML() {
   return localStorage.getItem('footer_html');
 }
 
-export async function copy(text) {
-  let okay = true;
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch (e) {
-    okay = false;
-    console.error(e);
+export function copy(text) {
+  // execCommand fallback，同步执行以保留用户手势上下文
+  function fallbackCopy(str) {
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = str;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return ok;
+    } catch (e) {
+      return false;
+    }
   }
-  return okay;
+
+  // 非安全上下文（HTTP）下 navigator.clipboard 不存在，直接走同步 fallback
+  if (!navigator.clipboard) {
+    return Promise.resolve(fallbackCopy(text));
+  }
+  return navigator.clipboard.writeText(text).then(() => true, () => fallbackCopy(text));
 }
 
 export function isMobile() {
