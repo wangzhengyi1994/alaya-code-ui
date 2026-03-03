@@ -52,9 +52,8 @@ const buildFeatures = (plan, t) => {
   } else {
     features.push(t('pricing.plans.pro_f1'));
   }
-  const hours = plan.window_duration_sec / 3600;
   features.push(
-    `${hours}h ${t('pricing.compare.window_limit')}: ${plan.window_limit_count} ${t('admin.plan.unit_requests')}`
+    `${t('pricing.compare.window_limit')}: ${plan.window_limit_count} ${t('admin.plan.unit_requests')}`
   );
   if (plan.weekly_limit_count > 0) {
     features.push(
