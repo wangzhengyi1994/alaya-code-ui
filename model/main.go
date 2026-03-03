@@ -43,7 +43,9 @@ func CreateRootAccountIfNeed() error {
 			AccessToken: accessToken,
 			Quota:       500000000000000,
 		}
-		DB.Create(&rootUser)
+		if err := DB.Create(&rootUser).Error; err != nil {
+			return err
+		}
 		if config.InitialRootToken != "" {
 			logger.SysLog("creating initial root token as requested")
 			token := Token{
@@ -156,9 +158,6 @@ func migrateDB() error {
 		return err
 	}
 	if err = DB.AutoMigrate(&Log{}); err != nil {
-		return err
-	}
-	if err = DB.AutoMigrate(&Channel{}); err != nil {
 		return err
 	}
 	if err = DB.AutoMigrate(&Plan{}); err != nil {

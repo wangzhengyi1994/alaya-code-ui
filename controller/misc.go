@@ -152,9 +152,10 @@ func SendPasswordResetEmail(c *gin.Context) {
 		return
 	}
 	if !model.IsEmailAlreadyTaken(email) {
+		// Return success to prevent email enumeration
 		c.JSON(http.StatusOK, gin.H{
-			"success": false,
-			"message": "该邮箱地址未注册",
+			"success": true,
+			"message": "",
 		})
 		return
 	}
@@ -199,7 +200,7 @@ type PasswordResetRequest struct {
 func ResetPassword(c *gin.Context) {
 	var req PasswordResetRequest
 	err := json.NewDecoder(c.Request.Body).Decode(&req)
-	if req.Email == "" || req.Token == "" {
+	if err != nil || req.Email == "" || req.Token == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"message": i18n.Translate(c, "invalid_parameter"),

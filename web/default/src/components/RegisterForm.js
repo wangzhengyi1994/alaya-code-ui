@@ -40,7 +40,7 @@ const RegisterForm = () => {
         setTurnstileSiteKey(status.turnstile_site_key);
       }
     }
-  });
+  }, []);
 
   useEffect(() => {
     let countdownInterval = null;

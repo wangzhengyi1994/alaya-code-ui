@@ -10,7 +10,7 @@ import {
   Modal,
 } from '../helpers/semantic-shim';
 import { Link } from 'react-router-dom';
-import { API, showError, showSuccess, verifyJSON } from '../helpers';
+import { API, showError, showSuccess } from '../helpers';
 import { marked } from 'marked';
 
 const OtherSetting = () => {

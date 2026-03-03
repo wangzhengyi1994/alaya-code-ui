@@ -100,13 +100,19 @@ func isValidOrderTransition(from, to int) bool {
 }
 
 func UpdateOrderStatus(id int, newStatus int) error {
-	order, err := GetOrderById(id)
-	if err != nil {
-		return err
+	// Build the list of allowed source statuses for this transition
+	var allowedFromStatuses []int
+	for fromStatus, toStatuses := range validOrderTransitions {
+		for _, s := range toStatuses {
+			if s == newStatus {
+				allowedFromStatuses = append(allowedFromStatuses, fromStatus)
+			}
+		}
 	}
-	if !isValidOrderTransition(order.Status, newStatus) {
-		return fmt.Errorf("invalid order status transition: %d -> %d", order.Status, newStatus)
+	if len(allowedFromStatuses) == 0 {
+		return fmt.Errorf("no valid transition to status %d", newStatus)
 	}
+
 	now := helper.GetTimestamp()
 	updates := map[string]interface{}{
 		"status":       newStatus,
@@ -115,7 +121,15 @@ func UpdateOrderStatus(id int, newStatus int) error {
 	if newStatus == OrderStatusPaid {
 		updates["paid_time"] = now
 	}
-	return DB.Model(&Order{}).Where("id = ?", id).Updates(updates).Error
+	// Atomic check-and-update: only update if current status allows this transition
+	result := DB.Model(&Order{}).Where("id = ? AND status IN ?", id, allowedFromStatuses).Updates(updates)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("order %d status transition to %d failed: current status does not allow this transition", id, newStatus)
+	}
+	return nil
 }
 
 func UpdateOrderPayment(id int, paymentMethod string, paymentTradeNo string) error {

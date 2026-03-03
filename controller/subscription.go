@@ -237,7 +237,14 @@ func UpgradeSubscription(c *gin.Context) {
 	}
 
 	// Direct activation
-	model.UpdateOrderStatus(order.Id, model.OrderStatusPaid)
+	err = model.UpdateOrderStatus(order.Id, model.OrderStatusPaid)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "更新订单状态失败: " + err.Error(),
+		})
+		return
+	}
 
 	// Update subscription
 	sub.PlanId = newPlan.Id
@@ -328,7 +335,7 @@ func DowngradeSubscription(c *gin.Context) {
 		PlanId:        newPlan.Id,
 		Type:          model.OrderTypeDowngrade,
 		AmountCents:   newPlan.PriceCentsMonthly,
-		Status:        model.OrderStatusPaid,
+		Status:        model.OrderStatusPending,
 		PaymentMethod: "admin",
 	}
 	err = model.CreateOrder(order)
@@ -340,14 +347,24 @@ func DowngradeSubscription(c *gin.Context) {
 		return
 	}
 
+	// Mark order as paid (downgrade is a scheduled action)
+	err = model.UpdateOrderStatus(order.Id, model.OrderStatusPaid)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "更新订单状态失败: " + err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": fmt.Sprintf("降级将在当前计费周期结束后生效（%s）",
 			time.Unix(sub.CurrentPeriodEnd, 0).Format("2006-01-02")),
 		"data": gin.H{
-			"order":         order,
-			"effective_at":  sub.CurrentPeriodEnd,
-			"target_plan":   newPlan,
+			"order":        order,
+			"effective_at": sub.CurrentPeriodEnd,
+			"target_plan":  newPlan,
 		},
 	})
 }
@@ -421,7 +438,14 @@ func RenewSubscription(c *gin.Context) {
 	}
 
 	// Direct activation
-	model.UpdateOrderStatus(order.Id, model.OrderStatusPaid)
+	err = model.UpdateOrderStatus(order.Id, model.OrderStatusPaid)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "更新订单状态失败: " + err.Error(),
+		})
+		return
+	}
 
 	// Extend subscription period
 	now := helper.GetTimestamp()

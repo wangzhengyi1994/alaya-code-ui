@@ -98,6 +98,12 @@ Form.TextArea = ({ placeholder, name, value, onChange, label, style, ...rest }) 
     <textarea className='flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring' placeholder={placeholder} name={name} value={value} onChange={(e) => onChange?.(e, { name, value: e.target.value })} style={style} {...rest} />
   </div>
 );
+const colorDotMap = {
+  green: 'bg-green-500', red: 'bg-red-500', blue: 'bg-blue-500', orange: 'bg-orange-500',
+  yellow: 'bg-yellow-500', purple: 'bg-purple-500', violet: 'bg-violet-500', black: 'bg-gray-900',
+  olive: 'bg-lime-500', teal: 'bg-teal-500', pink: 'bg-pink-500', brown: 'bg-amber-700', grey: 'bg-gray-500',
+};
+
 const FormSelect = ({ label, name, options, value, onChange, search, required, placeholder, className, style, ...rest }) => {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState('');
@@ -169,7 +175,7 @@ const FormSelect = ({ label, name, options, value, onChange, search, required, p
                   )}
                   onClick={(e) => { e.stopPropagation(); handleSelect(opt.value); }}
                 >
-                  {opt.color && <span className={cn('inline-block w-2 h-2 rounded-full mr-2', `bg-${opt.color}-500`)} />}
+                  {opt.color && <span className={cn('inline-block w-2 h-2 rounded-full mr-2', colorDotMap[opt.color] || 'bg-gray-500')} />}
                   {opt.text}
                 </button>
               ))
@@ -432,8 +438,13 @@ export const Grid = ({ children, columns, stackable, textAlign, style, className
     {children}
   </div>
 );
+const colSpanMap = {
+  1: 'md:col-span-1', 2: 'md:col-span-2', 3: 'md:col-span-3', 4: 'md:col-span-4',
+  5: 'md:col-span-5', 6: 'md:col-span-6', 7: 'md:col-span-7', 8: 'md:col-span-8',
+  9: 'md:col-span-9', 10: 'md:col-span-10', 11: 'md:col-span-11', 12: 'md:col-span-12',
+};
 Grid.Column = ({ children, style, width, className, ...rest }) => (
-  <div className={cn(width && `md:col-span-${width}`, className)} style={style} {...rest}>{children}</div>
+  <div className={cn(width && colSpanMap[width], className)} style={style} {...rest}>{children}</div>
 );
 Grid.Row = ({ children, className, ...rest }) => (
   <div className={cn('grid gap-4 md:grid-cols-2', className)} {...rest}>{children}</div>
@@ -576,37 +587,62 @@ Dropdown.Item = ({ children, onClick, style, ...rest }) => (
 );
 
 // ---- Pagination ----
-export const Pagination = ({ activePage, onPageChange, totalPages, size, siblingRange, floated, ...rest }) => {
-  const pages = [];
-  for (let i = 1; i <= Math.max(1, totalPages); i++) {
-    pages.push(i);
-  }
+export const Pagination = ({ activePage, onPageChange, totalPages, size, siblingRange = 1, floated, ...rest }) => {
+  const total = Math.max(1, totalPages);
+  // Build page list with ellipsis for large page counts
+  const getPageNumbers = () => {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages = new Set([1, total]);
+    for (let i = Math.max(2, activePage - siblingRange); i <= Math.min(total - 1, activePage + siblingRange); i++) {
+      pages.add(i);
+    }
+    const sorted = [...pages].sort((a, b) => a - b);
+    const result = [];
+    let prev = 0;
+    for (const p of sorted) {
+      if (p - prev > 1) result.push('...');
+      result.push(p);
+      prev = p;
+    }
+    return result;
+  };
+  const pages = getPageNumbers();
   return (
-    <div className={cn('inline-flex items-center gap-1', floated === 'right' && 'float-right')}>
+    <nav className={cn('inline-flex items-center gap-1', floated === 'right' && 'float-right')} aria-label='分页导航'>
       <button
         className='inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm disabled:opacity-50'
         disabled={activePage <= 1}
         onClick={(e) => onPageChange(e, { activePage: activePage - 1 })}
+        aria-label='上一页'
       >
         &lt;
       </button>
-      {pages.map((p) => (
-        <button
-          key={p}
-          className={cn('inline-flex h-8 w-8 items-center justify-center rounded-md text-sm', p === activePage ? 'bg-primary text-primary-foreground' : 'border hover:bg-accent')}
-          onClick={(e) => onPageChange(e, { activePage: p })}
-        >
-          {p}
-        </button>
-      ))}
+      {pages.map((p, idx) =>
+        p === '...' ? (
+          <span key={`ellipsis-${idx}`} className='inline-flex h-8 w-8 items-center justify-center text-sm text-muted-foreground'>...</span>
+        ) : (
+          <button
+            key={p}
+            className={cn('inline-flex h-8 w-8 items-center justify-center rounded-md text-sm', p === activePage ? 'bg-primary text-primary-foreground' : 'border hover:bg-accent')}
+            onClick={(e) => onPageChange(e, { activePage: p })}
+            aria-label={`第 ${p} 页`}
+            aria-current={p === activePage ? 'page' : undefined}
+          >
+            {p}
+          </button>
+        )
+      )}
       <button
         className='inline-flex h-8 w-8 items-center justify-center rounded-md border text-sm disabled:opacity-50'
         disabled={activePage >= totalPages}
         onClick={(e) => onPageChange(e, { activePage: activePage + 1 })}
+        aria-label='下一页'
       >
         &gt;
       </button>
-    </div>
+    </nav>
   );
 };
 
@@ -677,8 +713,8 @@ Menu.Menu = ({ children, position, ...rest }) => (
 export const Modal = ({ children, open, onClose, onOpen, size, ...rest }) => {
   if (!open) return null;
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center'>
-      <div className='fixed inset-0 bg-black/80' onClick={onClose} />
+    <div className='fixed inset-0 z-50 flex items-center justify-center' role='dialog' aria-modal='true'>
+      <div className='fixed inset-0 bg-black/80' onClick={onClose} aria-label='关闭对话框' />
       <div className={cn('relative z-50 w-full max-w-lg rounded-lg border bg-background p-6 shadow-lg', size === 'mini' && 'max-w-sm')}>
         {children}
       </div>

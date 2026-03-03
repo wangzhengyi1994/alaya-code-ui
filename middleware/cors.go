@@ -7,9 +7,11 @@ import (
 
 func CORS() gin.HandlerFunc {
 	config := cors.DefaultConfig()
+	// AllowAllOrigins and AllowCredentials cannot both be true (browser security).
+	// Use AllowAllOrigins without credentials for public API compatibility.
 	config.AllowAllOrigins = true
-	config.AllowCredentials = true
+	config.AllowCredentials = false
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
-	config.AllowHeaders = []string{"*"}
+	config.AllowHeaders = []string{"Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"}
 	return cors.New(config)
 }

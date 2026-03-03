@@ -169,8 +169,10 @@ func updateChannelCloseAIBalance(channel *model.Channel) (float64, error) {
 }
 
 func updateChannelOpenAISBBalance(channel *model.Channel) (float64, error) {
-	url := fmt.Sprintf("https://api.openai-sb.com/sb-api/user/status?api_key=%s", channel.Key)
-	body, err := GetResponseBody("GET", url, channel, GetAuthHeader(channel.Key))
+	url := "https://api.openai-sb.com/sb-api/user/status"
+	headers := GetAuthHeader(channel.Key)
+	headers.Add("api-key", channel.Key)
+	body, err := GetResponseBody("GET", url, channel, headers)
 	if err != nil {
 		return 0, err
 	}

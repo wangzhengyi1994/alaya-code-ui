@@ -44,6 +44,10 @@ func RecordUsageWindow(userId int, modelName string, tokensUsed int, quotaUsed i
 		err = common.RDB.ZAdd(ctx, key, &redis.Z{Score: float64(now), Member: member}).Err()
 		if err != nil {
 			logger.SysError(fmt.Sprintf("Redis ZAdd usage_window error for user %d: %s", userId, err.Error()))
+		} else {
+			// Set TTL to 2x the default window duration (5h) to ensure data availability
+			ttl := time.Duration(18000*2) * time.Second
+			common.RDB.Expire(ctx, key, ttl)
 		}
 	}
 	return nil
@@ -59,16 +63,19 @@ func GetWindowUsageCount(userId int, windowDurationSec int64) (int64, error) {
 		key := fmt.Sprintf("usage_window:%d", userId)
 		ctx := context.Background()
 
-		// Count entries with score (timestamp) >= windowStart
-		count, err := common.RDB.ZCount(ctx, key, strconv.FormatInt(windowStart, 10), "+inf").Result()
-		if err == nil && count > 0 {
-			return count, nil
-		}
-		if err != nil {
+		// Check if the key exists before counting
+		exists, existsErr := common.RDB.Exists(ctx, key).Result()
+		if existsErr == nil && exists > 0 {
+			// Key exists, count entries with score (timestamp) >= windowStart
+			count, err := common.RDB.ZCount(ctx, key, strconv.FormatInt(windowStart, 10), "+inf").Result()
+			if err == nil {
+				return count, nil
+			}
 			logger.SysError(fmt.Sprintf("Redis ZCount usage_window error for user %d, falling back to DB: %s", userId, err.Error()))
+		} else if existsErr != nil {
+			logger.SysError(fmt.Sprintf("Redis Exists usage_window error for user %d, falling back to DB: %s", userId, existsErr.Error()))
 		}
-		// Redis returned 0 or error: fallback to DB to handle cases where
-		// Redis sorted set may not have been populated yet
+		// Key doesn't exist or Redis error: fallback to DB
 	}
 
 	// Database fallback

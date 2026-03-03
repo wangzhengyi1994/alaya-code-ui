@@ -62,4 +62,4 @@ const UsageChart = ({ data, title, dataKey = 'requests', color = '#4318FF', heig
   );
 };
 
-export default UsageChart;
+export default React.memo(UsageChart);

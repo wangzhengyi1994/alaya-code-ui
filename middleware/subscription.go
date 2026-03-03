@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/songquanpeng/one-api/common/ctxkey"
+	"github.com/songquanpeng/one-api/common/helper"
 	"github.com/songquanpeng/one-api/common/logger"
 	"github.com/songquanpeng/one-api/model"
 )
@@ -33,6 +34,15 @@ func SubscriptionCheck() func(c *gin.Context) {
 		if err != nil {
 			// No active subscription found, use legacy Quota mode
 			logger.Debugf(ctx, "user %d has no active subscription, using quota mode", userId)
+			c.Set(ctxkey.SubscriptionMode, false)
+			c.Next()
+			return
+		}
+
+		// Check if subscription period has expired
+		now := helper.GetTimestamp()
+		if sub.CurrentPeriodEnd > 0 && sub.CurrentPeriodEnd < now {
+			logger.Debugf(ctx, "user %d subscription expired at %d, using quota mode", userId, sub.CurrentPeriodEnd)
 			c.Set(ctxkey.SubscriptionMode, false)
 			c.Next()
 			return

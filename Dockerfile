@@ -36,12 +36,17 @@ COPY --from=builder /web/build ./web/build
 
 RUN go build -trimpath -ldflags "-s -w -X 'github.com/songquanpeng/one-api/common.Version=$(cat VERSION)' -linkmode external -extldflags '-static'" -o one-api
 
-FROM alpine:latest
+FROM alpine:3.19
 
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk update && apk upgrade --no-cache && \
+    apk add --no-cache ca-certificates tzdata && \
+    adduser -D -h /app -s /sbin/nologin oneapi
 
-COPY --from=builder2 /build/one-api /
+COPY --from=builder2 /build/one-api /app/one-api
+
+RUN mkdir -p /data && chown oneapi:oneapi /data
 
 EXPOSE 3000
+USER oneapi
 WORKDIR /data
-ENTRYPOINT ["/one-api"]
+ENTRYPOINT ["/app/one-api"]

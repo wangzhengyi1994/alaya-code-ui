@@ -171,7 +171,6 @@ func RelayImageHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 	modelRatio := billingratio.GetModelRatio(imageModel, meta.ChannelType)
 	groupRatio := billingratio.GetGroupRatio(meta.Group)
 	ratio := modelRatio * groupRatio
-	userQuota, err := model.CacheGetUserQuota(ctx, meta.UserId)
 
 	var quota int64
 	switch meta.ChannelType {
@@ -182,8 +181,15 @@ func RelayImageHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 		quota = int64(ratio*imageCostRatio*1000) * int64(imageRequest.N)
 	}
 
-	if userQuota-quota < 0 {
-		return openai.ErrorWrapper(errors.New("user quota is not enough"), "insufficient_user_quota", http.StatusForbidden)
+	// Skip quota check for subscription users within window
+	if !(meta.SubscriptionMode && meta.WithinWindow) {
+		userQuota, err := model.CacheGetUserQuota(ctx, meta.UserId)
+		if err != nil {
+			return openai.ErrorWrapper(err, "get_user_quota_failed", http.StatusInternalServerError)
+		}
+		if userQuota-quota < 0 {
+			return openai.ErrorWrapper(errors.New("user quota is not enough"), "insufficient_user_quota", http.StatusForbidden)
+		}
 	}
 
 	// do request
@@ -200,6 +206,32 @@ func RelayImageHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 			return
 		}
 
+		// Record usage window for subscription users
+		if meta.SubscriptionMode {
+			windowErr := model.RecordUsageWindow(meta.UserId, imageRequest.Model, 0, quota)
+			if windowErr != nil {
+				logger.Error(ctx, "error recording usage window: "+windowErr.Error())
+			}
+		}
+
+		// If subscription mode and within window, skip quota deduction
+		if meta.SubscriptionMode && meta.WithinWindow {
+			tokenName := c.GetString(ctxkey.TokenName)
+			logContent := fmt.Sprintf("订阅模式（窗口内）倍率：%.2f × %.2f", modelRatio, groupRatio)
+			model.RecordConsumeLog(ctx, &model.Log{
+				UserId:           meta.UserId,
+				ChannelId:        meta.ChannelId,
+				PromptTokens:     0,
+				CompletionTokens: 0,
+				ModelName:        imageRequest.Model,
+				TokenName:        tokenName,
+				Quota:            0,
+				Content:          logContent,
+			})
+			model.UpdateUserUsedQuotaAndRequestCount(meta.UserId, 0)
+			return
+		}
+
 		err := model.PostConsumeTokenQuota(meta.TokenId, quota)
 		if err != nil {
 			logger.SysError("error consuming token remain quota: " + err.Error())
@@ -208,9 +240,21 @@ func RelayImageHelper(c *gin.Context, relayMode int) *relaymodel.ErrorWithStatus
 		if err != nil {
 			logger.SysError("error update user quota cache: " + err.Error())
 		}
+
+		// If subscription overage (over window), update monthly spent
+		if meta.SubscriptionMode && !meta.WithinWindow && meta.SubscriptionId > 0 {
+			err = model.IncreaseMonthlySpent(meta.SubscriptionId, quota)
+			if err != nil {
+				logger.Error(ctx, "error updating monthly spent: "+err.Error())
+			}
+		}
+
 		if quota != 0 {
 			tokenName := c.GetString(ctxkey.TokenName)
 			logContent := fmt.Sprintf("倍率：%.2f × %.2f", modelRatio, groupRatio)
+			if meta.SubscriptionMode && !meta.WithinWindow {
+				logContent = "订阅超额计费 " + logContent
+			}
 			model.RecordConsumeLog(ctx, &model.Log{
 				UserId:           meta.UserId,
 				ChannelId:        meta.ChannelId,

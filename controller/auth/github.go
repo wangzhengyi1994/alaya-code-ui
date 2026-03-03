@@ -86,7 +86,8 @@ func GitHubOAuth(c *gin.Context) {
 	ctx := c.Request.Context()
 	session := sessions.Default(c)
 	state := c.Query("state")
-	if state == "" || session.Get("oauth_state") == nil || state != session.Get("oauth_state").(string) {
+	oauthState, _ := session.Get("oauth_state").(string)
+	if state == "" || oauthState == "" || state != oauthState {
 		c.JSON(http.StatusForbidden, gin.H{
 			"success": false,
 			"message": "state is empty or not same",
@@ -195,7 +196,15 @@ func GitHubBind(c *gin.Context) {
 	session := sessions.Default(c)
 	id := session.Get("id")
 	// id := c.GetInt("id")  // critical bug!
-	user.Id = id.(int)
+	userId, ok := id.(int)
+	if !ok {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "会话已过期，请重新登录",
+		})
+		return
+	}
+	user.Id = userId
 	err = user.FillUserById()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{

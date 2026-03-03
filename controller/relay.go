@@ -94,10 +94,15 @@ func Relay(c *gin.Context) {
 			bizErr.Error.Message = "当前分组上游负载已饱和，请稍后再试"
 		}
 
-		// BUG: bizErr is in race condition
-		bizErr.Error.Message = helper.MessageWithRequestId(bizErr.Error.Message, requestId)
+		// Use a local copy to avoid race with goroutines reading the shared bizErr
+		finalMessage := helper.MessageWithRequestId(bizErr.Error.Message, requestId)
 		c.JSON(bizErr.StatusCode, gin.H{
-			"error": bizErr.Error,
+			"error": model.Error{
+				Message: finalMessage,
+				Type:    bizErr.Error.Type,
+				Param:   bizErr.Error.Param,
+				Code:    bizErr.Error.Code,
+			},
 		})
 	}
 }

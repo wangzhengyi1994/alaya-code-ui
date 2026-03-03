@@ -21,6 +21,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -382,6 +383,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                         size='icon'
                         className='h-6 w-6'
                         onClick={() => toggleShowKey(token.id)}
+                        aria-label={showKey[token.id] ? '隐藏 Key' : '显示 Key'}
                       >
                         {showKey[token.id] ? (
                           <EyeOff className='h-3 w-3' />
@@ -392,7 +394,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                       {/* Copy dropdown with config links */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant='ghost' size='icon' className='h-6 w-6'>
+                          <Button variant='ghost' size='icon' className='h-6 w-6' aria-label='复制选项'>
                             <Copy className='h-3 w-3' />
                           </Button>
                         </DropdownMenuTrigger>
@@ -485,6 +487,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                           setDeleteTarget(token.id);
                           setDeleteDialogOpen(true);
                         }}
+                        aria-label='删除'
                       >
                         <Trash2 className='h-4 w-4 text-destructive' />
                       </Button>
@@ -520,10 +523,10 @@ const ApiKeyTable = ({ isAdmin = false }) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>确认删除</DialogTitle>
+            <DialogDescription>
+              确定要删除此 API Key 吗？此操作不可撤销。
+            </DialogDescription>
           </DialogHeader>
-          <p className='text-sm text-muted-foreground'>
-            确定要删除此 API Key 吗？此操作不可撤销。
-          </p>
           <DialogFooter>
             <Button variant='outline' onClick={() => setDeleteDialogOpen(false)}>
               取消

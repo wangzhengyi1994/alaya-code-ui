@@ -6,7 +6,6 @@ import { API, getLogo, showError, showSuccess, showWarning } from '../helpers';
 import { onGitHubOAuthClicked, onLarkOAuthClicked } from './utils';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
 import { Separator } from './ui/separator';
 import {
   Dialog,
@@ -25,9 +24,8 @@ const LoginForm = () => {
     wechat_verification_code: '',
   });
   const [searchParams] = useSearchParams();
-  const [submitted, setSubmitted] = useState(false);
   const { username, password } = inputs;
-  const [userState, userDispatch] = useContext(UserContext);
+  const [, userDispatch] = useContext(UserContext);
   let navigate = useNavigate();
   const [status, setStatus] = useState({});
   const logo = getLogo();
@@ -71,7 +69,6 @@ const LoginForm = () => {
   }
 
   async function handleSubmit(e) {
-    setSubmitted(true);
     if (username && password) {
       const res = await API.post(`/api/user/login`, {
         username,
@@ -86,7 +83,7 @@ const LoginForm = () => {
           showSuccess(t('messages.success.login'));
           showWarning(t('messages.error.root_password'));
         } else {
-          navigate('/token');
+          navigate('/dashboard');
           showSuccess(t('messages.success.login'));
         }
       } else {
@@ -198,7 +195,7 @@ const LoginForm = () => {
           </DialogHeader>
           <div className='space-y-4'>
             {status.wechat_qrcode && (
-              <img src={status.wechat_qrcode} alt='WeChat QR Code' className='w-full' />
+              <img src={status.wechat_qrcode} alt='微信二维码' className='w-full' />
             )}
             <Input
               placeholder={t('auth.login.wechat.code_placeholder')}

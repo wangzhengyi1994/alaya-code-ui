@@ -13,7 +13,6 @@ import {
   API,
   copy,
   showError,
-  showInfo,
   showSuccess,
   showWarning,
   timestamp2string,

@@ -5,10 +5,8 @@ import {
   Header,
   Label,
   Pagination,
-  Segment,
   Select,
   Table,
-  Popup,
 } from '../helpers/semantic-shim';
 import {
   API,

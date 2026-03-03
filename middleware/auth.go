@@ -45,7 +45,10 @@ func authHelper(c *gin.Context, minRole int) {
 			return
 		}
 	}
-	if status.(int) == model.UserStatusDisabled || blacklist.IsUserBanned(id.(int)) {
+	statusVal, _ := status.(int)
+	idVal, _ := id.(int)
+	roleVal, _ := role.(int)
+	if statusVal == model.UserStatusDisabled || blacklist.IsUserBanned(idVal) {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"message": "用户已被封禁",
@@ -56,7 +59,7 @@ func authHelper(c *gin.Context, minRole int) {
 		c.Abort()
 		return
 	}
-	if role.(int) < minRole {
+	if roleVal < minRole {
 		c.JSON(http.StatusOK, gin.H{
 			"success": false,
 			"message": "无权进行此操作，权限不足",
@@ -65,8 +68,8 @@ func authHelper(c *gin.Context, minRole int) {
 		return
 	}
 	c.Set("username", username)
-	c.Set("role", role)
-	c.Set("id", id)
+	c.Set("role", roleVal)
+	c.Set("id", idVal)
 	c.Next()
 }
 
@@ -103,7 +106,7 @@ func TokenAuth() func(c *gin.Context) {
 		}
 		if token.Subnet != nil && *token.Subnet != "" {
 			if !network.IsIpInSubnets(ctx, c.ClientIP(), *token.Subnet) {
-				abortWithMessage(c, http.StatusForbidden, fmt.Sprintf("该令牌只能在指定网段使用：%s，当前 ip：%s", *token.Subnet, c.ClientIP()))
+				abortWithMessage(c, http.StatusForbidden, "该令牌只能在指定网段使用，当前 IP 不在允许范围内")
 				return
 			}
 		}

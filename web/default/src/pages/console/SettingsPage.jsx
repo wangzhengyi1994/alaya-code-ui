@@ -349,7 +349,7 @@ const SettingsPage = () => {
               <div className='flex-1 bg-muted rounded-md p-3'>
                 <code className='text-xs break-all'>{currentToken}</code>
               </div>
-              <Button variant='outline' size='icon' onClick={handleCopyToken} title='复制'>
+              <Button variant='outline' size='icon' onClick={handleCopyToken} title='复制' aria-label='复制令牌'>
                 <Copy className='h-4 w-4' />
               </Button>
             </div>
@@ -689,7 +689,7 @@ const SettingsPage = () => {
               <div className='flex justify-center'>
                 <img
                   src={status.wechat_qrcode}
-                  alt='WeChat QR Code'
+                  alt='微信二维码'
                   className='max-w-[200px] rounded-md'
                 />
               </div>

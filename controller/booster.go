@@ -108,7 +108,14 @@ func PurchaseBoosterPack(c *gin.Context) {
 	}
 
 	// Direct activation (admin recharge mode)
-	model.UpdateOrderStatus(order.Id, model.OrderStatusPaid)
+	err = model.UpdateOrderStatus(order.Id, model.OrderStatusPaid)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"success": false,
+			"message": "更新订单状态失败: " + err.Error(),
+		})
+		return
+	}
 
 	// Calculate expire time
 	var expireTime int64

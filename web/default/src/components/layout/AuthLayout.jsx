@@ -15,7 +15,7 @@ const AuthLayout = () => {
         </div>
       </div>
       <p className='mt-6 text-center text-sm text-muted-foreground'>
-        &copy; {new Date().getFullYear()} CodingPlan. All rights reserved.
+        &copy; {new Date().getFullYear()} CodingPlan. 保留所有权利。
       </p>
     </div>
   );
