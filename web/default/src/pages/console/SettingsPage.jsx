@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { API, copy, showError, showInfo, showSuccess } from '../../helpers';
 import { renderQuota } from '../../helpers/render';
 import { UserContext } from '../../context/User';
@@ -37,6 +38,7 @@ import {
 } from 'lucide-react';
 
 const SettingsPage = () => {
+  const { t } = useTranslation();
   const [, userDispatch] = useContext(UserContext);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -88,7 +90,7 @@ const SettingsPage = () => {
         setDisplayName(res.data.data.display_name || '');
       }
     } catch (err) {
-      showError('加载用户信息失败');
+      showError(t('console.settings.load_user_failed'));
     }
   };
 
@@ -98,12 +100,12 @@ const SettingsPage = () => {
       const body = { display_name: displayName };
       if (password) {
         if (password !== confirmPassword) {
-          showError('两次输入的密码不一致');
+          showError(t('console.settings.password_mismatch'));
           setLoading(false);
           return;
         }
         if (password.length < 8) {
-          showError('密码长度不能少于 8 位');
+          showError(t('console.settings.password_too_short'));
           setLoading(false);
           return;
         }
@@ -111,7 +113,7 @@ const SettingsPage = () => {
       }
       const res = await API.put('/api/user/self', body);
       if (res.data.success) {
-        showSuccess('更新成功');
+        showSuccess(t('console.settings.update_success'));
         setPassword('');
         setConfirmPassword('');
         loadUser();
@@ -119,7 +121,7 @@ const SettingsPage = () => {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('更新失败');
+      showError(t('console.settings.update_failed'));
     }
     setLoading(false);
   };
@@ -131,13 +133,13 @@ const SettingsPage = () => {
         const token = res.data.data;
         setSystemToken(token);
         await copy(token);
-        showSuccess('系统令牌已生成并复制到剪贴板');
+        showSuccess(t('console.settings.token_generated'));
         loadUser();
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('生成令牌失败');
+      showError(t('console.settings.token_generate_failed'));
     }
   };
 
@@ -145,7 +147,7 @@ const SettingsPage = () => {
     const token = systemToken || user?.access_token;
     if (token) {
       if (await copy(token)) {
-        showSuccess('令牌已复制到剪贴板');
+        showSuccess(t('console.settings.token_copied'));
       }
     }
   };
@@ -157,45 +159,45 @@ const SettingsPage = () => {
         const link = `${window.location.origin}/register?aff=${res.data.data}`;
         setAffLink(link);
         await copy(link);
-        showSuccess('邀请链接已复制到剪贴板');
+        showSuccess(t('console.settings.invite_link_copied'));
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('获取邀请链接失败');
+      showError(t('console.settings.invite_link_failed'));
     }
   };
 
   const handleTopUp = async () => {
     if (!redemptionCode.trim()) {
-      showInfo('请输入兑换码');
+      showInfo(t('console.settings.enter_redemption_code'));
       return;
     }
     setIsRedeeming(true);
     try {
       const res = await API.post('/api/user/topup', { key: redemptionCode.trim() });
       if (res.data.success) {
-        showSuccess('兑换成功！');
+        showSuccess(t('console.settings.redeem_success'));
         setRedemptionCode('');
         loadUser();
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('兑换失败');
+      showError(t('console.settings.redeem_failed'));
     }
     setIsRedeeming(false);
   };
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmName !== user?.username) {
-      showError('请输入正确的用户名以确认删除');
+      showError(t('console.settings.delete_confirm_error'));
       return;
     }
     try {
       const res = await API.delete('/api/user/self');
       if (res.data.success) {
-        showSuccess('账户已删除');
+        showSuccess(t('console.settings.account_deleted'));
         await API.get('/api/user/logout');
         userDispatch({ type: 'logout' });
         localStorage.removeItem('user');
@@ -204,7 +206,7 @@ const SettingsPage = () => {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('删除失败');
+      showError(t('console.settings.delete_failed'));
     }
   };
 
@@ -215,13 +217,13 @@ const SettingsPage = () => {
     try {
       const res = await API.get(`/api/verification?email=${emailInput}`);
       if (res.data.success) {
-        showSuccess('验证码已发送，请检查邮箱');
+        showSuccess(t('console.settings.verification_sent'));
         setEmailCountdown(30);
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('发送验证码失败');
+      showError(t('console.settings.verification_failed'));
     }
     setEmailLoading(false);
   };
@@ -234,7 +236,7 @@ const SettingsPage = () => {
         `/api/oauth/email/bind?email=${emailInput}&code=${emailCode}`
       );
       if (res.data.success) {
-        showSuccess('邮箱绑定成功');
+        showSuccess(t('console.settings.email_bound'));
         setEmailDialogOpen(false);
         setEmailInput('');
         setEmailCode('');
@@ -243,7 +245,7 @@ const SettingsPage = () => {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('绑定失败');
+      showError(t('console.settings.bind_failed'));
     }
     setEmailLoading(false);
   };
@@ -254,7 +256,7 @@ const SettingsPage = () => {
     try {
       const res = await API.get(`/api/oauth/wechat/bind?code=${wechatCode}`);
       if (res.data.success) {
-        showSuccess('微信绑定成功');
+        showSuccess(t('console.settings.wechat_bound'));
         setWechatDialogOpen(false);
         setWechatCode('');
         loadUser();
@@ -262,7 +264,7 @@ const SettingsPage = () => {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('绑定失败');
+      showError(t('console.settings.bind_failed'));
     }
   };
 
@@ -271,8 +273,8 @@ const SettingsPage = () => {
   return (
     <div className='space-y-6'>
       <div>
-        <h1 className='text-2xl font-bold tracking-tight'>设置</h1>
-        <p className='text-muted-foreground'>管理您的账户设置和偏好。</p>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('console.settings.title')}</h1>
+        <p className='text-muted-foreground'>{t('console.settings.subtitle')}</p>
       </div>
 
       {/* Personal Info */}
@@ -280,26 +282,26 @@ const SettingsPage = () => {
         <CardHeader>
           <CardTitle className='text-sm font-medium flex items-center gap-2'>
             <User className='h-4 w-4' />
-            个人信息
+            {t('console.settings.personal_info')}
           </CardTitle>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='grid gap-4 sm:grid-cols-2'>
             <div className='space-y-2'>
-              <Label>用户名</Label>
+              <Label>{t('console.settings.username')}</Label>
               <Input value={user?.username || ''} disabled />
             </div>
             <div className='space-y-2'>
-              <Label>邮箱</Label>
-              <Input value={user?.email || '未绑定'} disabled />
+              <Label>{t('console.settings.email_label')}</Label>
+              <Input value={user?.email || t('console.settings.not_bound')} disabled />
             </div>
           </div>
           <div className='space-y-2'>
-            <Label>显示名称</Label>
+            <Label>{t('console.settings.display_name')}</Label>
             <Input
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder='输入显示名称'
+              placeholder={t('console.settings.display_name_placeholder')}
             />
           </div>
 
@@ -307,27 +309,27 @@ const SettingsPage = () => {
 
           <div className='grid gap-4 sm:grid-cols-2'>
             <div className='space-y-2'>
-              <Label>新密码（留空表示不修改）</Label>
+              <Label>{t('console.settings.new_password')}</Label>
               <Input
                 type='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder='输入新密码'
+                placeholder={t('console.settings.new_password_placeholder')}
               />
             </div>
             <div className='space-y-2'>
-              <Label>确认新密码</Label>
+              <Label>{t('console.settings.confirm_password')}</Label>
               <Input
                 type='password'
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder='再次输入新密码'
+                placeholder={t('console.settings.confirm_password_placeholder')}
               />
             </div>
           </div>
 
           <Button onClick={handleUpdateProfile} disabled={loading}>
-            {loading ? '保存中...' : '保存更改'}
+            {loading ? t('console.settings.saving') : t('console.settings.save_changes')}
           </Button>
         </CardContent>
       </Card>
@@ -337,10 +339,10 @@ const SettingsPage = () => {
         <CardHeader>
           <CardTitle className='text-sm font-medium flex items-center gap-2'>
             <Key className='h-4 w-4' />
-            系统令牌 (Access Token)
+            {t('console.settings.system_token')}
           </CardTitle>
           <CardDescription>
-            用于 API 调用认证。生成新令牌会使旧令牌失效。
+            {t('console.settings.system_token_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-3'>
@@ -349,14 +351,14 @@ const SettingsPage = () => {
               <div className='flex-1 bg-muted rounded-md p-3'>
                 <code className='text-xs break-all'>{currentToken}</code>
               </div>
-              <Button variant='outline' size='icon' onClick={handleCopyToken} title='复制' aria-label='复制令牌'>
+              <Button variant='outline' size='icon' onClick={handleCopyToken} title={t('console.settings.copy_label')} aria-label={t('console.settings.copy_token_label')}>
                 <Copy className='h-4 w-4' />
               </Button>
             </div>
           )}
           <Button variant='outline' onClick={handleGenerateToken}>
             <RefreshCw className='h-4 w-4 mr-2' />
-            生成新令牌
+            {t('console.settings.generate_token')}
           </Button>
         </CardContent>
       </Card>
@@ -366,10 +368,10 @@ const SettingsPage = () => {
         <CardHeader>
           <CardTitle className='text-sm font-medium flex items-center gap-2'>
             <Link2 className='h-4 w-4' />
-            邀请链接
+            {t('console.settings.invite_link')}
           </CardTitle>
           <CardDescription>
-            分享邀请链接给朋友，他们注册后您将获得奖励。
+            {t('console.settings.invite_link_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-3'>
@@ -379,20 +381,20 @@ const SettingsPage = () => {
                 <code className='text-xs break-all'>{affLink}</code>
               </div>
               <Button variant='outline' size='icon' onClick={async () => {
-                if (await copy(affLink)) showSuccess('已复制');
-              }} title='复制'>
+                if (await copy(affLink)) showSuccess(t('console.common.copied'));
+              }} title={t('console.settings.copy_label')}>
                 <Copy className='h-4 w-4' />
               </Button>
             </div>
           )}
           {!affLink && user?.aff_code && (
             <p className='text-sm text-muted-foreground'>
-              邀请码: <code className='bg-muted px-1 rounded'>{user.aff_code}</code>
+              {t('console.settings.invite_code')}: <code className='bg-muted px-1 rounded'>{user.aff_code}</code>
             </p>
           )}
           <Button variant='outline' onClick={handleGetAffLink}>
             <Link2 className='h-4 w-4 mr-2' />
-            获取并复制邀请链接
+            {t('console.settings.get_invite_link')}
           </Button>
         </CardContent>
       </Card>
@@ -402,10 +404,10 @@ const SettingsPage = () => {
         <CardHeader>
           <CardTitle className='text-sm font-medium flex items-center gap-2'>
             <Shield className='h-4 w-4' />
-            账户绑定
+            {t('console.settings.account_binding')}
           </CardTitle>
           <CardDescription>
-            绑定第三方账户以增强安全性和便捷登录。
+            {t('console.settings.account_binding_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -417,23 +419,23 @@ const SettingsPage = () => {
                 <div>
                   <p className='text-sm font-medium'>GitHub</p>
                   <p className='text-xs text-muted-foreground'>
-                    {user?.github_id ? '已绑定' : '未绑定'}
+                    {user?.github_id ? t('console.settings.bound') : t('console.settings.not_bound')}
                   </p>
                 </div>
               </div>
               {user?.github_id ? (
                 <Badge variant='outline' className='bg-green-50 text-green-700 border-green-200'>
                   <CheckCircle2 className='h-3 w-3 mr-1' />
-                  已绑定
+                  {t('console.settings.bound')}
                 </Badge>
               ) : status.github_oauth ? (
                 <Button variant='outline' size='sm' onClick={() => onGitHubOAuthClicked(status.github_client_id)}>
-                  绑定
+                  {t('console.settings.bind')}
                 </Button>
               ) : (
                 <Badge variant='outline' className='text-muted-foreground'>
                   <XCircle className='h-3 w-3 mr-1' />
-                  未启用
+                  {t('console.settings.not_enabled')}
                 </Badge>
               )}
             </div>
@@ -443,20 +445,20 @@ const SettingsPage = () => {
               <div className='flex items-center gap-3'>
                 <Mail className='h-5 w-5' />
                 <div>
-                  <p className='text-sm font-medium'>邮箱</p>
+                  <p className='text-sm font-medium'>{t('console.settings.email_label')}</p>
                   <p className='text-xs text-muted-foreground'>
-                    {user?.email ? user.email : '未绑定'}
+                    {user?.email ? user.email : t('console.settings.not_bound')}
                   </p>
                 </div>
               </div>
               {user?.email ? (
                 <Badge variant='outline' className='bg-green-50 text-green-700 border-green-200'>
                   <CheckCircle2 className='h-3 w-3 mr-1' />
-                  已绑定
+                  {t('console.settings.bound')}
                 </Badge>
               ) : (
                 <Button variant='outline' size='sm' onClick={() => setEmailDialogOpen(true)}>
-                  绑定
+                  {t('console.settings.bind')}
                 </Button>
               )}
             </div>
@@ -466,25 +468,25 @@ const SettingsPage = () => {
               <div className='flex items-center gap-3'>
                 <MessageSquare className='h-5 w-5' />
                 <div>
-                  <p className='text-sm font-medium'>微信</p>
+                  <p className='text-sm font-medium'>{t('console.settings.wechat')}</p>
                   <p className='text-xs text-muted-foreground'>
-                    {user?.wechat_id ? '已绑定' : '未绑定'}
+                    {user?.wechat_id ? t('console.settings.bound') : t('console.settings.not_bound')}
                   </p>
                 </div>
               </div>
               {user?.wechat_id ? (
                 <Badge variant='outline' className='bg-green-50 text-green-700 border-green-200'>
                   <CheckCircle2 className='h-3 w-3 mr-1' />
-                  已绑定
+                  {t('console.settings.bound')}
                 </Badge>
               ) : status.wechat_login ? (
                 <Button variant='outline' size='sm' onClick={() => setWechatDialogOpen(true)}>
-                  绑定
+                  {t('console.settings.bind')}
                 </Button>
               ) : (
                 <Badge variant='outline' className='text-muted-foreground'>
                   <XCircle className='h-3 w-3 mr-1' />
-                  未启用
+                  {t('console.settings.not_enabled')}
                 </Badge>
               )}
             </div>
@@ -494,25 +496,25 @@ const SettingsPage = () => {
               <div className='flex items-center gap-3'>
                 <ExternalLink className='h-5 w-5' />
                 <div>
-                  <p className='text-sm font-medium'>飞书</p>
+                  <p className='text-sm font-medium'>{t('console.settings.lark')}</p>
                   <p className='text-xs text-muted-foreground'>
-                    {user?.lark_id ? '已绑定' : '未绑定'}
+                    {user?.lark_id ? t('console.settings.bound') : t('console.settings.not_bound')}
                   </p>
                 </div>
               </div>
               {user?.lark_id ? (
                 <Badge variant='outline' className='bg-green-50 text-green-700 border-green-200'>
                   <CheckCircle2 className='h-3 w-3 mr-1' />
-                  已绑定
+                  {t('console.settings.bound')}
                 </Badge>
               ) : status.lark_client_id ? (
                 <Button variant='outline' size='sm' onClick={() => onLarkOAuthClicked(status.lark_client_id)}>
-                  绑定
+                  {t('console.settings.bind')}
                 </Button>
               ) : (
                 <Badge variant='outline' className='text-muted-foreground'>
                   <XCircle className='h-3 w-3 mr-1' />
-                  未启用
+                  {t('console.settings.not_enabled')}
                 </Badge>
               )}
             </div>
@@ -525,16 +527,16 @@ const SettingsPage = () => {
         <CardHeader>
           <CardTitle className='text-sm font-medium flex items-center gap-2'>
             <Gift className='h-4 w-4' />
-            兑换码充值
+            {t('console.settings.redemption')}
           </CardTitle>
           <CardDescription>
-            使用兑换码充值您的账户额度。
+            {t('console.settings.redemption_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <div className='flex items-center gap-4 rounded-lg bg-muted/50 p-4'>
             <div>
-              <p className='text-sm text-muted-foreground'>当前配额余额</p>
+              <p className='text-sm text-muted-foreground'>{t('console.settings.current_balance')}</p>
               <p className='text-2xl font-bold'>
                 {user ? renderQuota(user.quota, (key, opts) => {
                   if (key === 'common.quota.display_short') return `$${opts.amount}`;
@@ -547,7 +549,7 @@ const SettingsPage = () => {
             <Input
               value={redemptionCode}
               onChange={(e) => setRedemptionCode(e.target.value)}
-              placeholder='输入兑换码'
+              placeholder={t('console.settings.redemption_placeholder')}
               className='flex-1'
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleTopUp();
@@ -559,7 +561,7 @@ const SettingsPage = () => {
               }}
             />
             <Button onClick={handleTopUp} disabled={isRedeeming}>
-              {isRedeeming ? '兑换中...' : '兑换'}
+              {isRedeeming ? t('console.settings.redeeming') : t('console.settings.redeem')}
             </Button>
           </div>
         </CardContent>
@@ -570,18 +572,18 @@ const SettingsPage = () => {
         <CardHeader>
           <CardTitle className='text-sm font-medium flex items-center gap-2 text-destructive'>
             <AlertTriangle className='h-4 w-4' />
-            危险操作
+            {t('console.settings.danger_zone')}
           </CardTitle>
           <CardDescription>
-            以下操作不可撤销，请谨慎操作。
+            {t('console.settings.danger_zone_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className='flex items-center justify-between rounded-lg border border-destructive/30 p-4'>
             <div>
-              <p className='text-sm font-medium'>删除账户</p>
+              <p className='text-sm font-medium'>{t('console.settings.delete_account')}</p>
               <p className='text-xs text-muted-foreground'>
-                永久删除您的账户和所有数据，此操作不可恢复。
+                {t('console.settings.delete_account_desc')}
               </p>
             </div>
             <Button
@@ -590,7 +592,7 @@ const SettingsPage = () => {
               onClick={() => setShowDeleteDialog(true)}
             >
               <Trash2 className='h-4 w-4 mr-1' />
-              删除账户
+              {t('console.settings.delete_account')}
             </Button>
           </div>
         </CardContent>
@@ -602,20 +604,21 @@ const SettingsPage = () => {
           <DialogHeader>
             <DialogTitle className='flex items-center gap-2 text-destructive'>
               <AlertTriangle className='h-5 w-5' />
-              确认删除账户
+              {t('console.settings.confirm_delete_account')}
             </DialogTitle>
             <DialogDescription>
-              此操作将永久删除您的账户，包括所有令牌、日志和配置数据。此操作不可撤销。
+              {t('console.settings.delete_account_warning')}
             </DialogDescription>
           </DialogHeader>
           <div className='space-y-3 py-2'>
             <p className='text-sm'>
-              请输入您的用户名 <code className='bg-muted px-1.5 py-0.5 rounded font-bold'>{user?.username}</code> 以确认删除：
+              {t('console.settings.enter_username_confirm', { username: user?.username }).replace(/<1>|<\/1>/g, '')}
+              {' '}<code className='bg-muted px-1.5 py-0.5 rounded font-bold'>{user?.username}</code>
             </p>
             <Input
               value={deleteConfirmName}
               onChange={(e) => setDeleteConfirmName(e.target.value)}
-              placeholder='输入用户名确认'
+              placeholder={t('console.settings.username_confirm_placeholder')}
             />
           </div>
           <DialogFooter>
@@ -623,14 +626,14 @@ const SettingsPage = () => {
               setShowDeleteDialog(false);
               setDeleteConfirmName('');
             }}>
-              取消
+              {t('console.common.cancel')}
             </Button>
             <Button
               variant='destructive'
               onClick={handleDeleteAccount}
               disabled={deleteConfirmName !== user?.username}
             >
-              确认删除
+              {t('console.settings.confirm_delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -640,15 +643,15 @@ const SettingsPage = () => {
       <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>绑定邮箱</DialogTitle>
-            <DialogDescription>输入邮箱地址并验证以完成绑定。</DialogDescription>
+            <DialogTitle>{t('console.settings.bind_email')}</DialogTitle>
+            <DialogDescription>{t('console.settings.bind_email_desc')}</DialogDescription>
           </DialogHeader>
           <div className='space-y-4 py-2'>
             <div className='flex gap-2'>
               <Input
                 className='flex-1'
                 type='email'
-                placeholder='输入邮箱地址'
+                placeholder={t('console.settings.email_placeholder')}
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
               />
@@ -657,21 +660,21 @@ const SettingsPage = () => {
                 onClick={sendEmailVerification}
                 disabled={emailCountdown > 0 || emailLoading || !emailInput}
               >
-                {emailCountdown > 0 ? `${emailCountdown}s` : '获取验证码'}
+                {emailCountdown > 0 ? `${emailCountdown}s` : t('console.settings.get_verification')}
               </Button>
             </div>
             <Input
-              placeholder='输入验证码'
+              placeholder={t('console.settings.verification_placeholder')}
               value={emailCode}
               onChange={(e) => setEmailCode(e.target.value)}
             />
           </div>
           <DialogFooter>
             <Button variant='outline' onClick={() => setEmailDialogOpen(false)}>
-              取消
+              {t('console.common.cancel')}
             </Button>
             <Button onClick={bindEmail} disabled={emailLoading || !emailCode}>
-              {emailLoading ? '绑定中...' : '确认绑定'}
+              {emailLoading ? t('console.settings.binding') : t('console.settings.confirm_bind')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -681,31 +684,31 @@ const SettingsPage = () => {
       <Dialog open={wechatDialogOpen} onOpenChange={setWechatDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>绑定微信</DialogTitle>
-            <DialogDescription>扫描二维码后输入验证码完成绑定。</DialogDescription>
+            <DialogTitle>{t('console.settings.bind_wechat')}</DialogTitle>
+            <DialogDescription>{t('console.settings.bind_wechat_desc')}</DialogDescription>
           </DialogHeader>
           <div className='space-y-4 py-2'>
             {status.wechat_qrcode && (
               <div className='flex justify-center'>
                 <img
                   src={status.wechat_qrcode}
-                  alt='微信二维码'
+                  alt={t('console.settings.wechat_qrcode_alt')}
                   className='max-w-[200px] rounded-md'
                 />
               </div>
             )}
             <Input
-              placeholder='输入微信验证码'
+              placeholder={t('console.settings.wechat_code_placeholder')}
               value={wechatCode}
               onChange={(e) => setWechatCode(e.target.value)}
             />
           </div>
           <DialogFooter>
             <Button variant='outline' onClick={() => setWechatDialogOpen(false)}>
-              取消
+              {t('console.common.cancel')}
             </Button>
             <Button onClick={bindWeChat} disabled={!wechatCode}>
-              确认绑定
+              {t('console.settings.confirm_bind')}
             </Button>
           </DialogFooter>
         </DialogContent>

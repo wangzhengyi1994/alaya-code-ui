@@ -18,33 +18,35 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { API, isAdmin } from '../../helpers';
+import { useTranslation } from 'react-i18next';
 
-const sidebarItems = [
-  { name: '数据看板', to: '/dashboard', icon: LayoutDashboard },
-  { name: 'API 密钥', to: '/keys', icon: Key },
-  { name: '订阅管理', to: '/subscription', icon: CreditCard },
-  { name: '用量统计', to: '/usage', icon: BarChart3 },
-  { name: '账单记录', to: '/billing', icon: Receipt },
-  { name: '加油包', to: '/booster', icon: Rocket },
-  { name: '设置', to: '/settings', icon: Settings },
+const sidebarItemKeys = [
+  { key: 'nav.sidebar.dashboard', to: '/dashboard', icon: LayoutDashboard },
+  { key: 'nav.sidebar.api_keys', to: '/keys', icon: Key },
+  { key: 'nav.sidebar.subscription', to: '/subscription', icon: CreditCard },
+  { key: 'nav.sidebar.usage', to: '/usage', icon: BarChart3 },
+  { key: 'nav.sidebar.billing', to: '/billing', icon: Receipt },
+  { key: 'nav.sidebar.booster', to: '/booster', icon: Rocket },
+  { key: 'nav.sidebar.settings', to: '/settings', icon: Settings },
 ];
 
-const adminSidebarItems = [
-  { name: '数据看板', to: '/admin/dashboard', icon: LayoutDashboard },
-  { name: '用户管理', to: '/user', icon: Users },
-  { name: '渠道管理', to: '/channel', icon: Network },
-  { name: '兑换码', to: '/redemption', icon: Ticket },
-  { name: '日志', to: '/log', icon: FileText },
-  { name: '系统设置', to: '/setting', icon: Wrench },
+const adminSidebarItemKeys = [
+  { key: 'nav.sidebar.admin_dashboard', to: '/admin/dashboard', icon: LayoutDashboard },
+  { key: 'nav.sidebar.user_management', to: '/user', icon: Users },
+  { key: 'nav.sidebar.channel_management', to: '/channel', icon: Network },
+  { key: 'nav.sidebar.redemption', to: '/redemption', icon: Ticket },
+  { key: 'nav.sidebar.logs', to: '/log', icon: FileText },
+  { key: 'nav.sidebar.system_settings', to: '/setting', icon: Wrench },
 ];
 
 export const SidebarNav = ({ className }) => {
   const location = useLocation();
   const userIsAdmin = isAdmin();
+  const { t } = useTranslation();
 
   return (
     <nav className={cn('flex flex-col gap-1', className)}>
-      {sidebarItems.map((item) => {
+      {sidebarItemKeys.map((item) => {
         const Icon = item.icon;
         const isActive = location.pathname === item.to;
         return (
@@ -59,7 +61,7 @@ export const SidebarNav = ({ className }) => {
             )}
           >
             <Icon className='h-4 w-4' />
-            {item.name}
+            {t(item.key)}
           </Link>
         );
       })}
@@ -69,10 +71,10 @@ export const SidebarNav = ({ className }) => {
           <div className='flex items-center gap-2 px-3 py-1'>
             <Shield className='h-4 w-4 text-muted-foreground' />
             <span className='text-xs font-semibold text-muted-foreground uppercase tracking-wider'>
-              管理后台
+              {t('nav.sidebar.admin_section')}
             </span>
           </div>
-          {adminSidebarItems.map((item) => {
+          {adminSidebarItemKeys.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.to;
             return (
@@ -87,7 +89,7 @@ export const SidebarNav = ({ className }) => {
                 )}
               >
                 <Icon className='h-4 w-4' />
-                {item.name}
+                {t(item.key)}
               </Link>
             );
           })}
@@ -99,20 +101,21 @@ export const SidebarNav = ({ className }) => {
 
 const ConsoleSidebar = () => {
   const [planName, setPlanName] = useState('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     API.get('/api/subscription/self')
       .then((res) => {
         if (res.data.success && res.data.data) {
-          setPlanName(res.data.data.plan_name || '免费版');
+          setPlanName(res.data.data.plan_name || t('nav.sidebar.free_plan'));
         } else {
-          setPlanName('免费版');
+          setPlanName(t('nav.sidebar.free_plan'));
         }
       })
       .catch(() => {
-        setPlanName('免费版');
+        setPlanName(t('nav.sidebar.free_plan'));
       });
-  }, []);
+  }, [t]);
 
   return (
     <aside className='hidden md:flex md:w-64 md:flex-col md:border-r bg-sidebar-background'>
@@ -127,11 +130,11 @@ const ConsoleSidebar = () => {
       <div className='border-t p-4'>
         <div className='rounded-lg bg-muted p-3'>
           <p className='text-xs font-medium text-muted-foreground'>
-            当前套餐
+            {t('nav.sidebar.current_plan')}
           </p>
-          <p className='text-sm font-semibold'>{planName || '加载中...'}</p>
+          <p className='text-sm font-semibold'>{planName || t('nav.sidebar.loading')}</p>
           <Button variant='outline' size='sm' className='mt-2 w-full' asChild>
-            <Link to='/subscription'>升级套餐</Link>
+            <Link to='/subscription'>{t('nav.sidebar.upgrade')}</Link>
           </Button>
         </div>
       </div>

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { API, showError } from '../../helpers';
 import BillingTable from '../../components/business/BillingTable';
 
 const BillingPage = () => {
+  const { t } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ const BillingPage = () => {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('加载订单失败');
+      showError(t('console.billing.load_failed'));
     }
     setLoading(false);
   };
@@ -29,8 +31,8 @@ const BillingPage = () => {
   return (
     <div className='space-y-6'>
       <div>
-        <h1 className='text-2xl font-bold tracking-tight'>账单记录</h1>
-        <p className='text-muted-foreground'>查看您的历史订单和支付记录。</p>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('console.billing.title')}</h1>
+        <p className='text-muted-foreground'>{t('console.billing.subtitle')}</p>
       </div>
 
       <BillingTable

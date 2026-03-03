@@ -26,159 +26,7 @@ import {
 } from '../../components/ui/accordion';
 import { CheckCircle2, Minus, ArrowRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
-
-const plans = [
-  {
-    name: 'Lite',
-    description: '适合个人学习和轻度使用',
-    price: '免费',
-    priceSuffix: '',
-    features: [
-      '基础模型访问（Kimi、Qwen 等）',
-      '5h 窗口限额：10 次请求',
-      '超额暂停使用',
-      '社区支持',
-    ],
-    cta: '免费注册',
-    ctaVariant: 'outline',
-    highlighted: false,
-  },
-  {
-    name: 'Pro',
-    description: '适合日常开发和中度使用',
-    price: '¥140',
-    priceSuffix: '/月',
-    features: [
-      '全部模型访问',
-      '5h 窗口限额：45 次请求',
-      '超额按 API 费率计费',
-      '月消费上限可设置',
-      '优先邮件支持',
-    ],
-    cta: '开始使用',
-    ctaVariant: 'default',
-    highlighted: true,
-  },
-  {
-    name: 'Max 5x',
-    description: '适合专业开发者和重度使用',
-    price: '¥700',
-    priceSuffix: '/月',
-    features: [
-      '全部模型 + 高级模型',
-      '5h 窗口限额：225 次请求',
-      '超额按 API 费率计费',
-      '月消费上限可设置',
-      '优先工单支持',
-    ],
-    cta: '开始使用',
-    ctaVariant: 'outline',
-    highlighted: false,
-  },
-  {
-    name: 'Max 20x',
-    description: '适合团队和企业用户',
-    price: '¥1400',
-    priceSuffix: '/月',
-    features: [
-      '全部模型 + 高级模型 + 独占实例',
-      '5h 窗口限额：900 次请求',
-      '超额按 API 费率计费',
-      '月消费上限可设置',
-      '专属客户经理',
-    ],
-    cta: '联系我们',
-    ctaVariant: 'outline',
-    highlighted: false,
-  },
-];
-
-const comparisonFeatures = [
-  {
-    feature: '基础模型（Kimi、Qwen、GLM）',
-    lite: true,
-    pro: true,
-    max5x: true,
-    max20x: true,
-  },
-  {
-    feature: '高级模型',
-    lite: false,
-    pro: true,
-    max5x: true,
-    max20x: true,
-  },
-  {
-    feature: '独占实例',
-    lite: false,
-    pro: false,
-    max5x: false,
-    max20x: true,
-  },
-  {
-    feature: '5h 窗口限额（请求次数）',
-    lite: '10 次',
-    pro: '45 次',
-    max5x: '225 次',
-    max20x: '900 次',
-  },
-  {
-    feature: '超额策略',
-    lite: '暂停使用',
-    pro: '按 API 费率计费',
-    max5x: '按 API 费率计费',
-    max20x: '按 API 费率计费',
-  },
-  {
-    feature: '月消费上限',
-    lite: '-',
-    pro: '可设置',
-    max5x: '可设置',
-    max20x: '可设置',
-  },
-  {
-    feature: '加油包支持',
-    lite: false,
-    pro: true,
-    max5x: true,
-    max20x: true,
-  },
-  {
-    feature: '优先支持',
-    lite: false,
-    pro: true,
-    max5x: true,
-    max20x: true,
-  },
-];
-
-const faqs = [
-  {
-    question: '什么是 5 小时窗口？',
-    answer:
-      '5 小时窗口是我们的计费周期单位。系统每 5 小时为一个计费窗口，在窗口内你的 API 请求次数不超过窗口限额即可正常使用。窗口结束后次数自动重置。例如 Pro 套餐的窗口限额为 45 次请求，意味着每 5 小时内你可以发送 45 次 API 请求。',
-  },
-  {
-    question: '额度是如何计算的？',
-    answer:
-      '窗口限额按请求次数计算，每发送一次 API 请求消耗一次。超出窗口限额后的请求将按 API 费率计费（Lite 套餐为暂停使用）。你可以在控制台的用量统计页面查看详细的请求记录和消费明细。',
-  },
-  {
-    question: '超额后会怎样？',
-    answer:
-      'Lite 套餐在窗口请求次数用完后会暂停使用，直到下一个 5 小时窗口重置。Pro 及以上套餐超额后按 API 费率计费，服务不会中断。如果你需要更多请求次数，可以购买加油包临时提升额度。',
-  },
-  {
-    question: '如何升级或降级套餐？',
-    answer:
-      '你可以随时在控制台的订阅管理页面升级或降级套餐。升级立即生效，按剩余天数差价计费。降级在当前计费周期结束后生效。',
-  },
-  {
-    question: '什么是加油包？',
-    answer:
-      '加油包是一次性的额度充值，不受 5 小时窗口限制。购买后额度直接加到你的账户余额中，有效期 30 天。适合临时有大量 API 调用需求的场景。Pro 及以上套餐才能购买加油包。',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const CellValue = ({ value }) => {
   if (typeof value === 'boolean') {
@@ -192,17 +40,103 @@ const CellValue = ({ value }) => {
 };
 
 const PricingPage = () => {
+  const { t } = useTranslation();
+
+  const plans = [
+    {
+      name: 'Lite',
+      description: t('pricing.plans.lite_desc'),
+      price: t('pricing.plans.free'),
+      priceSuffix: '',
+      features: [
+        t('pricing.plans.lite_f1'),
+        t('pricing.plans.lite_f2'),
+        t('pricing.plans.lite_f3'),
+        t('pricing.plans.lite_f4'),
+      ],
+      cta: t('pricing.plans.free_register'),
+      ctaVariant: 'outline',
+      highlighted: false,
+    },
+    {
+      name: 'Pro',
+      description: t('pricing.plans.pro_desc'),
+      price: '¥140',
+      priceSuffix: t('pricing.plans.per_month'),
+      features: [
+        t('pricing.plans.pro_f1'),
+        t('pricing.plans.pro_f2'),
+        t('pricing.plans.pro_f3'),
+        t('pricing.plans.pro_f4'),
+        t('pricing.plans.pro_f5'),
+      ],
+      cta: t('pricing.plans.get_started'),
+      ctaVariant: 'default',
+      highlighted: true,
+    },
+    {
+      name: 'Max 5x',
+      description: t('pricing.plans.max5x_desc'),
+      price: '¥700',
+      priceSuffix: t('pricing.plans.per_month'),
+      features: [
+        t('pricing.plans.max5x_f1'),
+        t('pricing.plans.max5x_f2'),
+        t('pricing.plans.max5x_f3'),
+        t('pricing.plans.max5x_f4'),
+        t('pricing.plans.max5x_f5'),
+      ],
+      cta: t('pricing.plans.get_started'),
+      ctaVariant: 'outline',
+      highlighted: false,
+    },
+    {
+      name: 'Max 20x',
+      description: t('pricing.plans.max20x_desc'),
+      price: '¥1400',
+      priceSuffix: t('pricing.plans.per_month'),
+      features: [
+        t('pricing.plans.max20x_f1'),
+        t('pricing.plans.max20x_f2'),
+        t('pricing.plans.max20x_f3'),
+        t('pricing.plans.max20x_f4'),
+        t('pricing.plans.max20x_f5'),
+      ],
+      cta: t('pricing.plans.contact_us'),
+      ctaVariant: 'outline',
+      highlighted: false,
+    },
+  ];
+
+  const comparisonFeatures = [
+    { feature: t('pricing.compare.basic_models'), lite: true, pro: true, max5x: true, max20x: true },
+    { feature: t('pricing.compare.advanced_models'), lite: false, pro: true, max5x: true, max20x: true },
+    { feature: t('pricing.compare.dedicated'), lite: false, pro: false, max5x: false, max20x: true },
+    { feature: t('pricing.compare.window_limit'), lite: t('pricing.compare.10_req'), pro: t('pricing.compare.45_req'), max5x: t('pricing.compare.225_req'), max20x: t('pricing.compare.900_req') },
+    { feature: t('pricing.compare.overage'), lite: t('pricing.compare.pause'), pro: t('pricing.compare.api_rate'), max5x: t('pricing.compare.api_rate'), max20x: t('pricing.compare.api_rate') },
+    { feature: t('pricing.compare.monthly_cap'), lite: '-', pro: t('pricing.compare.configurable'), max5x: t('pricing.compare.configurable'), max20x: t('pricing.compare.configurable') },
+    { feature: t('pricing.compare.booster'), lite: false, pro: true, max5x: true, max20x: true },
+    { feature: t('pricing.compare.priority_support'), lite: false, pro: true, max5x: true, max20x: true },
+  ];
+
+  const faqs = [
+    { question: t('pricing.faq.q1'), answer: t('pricing.faq.a1') },
+    { question: t('pricing.faq.q2'), answer: t('pricing.faq.a2') },
+    { question: t('pricing.faq.q3'), answer: t('pricing.faq.a3') },
+    { question: t('pricing.faq.q4'), answer: t('pricing.faq.a4') },
+    { question: t('pricing.faq.q5'), answer: t('pricing.faq.a5') },
+  ];
+
   return (
     <div className='flex flex-col'>
       {/* Hero */}
       <section className='border-b py-16'>
         <div className='container mx-auto max-w-screen-xl px-4 text-center'>
           <h1 className='text-4xl font-bold tracking-tight'>
-            简单透明的定价
+            {t('pricing.hero.title')}
           </h1>
           <p className='mx-auto mt-4 max-w-2xl text-lg text-muted-foreground'>
-            从免费开始，按需升级。所有套餐均包含 OpenAI 兼容 API 接口，
-            支持主流 AI 编程工具无缝接入。
+            {t('pricing.hero.description')}
           </p>
         </div>
       </section>
@@ -222,7 +156,7 @@ const PricingPage = () => {
                 <CardHeader>
                   <div className='flex items-center justify-between'>
                     <CardTitle className='text-xl'>{plan.name}</CardTitle>
-                    {plan.highlighted && <Badge>推荐</Badge>}
+                    {plan.highlighted && <Badge>{t('pricing.badge_recommended')}</Badge>}
                   </div>
                   <CardDescription>{plan.description}</CardDescription>
                   <div className='mt-3'>
@@ -266,13 +200,13 @@ const PricingPage = () => {
       <section className='border-b py-16'>
         <div className='container mx-auto max-w-screen-xl px-4'>
           <h2 className='mb-8 text-center text-2xl font-bold tracking-tight'>
-            功能对比
+            {t('pricing.compare.title')}
           </h2>
           <div className='overflow-x-auto'>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className='w-[200px]'>功能</TableHead>
+                  <TableHead className='w-[200px]'>{t('pricing.compare.feature')}</TableHead>
                   <TableHead className='text-center'>Lite</TableHead>
                   <TableHead className='text-center'>Pro</TableHead>
                   <TableHead className='text-center'>Max 5x</TableHead>
@@ -309,7 +243,7 @@ const PricingPage = () => {
       <section className='border-b py-16'>
         <div className='container mx-auto max-w-screen-xl px-4'>
           <h2 className='mb-8 text-center text-2xl font-bold tracking-tight'>
-            常见问题
+            {t('pricing.faq.title')}
           </h2>
           <div className='mx-auto max-w-3xl'>
             <Accordion type='single' collapsible>
@@ -330,20 +264,20 @@ const PricingPage = () => {
       <section className='py-16'>
         <div className='container mx-auto max-w-screen-xl px-4 text-center'>
           <h2 className='text-2xl font-bold tracking-tight'>
-            准备好开始了吗？
+            {t('marketing.cta.title')}
           </h2>
           <p className='mx-auto mt-3 max-w-lg text-muted-foreground'>
-            免费注册，立即获取 API Key，几分钟内即可在你的 AI 工具中使用。
+            {t('pricing.cta.description')}
           </p>
           <div className='mt-8 flex justify-center gap-4'>
             <Button size='lg' asChild>
               <Link to='/register'>
-                免费注册
+                {t('marketing.cta.register')}
                 <ArrowRight className='ml-1 h-4 w-4' />
               </Link>
             </Button>
             <Button size='lg' variant='outline' asChild>
-              <Link to='/docs'>查看文档</Link>
+              <Link to='/docs'>{t('marketing.cta.view_docs')}</Link>
             </Button>
           </div>
         </div>

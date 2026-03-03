@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BarChart,
   Bar,
@@ -16,16 +17,19 @@ const COLORS = [
   '#722ED1', '#13c2c2', '#2F54EB', '#eb2f96', '#fa8c16',
 ];
 
-const ModelUsageChart = ({ data, title = '模型用量分布', height = 350 }) => {
+const ModelUsageChart = ({ data, title, height = 350 }) => {
+  const { t } = useTranslation();
+  const displayTitle = title || t('console.model_chart.title');
+
   if (!data || data.length === 0) {
     return (
       <Card>
         <CardHeader className='pb-2'>
-          <CardTitle className='text-sm font-medium'>{title}</CardTitle>
+          <CardTitle className='text-sm font-medium'>{displayTitle}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className='flex items-center justify-center h-48 text-muted-foreground'>
-            暂无数据
+            {t('console.model_chart.no_data')}
           </div>
         </CardContent>
       </Card>
@@ -35,7 +39,7 @@ const ModelUsageChart = ({ data, title = '模型用量分布', height = 350 }) =
   return (
     <Card>
       <CardHeader className='pb-2'>
-        <CardTitle className='text-sm font-medium'>{title}</CardTitle>
+        <CardTitle className='text-sm font-medium'>{displayTitle}</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width='100%' height={height}>
@@ -61,8 +65,8 @@ const ModelUsageChart = ({ data, title = '模型用量分布', height = 350 }) =
               }}
             />
             <Legend />
-            <Bar dataKey='request_count' name='请求数' fill={COLORS[0]} radius={[4, 4, 0, 0]} />
-            <Bar dataKey='total_tokens' name='Token 数' fill={COLORS[1]} radius={[4, 4, 0, 0]} />
+            <Bar dataKey='request_count' name={t('console.model_chart.request_count')} fill={COLORS[0]} radius={[4, 4, 0, 0]} />
+            <Bar dataKey='total_tokens' name={t('console.model_chart.token_count')} fill={COLORS[1]} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

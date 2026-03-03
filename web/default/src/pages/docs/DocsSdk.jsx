@@ -1,13 +1,16 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
+import { useTranslation } from 'react-i18next';
 
 const DocsSdk = () => {
+  const { t } = useTranslation();
+
   return (
     <div className='space-y-8'>
       <div>
-        <h1 className='text-3xl font-bold tracking-tight'>SDK 接入指南</h1>
+        <h1 className='text-3xl font-bold tracking-tight'>{t('docs.sdk.title')}</h1>
         <p className='mt-2 text-lg text-muted-foreground'>
-          Alaya Code 兼容 OpenAI SDK，你可以使用 Python 或 Node.js 官方 SDK 直接接入。
+          {t('docs.sdk.description')}
         </p>
       </div>
 
@@ -19,14 +22,14 @@ const DocsSdk = () => {
 
         <TabsContent value='python' className='space-y-6 pt-4'>
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>安装</h2>
+            <h2 className='text-2xl font-semibold'>{t('docs.sdk.install')}</h2>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
               <code>pip install openai</code>
             </pre>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>基本用法</h2>
+            <h2 className='text-2xl font-semibold'>{t('docs.sdk.basic_usage')}</h2>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
               <code>{`from openai import OpenAI
 
@@ -35,12 +38,11 @@ client = OpenAI(
     base_url="https://api.alayanew.com/v1"
 )
 
-# 非流式调用
 response = client.chat.completions.create(
     model="kimi-2.5",
     messages=[
-        {"role": "system", "content": "你是一个有帮助的助手"},
-        {"role": "user", "content": "用 Python 写一个快速排序"}
+        {"role": "system", "content": "You are a helpful assistant"},
+        {"role": "user", "content": "Write a quicksort in Python"}
     ],
     temperature=0.7
 )
@@ -50,12 +52,12 @@ print(response.choices[0].message.content)`}</code>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>流式调用</h2>
+            <h2 className='text-2xl font-semibold'>{t('docs.sdk.streaming')}</h2>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
               <code>{`stream = client.chat.completions.create(
     model="qwen-3.5",
     messages=[
-        {"role": "user", "content": "请解释什么是 RAG"}
+        {"role": "user", "content": "Explain what RAG is"}
     ],
     stream=True
 )
@@ -71,18 +73,18 @@ for chunk in stream:
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
               <code>{`response = client.embeddings.create(
     model="text-embedding-v3",
-    input="你好世界"
+    input="Hello world"
 )
 
 embedding = response.data[0].embedding
-print(f"维度: {len(embedding)}")`}</code>
+print(f"Dimensions: {len(embedding)}")`}</code>
             </pre>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>使用环境变量</h2>
+            <h2 className='text-2xl font-semibold'>{t('docs.sdk.env_vars')}</h2>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`# .env 文件
+              <code>{`# .env
 OPENAI_API_KEY=sk-your-api-key
 OPENAI_API_BASE=https://api.alayanew.com/v1`}</code>
             </pre>
@@ -90,12 +92,12 @@ OPENAI_API_BASE=https://api.alayanew.com/v1`}</code>
               <code>{`import os
 from openai import OpenAI
 
-# SDK 会自动读取 OPENAI_API_KEY 和 OPENAI_API_BASE 环境变量
+# SDK auto-reads OPENAI_API_KEY and OPENAI_API_BASE
 client = OpenAI()
 
 response = client.chat.completions.create(
     model="kimi-2.5",
-    messages=[{"role": "user", "content": "你好"}]
+    messages=[{"role": "user", "content": "Hello"}]
 )
 print(response.choices[0].message.content)`}</code>
             </pre>
@@ -104,14 +106,14 @@ print(response.choices[0].message.content)`}</code>
 
         <TabsContent value='nodejs' className='space-y-6 pt-4'>
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>安装</h2>
+            <h2 className='text-2xl font-semibold'>{t('docs.sdk.install')}</h2>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
               <code>npm install openai</code>
             </pre>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>基本用法</h2>
+            <h2 className='text-2xl font-semibold'>{t('docs.sdk.basic_usage')}</h2>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
               <code>{`import OpenAI from 'openai';
 
@@ -124,8 +126,8 @@ async function main() {
   const response = await client.chat.completions.create({
     model: 'kimi-2.5',
     messages: [
-      { role: 'system', content: '你是一个有帮助的助手' },
-      { role: 'user', content: '用 JavaScript 写一个防抖函数' },
+      { role: 'system', content: 'You are a helpful assistant' },
+      { role: 'user', content: 'Write a debounce function in JavaScript' },
     ],
     temperature: 0.7,
   });
@@ -138,12 +140,12 @@ main();`}</code>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>流式调用</h2>
+            <h2 className='text-2xl font-semibold'>{t('docs.sdk.streaming')}</h2>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
               <code>{`const stream = await client.chat.completions.create({
   model: 'qwen-3.5',
   messages: [
-    { role: 'user', content: '请解释什么是 RAG' },
+    { role: 'user', content: 'Explain what RAG is' },
   ],
   stream: true,
 });
@@ -156,14 +158,14 @@ for await (const chunk of stream) {
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>使用环境变量</h2>
+            <h2 className='text-2xl font-semibold'>{t('docs.sdk.env_vars')}</h2>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`# .env 文件
+              <code>{`# .env
 OPENAI_API_KEY=sk-your-api-key
 OPENAI_BASE_URL=https://api.alayanew.com/v1`}</code>
             </pre>
             <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`// SDK 会自动读取 OPENAI_API_KEY 环境变量
+              <code>{`// SDK auto-reads OPENAI_API_KEY
 const client = new OpenAI({
   baseURL: process.env.OPENAI_BASE_URL,
 });`}</code>

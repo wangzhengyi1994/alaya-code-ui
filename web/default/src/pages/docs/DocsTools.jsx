@@ -7,14 +7,17 @@ import {
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
+import { useTranslation } from 'react-i18next';
 
 const DocsTools = () => {
+  const { t } = useTranslation();
+
   return (
     <div className='space-y-8'>
       <div>
-        <h1 className='text-3xl font-bold tracking-tight'>工具对接教程</h1>
+        <h1 className='text-3xl font-bold tracking-tight'>{t('docs.tools.title')}</h1>
         <p className='mt-2 text-lg text-muted-foreground'>
-          Alaya Code 兼容 OpenAI API，可直接对接主流 AI 编程工具。以下是各工具的配置方法。
+          {t('docs.tools.description')}
         </p>
       </div>
 
@@ -29,25 +32,23 @@ const DocsTools = () => {
         <TabsContent value='cursor' className='space-y-6 pt-4'>
           <Card>
             <CardHeader>
-              <CardTitle>Cursor 配置</CardTitle>
+              <CardTitle>{t('docs.tools.cursor_title')}</CardTitle>
               <CardDescription>
-                Cursor 是一款基于 VSCode 的 AI 代码编辑器，支持自定义 API 端点。
+                {t('docs.tools.cursor_desc')}
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
-                <h3 className='font-semibold'>步骤 1：打开设置</h3>
+                <h3 className='font-semibold'>{t('docs.tools.cursor_step1')}</h3>
                 <p className='text-sm text-muted-foreground'>
-                  打开 Cursor，点击右上角齿轮图标，或使用快捷键{' '}
-                  <code className='rounded bg-muted px-1'>Ctrl+,</code> (Windows/Linux) /{' '}
-                  <code className='rounded bg-muted px-1'>Cmd+,</code> (macOS)。
+                  {t('docs.tools.cursor_step1_desc')}
                 </p>
               </div>
 
               <div className='space-y-2'>
-                <h3 className='font-semibold'>步骤 2：配置模型</h3>
+                <h3 className='font-semibold'>{t('docs.tools.cursor_step2')}</h3>
                 <p className='text-sm text-muted-foreground'>
-                  在设置页面找到 "Models" 选项，点击 "Add Model"：
+                  {t('docs.tools.cursor_step2_desc')}
                 </p>
                 <ul className='ml-4 list-disc space-y-1 text-sm text-muted-foreground'>
                   <li>
@@ -55,7 +56,7 @@ const DocsTools = () => {
                     <code className='rounded bg-muted px-1'>kimi-2.5</code>
                   </li>
                   <li>
-                    <strong>API Key:</strong> 你的 Alaya Code API Key
+                    <strong>API Key:</strong> {t('docs.tools.your_api_key')}
                   </li>
                   <li>
                     <strong>API Base URL:</strong>{' '}
@@ -67,19 +68,15 @@ const DocsTools = () => {
               </div>
 
               <div className='space-y-2'>
-                <h3 className='font-semibold'>步骤 3：验证连接</h3>
+                <h3 className='font-semibold'>{t('docs.tools.cursor_step3')}</h3>
                 <p className='text-sm text-muted-foreground'>
-                  配置完成后，打开一个代码文件，使用{' '}
-                  <code className='rounded bg-muted px-1'>Ctrl+K</code> 或{' '}
-                  <code className='rounded bg-muted px-1'>Ctrl+L</code>{' '}
-                  调用 AI 功能，确认响应正常。
+                  {t('docs.tools.cursor_step3_desc')}
                 </p>
               </div>
 
               <div className='rounded-md bg-muted/50 p-3'>
                 <p className='text-sm'>
-                  <strong>提示：</strong>你可以添加多个模型（如 kimi-2.5、qwen-3.5），
-                  在使用时按需切换。
+                  <strong>{t('docs.tools.tip')}:</strong> {t('docs.tools.cursor_tip')}
                 </p>
               </div>
             </CardContent>
@@ -89,26 +86,26 @@ const DocsTools = () => {
         <TabsContent value='claude-code' className='space-y-6 pt-4'>
           <Card>
             <CardHeader>
-              <CardTitle>Claude Code 配置</CardTitle>
+              <CardTitle>{t('docs.tools.claude_title')}</CardTitle>
               <CardDescription>
-                Claude Code 是 Anthropic 的命令行 AI 助手，支持自定义 API 端点。
+                {t('docs.tools.claude_desc')}
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
-                <h3 className='font-semibold'>方法 1：环境变量</h3>
+                <h3 className='font-semibold'>{t('docs.tools.claude_method1')}</h3>
                 <p className='text-sm text-muted-foreground'>
-                  在你的 shell 配置文件中添加以下环境变量：
+                  {t('docs.tools.claude_method1_desc')}
                 </p>
                 <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-                  <code>{`# ~/.bashrc 或 ~/.zshrc
+                  <code>{`# ~/.bashrc or ~/.zshrc
 export ANTHROPIC_BASE_URL=https://api.alayanew.com/anthropic
 export ANTHROPIC_API_KEY=sk-your-api-key`}</code>
                 </pre>
               </div>
 
               <div className='space-y-2'>
-                <h3 className='font-semibold'>方法 2：直接指定</h3>
+                <h3 className='font-semibold'>{t('docs.tools.claude_method2')}</h3>
                 <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
                   <code>{`ANTHROPIC_BASE_URL=https://api.alayanew.com/anthropic \\
 ANTHROPIC_API_KEY=sk-your-api-key \\
@@ -117,20 +114,19 @@ claude`}</code>
               </div>
 
               <div className='space-y-2'>
-                <h3 className='font-semibold'>验证连接</h3>
+                <h3 className='font-semibold'>{t('docs.tools.verify_connection')}</h3>
                 <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-                  <code>{`# 启动 Claude Code
+                  <code>{`# Start Claude Code
 claude
 
-# 在交互界面中输入任意问题测试连接
-> 你好，请介绍一下自己`}</code>
+# Test with a question
+> Hello, please introduce yourself`}</code>
                 </pre>
               </div>
 
               <div className='rounded-md bg-muted/50 p-3'>
                 <p className='text-sm'>
-                  <strong>注意：</strong>Claude Code 使用 Anthropic API 格式（x-api-key），
-                  Alaya Code 已完全兼容此格式。
+                  <strong>{t('docs.tools.note')}:</strong> {t('docs.tools.claude_note')}
                 </p>
               </div>
             </CardContent>
@@ -140,29 +136,29 @@ claude
         <TabsContent value='cline' className='space-y-6 pt-4'>
           <Card>
             <CardHeader>
-              <CardTitle>VSCode + Cline 配置</CardTitle>
+              <CardTitle>{t('docs.tools.cline_title')}</CardTitle>
               <CardDescription>
-                Cline 是 VSCode 中流行的 AI 编程扩展，支持自定义 OpenAI 兼容端点。
+                {t('docs.tools.cline_desc')}
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
-                <h3 className='font-semibold'>步骤 1：安装 Cline</h3>
+                <h3 className='font-semibold'>{t('docs.tools.cline_step1')}</h3>
                 <p className='text-sm text-muted-foreground'>
-                  在 VSCode 扩展商店中搜索 "Cline" 并安装。
+                  {t('docs.tools.cline_step1_desc')}
                 </p>
               </div>
 
               <div className='space-y-2'>
-                <h3 className='font-semibold'>步骤 2：打开设置</h3>
+                <h3 className='font-semibold'>{t('docs.tools.cline_step2')}</h3>
                 <p className='text-sm text-muted-foreground'>
-                  点击 VSCode 侧边栏的 Cline 图标，点击齿轮图标打开设置。
+                  {t('docs.tools.cline_step2_desc')}
                 </p>
               </div>
 
               <div className='space-y-2'>
-                <h3 className='font-semibold'>步骤 3：配置 API</h3>
-                <p className='text-sm text-muted-foreground'>选择 "OpenAI Compatible" 作为 Provider，填入以下信息：</p>
+                <h3 className='font-semibold'>{t('docs.tools.cline_step3')}</h3>
+                <p className='text-sm text-muted-foreground'>{t('docs.tools.cline_step3_desc')}</p>
                 <ul className='ml-4 list-disc space-y-1 text-sm text-muted-foreground'>
                   <li>
                     <strong>API Base URL:</strong>{' '}
@@ -171,7 +167,7 @@ claude
                     </code>
                   </li>
                   <li>
-                    <strong>API Key:</strong> 你的 Alaya Code API Key
+                    <strong>API Key:</strong> {t('docs.tools.your_api_key')}
                   </li>
                   <li>
                     <strong>Model ID:</strong>{' '}
@@ -181,9 +177,9 @@ claude
               </div>
 
               <div className='space-y-2'>
-                <h3 className='font-semibold'>步骤 4：验证</h3>
+                <h3 className='font-semibold'>{t('docs.tools.cline_step4')}</h3>
                 <p className='text-sm text-muted-foreground'>
-                  在 Cline 面板中输入任意问题，确认能正常获取响应。
+                  {t('docs.tools.cline_step4_desc')}
                 </p>
               </div>
             </CardContent>
@@ -193,17 +189,16 @@ claude
         <TabsContent value='opencode' className='space-y-6 pt-4'>
           <Card>
             <CardHeader>
-              <CardTitle>OpenCode 配置</CardTitle>
+              <CardTitle>{t('docs.tools.opencode_title')}</CardTitle>
               <CardDescription>
-                OpenCode 是一款开源的终端 AI 编程助手，支持自定义 API 端点。
+                {t('docs.tools.opencode_desc')}
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2'>
-                <h3 className='font-semibold'>配置文件</h3>
+                <h3 className='font-semibold'>{t('docs.tools.opencode_config')}</h3>
                 <p className='text-sm text-muted-foreground'>
-                  编辑 OpenCode 配置文件{' '}
-                  <code className='rounded bg-muted px-1'>~/.opencode/config.yaml</code>：
+                  {t('docs.tools.opencode_config_desc')}
                 </p>
                 <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
                   <code>{`# ~/.opencode/config.yaml
@@ -223,7 +218,7 @@ default_model: kimi-2.5`}</code>
               </div>
 
               <div className='space-y-2'>
-                <h3 className='font-semibold'>环境变量方式</h3>
+                <h3 className='font-semibold'>{t('docs.tools.opencode_env')}</h3>
                 <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
                   <code>{`export OPENAI_API_BASE=https://api.alayanew.com/v1
 export OPENAI_API_KEY=sk-your-api-key
@@ -237,23 +232,13 @@ opencode`}</code>
 
       {/* General Tips */}
       <div className='space-y-3'>
-        <h2 className='text-2xl font-semibold'>通用提示</h2>
+        <h2 className='text-2xl font-semibold'>{t('docs.tools.general_tips')}</h2>
         <div className='space-y-2 rounded-lg border p-4'>
           <ul className='ml-4 list-disc space-y-2 text-sm text-muted-foreground'>
-            <li>
-              所有支持 OpenAI API 的工具都可以通过修改 Base URL 来对接 Alaya Code。
-            </li>
-            <li>
-              如果工具只支持 <code className='rounded bg-muted px-1'>OPENAI_API_KEY</code>{' '}
-              环境变量，直接将 Alaya Code 的 Key 设为该环境变量即可。
-            </li>
-            <li>
-              某些工具可能需要手动指定模型名称。请确保使用 Alaya Code 支持的模型 ID。
-            </li>
-            <li>
-              如果遇到连接问题，请检查 API Base URL 是否以{' '}
-              <code className='rounded bg-muted px-1'>/v1</code> 结尾（部分工具需要，部分不需要）。
-            </li>
+            <li>{t('docs.tools.tip1')}</li>
+            <li>{t('docs.tools.tip2')}</li>
+            <li>{t('docs.tools.tip3')}</li>
+            <li>{t('docs.tools.tip4')}</li>
           </ul>
         </div>
       </div>

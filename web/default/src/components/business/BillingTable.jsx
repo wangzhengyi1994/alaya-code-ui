@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -11,60 +12,62 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { timestamp2string } from '../../helpers';
 
-function renderOrderType(type) {
-  const types = {
-    1: '新订阅',
-    2: '续费',
-    3: '升级',
-    4: '降级',
-    5: '加油包',
-  };
-  return types[type] || '未知';
-}
-
-function renderOrderStatus(status) {
-  switch (status) {
-    case 1:
-      return <Badge variant='secondary'>待支付</Badge>;
-    case 2:
-      return <Badge variant='default'>已支付</Badge>;
-    case 3:
-      return <Badge variant='outline'>已退款</Badge>;
-    case 4:
-      return <Badge variant='destructive'>已取消</Badge>;
-    case 5:
-      return <Badge variant='destructive'>失败</Badge>;
-    default:
-      return <Badge variant='outline'>未知</Badge>;
-  }
-}
-
 const BillingTable = ({ orders, loading, page, onPageChange }) => {
+  const { t } = useTranslation();
+
+  function renderOrderType(type) {
+    const types = {
+      1: t('console.billing.order_types.new_subscription'),
+      2: t('console.billing.order_types.renewal'),
+      3: t('console.billing.order_types.upgrade'),
+      4: t('console.billing.order_types.downgrade'),
+      5: t('console.billing.order_types.booster'),
+    };
+    return types[type] || t('console.billing.order_types.unknown');
+  }
+
+  function renderOrderStatus(status) {
+    switch (status) {
+      case 1:
+        return <Badge variant='secondary'>{t('console.billing.order_status.pending')}</Badge>;
+      case 2:
+        return <Badge variant='default'>{t('console.billing.order_status.paid')}</Badge>;
+      case 3:
+        return <Badge variant='outline'>{t('console.billing.order_status.refunded')}</Badge>;
+      case 4:
+        return <Badge variant='destructive'>{t('console.billing.order_status.cancelled')}</Badge>;
+      case 5:
+        return <Badge variant='destructive'>{t('console.billing.order_status.failed')}</Badge>;
+      default:
+        return <Badge variant='outline'>{t('console.billing.order_status.unknown')}</Badge>;
+    }
+  }
+
   return (
     <div className='space-y-4'>
       <div className='rounded-md border'>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>订单号</TableHead>
-              <TableHead>类型</TableHead>
-              <TableHead>金额</TableHead>
-              <TableHead>状态</TableHead>
-              <TableHead>支付方式</TableHead>
-              <TableHead>创建时间</TableHead>
+              <TableHead>{t('console.billing.table.order_no')}</TableHead>
+              <TableHead>{t('console.billing.table.type')}</TableHead>
+              <TableHead>{t('console.billing.table.amount')}</TableHead>
+              <TableHead>{t('console.billing.table.status')}</TableHead>
+              <TableHead>{t('console.billing.table.payment_method')}</TableHead>
+              <TableHead>{t('console.billing.table.created_time')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={6} className='text-center py-8 text-muted-foreground'>
-                  加载中...
+                  {t('console.common.loading')}
                 </TableCell>
               </TableRow>
             ) : !orders || orders.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className='text-center py-8 text-muted-foreground'>
-                  暂无订单记录
+                  {t('console.billing.no_records')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -95,7 +98,7 @@ const BillingTable = ({ orders, loading, page, onPageChange }) => {
             disabled={page === 0}
             onClick={() => onPageChange(Math.max(0, page - 1))}
           >
-            上一页
+            {t('console.common.prev_page')}
           </Button>
           <Button
             variant='outline'
@@ -103,7 +106,7 @@ const BillingTable = ({ orders, loading, page, onPageChange }) => {
             disabled={!orders || orders.length < 10}
             onClick={() => onPageChange(page + 1)}
           >
-            下一页
+            {t('console.common.next_page')}
           </Button>
         </div>
       )}

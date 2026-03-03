@@ -1,9 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import PlanCard from './PlanCard';
 
 const PlanComparisonGrid = ({ plans, currentPlanId, currentPlanPriority, onSelect }) => {
+  const { t } = useTranslation();
+
   if (!plans || plans.length === 0) {
-    return <p className='text-muted-foreground text-center py-8'>暂无可用套餐</p>;
+    return <p className='text-muted-foreground text-center py-8'>{t('console.plan.no_plans')}</p>;
   }
 
   return (

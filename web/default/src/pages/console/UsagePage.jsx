@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { API, showError, showSuccess, copy, timestamp2string } from '../../helpers';
 import { renderQuota, renderColorLabel } from '../../helpers/render';
 import StatCard from '../../components/business/StatCard';
@@ -35,30 +36,8 @@ import {
   Zap,
 } from 'lucide-react';
 
-const LOG_TYPE_OPTIONS = [
-  { value: '0', label: '全部类型' },
-  { value: '1', label: '充值' },
-  { value: '2', label: '消费' },
-  { value: '3', label: '管理' },
-  { value: '4', label: '系统' },
-];
-
-function renderLogType(type) {
-  switch (type) {
-    case 1:
-      return <Badge variant='outline' className='bg-green-50 text-green-700 border-green-200'>充值</Badge>;
-    case 2:
-      return <Badge variant='outline' className='bg-blue-50 text-blue-700 border-blue-200'>消费</Badge>;
-    case 3:
-      return <Badge variant='outline' className='bg-orange-50 text-orange-700 border-orange-200'>管理</Badge>;
-    case 4:
-      return <Badge variant='outline' className='bg-purple-50 text-purple-700 border-purple-200'>系统</Badge>;
-    default:
-      return <Badge variant='outline'>未知</Badge>;
-  }
-}
-
 const UsagePage = () => {
+  const { t } = useTranslation();
   const [quotaData, setQuotaData] = useState(null);
   const [dashboardData, setDashboardData] = useState([]);
   const [logs, setLogs] = useState([]);
@@ -76,6 +55,29 @@ const UsagePage = () => {
   const timerRef = useRef(null);
   const refreshRef = useRef(null);
 
+  const LOG_TYPE_OPTIONS = [
+    { value: '0', label: t('console.usage.log_types.all') },
+    { value: '1', label: t('console.usage.log_types.topup') },
+    { value: '2', label: t('console.usage.log_types.usage') },
+    { value: '3', label: t('console.usage.log_types.admin') },
+    { value: '4', label: t('console.usage.log_types.system') },
+  ];
+
+  function renderLogType(type) {
+    switch (type) {
+      case 1:
+        return <Badge variant='outline' className='bg-green-50 text-green-700 border-green-200'>{t('console.usage.log_types.topup')}</Badge>;
+      case 2:
+        return <Badge variant='outline' className='bg-blue-50 text-blue-700 border-blue-200'>{t('console.usage.log_types.usage')}</Badge>;
+      case 3:
+        return <Badge variant='outline' className='bg-orange-50 text-orange-700 border-orange-200'>{t('console.usage.log_types.admin')}</Badge>;
+      case 4:
+        return <Badge variant='outline' className='bg-purple-50 text-purple-700 border-purple-200'>{t('console.usage.log_types.system')}</Badge>;
+      default:
+        return <Badge variant='outline'>{t('console.usage.log_types.unknown')}</Badge>;
+    }
+  }
+
   // Load subscription quota data
   const loadQuotaData = useCallback(async () => {
     try {
@@ -84,7 +86,6 @@ const UsagePage = () => {
         setQuotaData(res.data.data);
       }
     } catch (err) {
-      // Subscription might not be available, fall back to window usage
       try {
         const res = await API.get('/api/usage/window');
         if (res.data.success) {
@@ -126,7 +127,7 @@ const UsagePage = () => {
     }
   }, []);
 
-  // Load logs using /api/log/self/
+  // Load logs
   const loadLogs = useCallback(async (page = 0) => {
     setLogsLoading(true);
     try {
@@ -144,10 +145,10 @@ const UsagePage = () => {
         setLogs(res.data.data || []);
       }
     } catch (err) {
-      showError('加载日志失败');
+      showError(t('console.usage.load_logs_failed'));
     }
     setLogsLoading(false);
-  }, [logType, tokenName, modelName, startTime, endTime]);
+  }, [logType, tokenName, modelName, startTime, endTime, t]);
 
   // Initial data load
   useEffect(() => {
@@ -174,11 +175,10 @@ const UsagePage = () => {
         setCountdown('');
         return;
       }
-      // Use window_end_time directly from API
       if (quotaData.window_end_time) {
         const remainMs = quotaData.window_end_time * 1000 - Date.now();
         if (remainMs <= 0) {
-          setCountdown('即将重置');
+          setCountdown(t('console.usage.resetting_soon'));
           return;
         }
         const h = Math.floor(remainMs / 3600000);
@@ -187,7 +187,6 @@ const UsagePage = () => {
         setCountdown(`${h}h ${m}m ${s}s`);
         return;
       }
-      // Fallback: compute from start + duration
       const wdSec = quotaData.window_duration_sec || quotaData.window_duration;
       const wStart = quotaData.window_start_time;
       if (!wStart || !wdSec) {
@@ -196,7 +195,7 @@ const UsagePage = () => {
       }
       const remainMs = (wStart + wdSec) * 1000 - Date.now();
       if (remainMs <= 0) {
-        setCountdown('即将重置');
+        setCountdown(t('console.usage.resetting_soon'));
         return;
       }
       const h = Math.floor(remainMs / 3600000);
@@ -208,7 +207,7 @@ const UsagePage = () => {
     updateCountdown();
     timerRef.current = setInterval(updateCountdown, 1000);
     return () => clearInterval(timerRef.current);
-  }, [quotaData]);
+  }, [quotaData, t]);
 
   // Process chart data for 7-day trend
   const processChartData = () => {
@@ -284,12 +283,12 @@ const UsagePage = () => {
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold tracking-tight'>用量统计</h1>
-          <p className='text-muted-foreground'>查看您的 API 调用用量和消费详情。</p>
+          <h1 className='text-2xl font-bold tracking-tight'>{t('console.usage.title')}</h1>
+          <p className='text-muted-foreground'>{t('console.usage.subtitle')}</p>
         </div>
         <Button variant='outline' size='sm' onClick={() => { loadQuotaData(); loadDashboardData(); }}>
           <RefreshCw className='h-4 w-4 mr-1' />
-          刷新
+          {t('console.common.refresh')}
         </Button>
       </div>
 
@@ -300,17 +299,17 @@ const UsagePage = () => {
             <div className='flex items-center justify-between'>
               <CardTitle className='text-sm font-medium flex items-center gap-2'>
                 <Zap className='h-4 w-4' />
-                {quotaData?.plan_name || '订阅'} - {windowHours}小时窗口配额
+                {quotaData?.plan_name || t('console.usage.subscription_label')} - {t('console.usage.window_quota', { hours: windowHours })}
               </CardTitle>
               {isOverLimit ? (
                 <Badge variant='destructive' className='flex items-center gap-1'>
                   <AlertTriangle className='h-3 w-3' />
-                  已超额
+                  {t('console.usage.over_limit')}
                 </Badge>
               ) : (
                 <Badge variant='outline' className='flex items-center gap-1 bg-green-50 text-green-700 border-green-200'>
                   <CheckCircle2 className='h-3 w-3' />
-                  正常
+                  {t('console.usage.normal')}
                 </Badge>
               )}
             </div>
@@ -327,7 +326,7 @@ const UsagePage = () => {
                         {windowLimit > 0 ? ` / ${windowLimit}` : ''}
                       </span>
                     </p>
-                    <p className='text-sm text-muted-foreground'>次请求</p>
+                    <p className='text-sm text-muted-foreground'>{t('console.usage.requests_unit')}</p>
                   </div>
                   {windowLimit > 0 && (
                     <p className='text-sm font-medium'>
@@ -347,12 +346,12 @@ const UsagePage = () => {
               <div className='flex flex-col justify-center items-center rounded-lg bg-muted/50 p-4'>
                 <div className='flex items-center gap-2 mb-1'>
                   <Timer className='h-4 w-4 text-muted-foreground' />
-                  <p className='text-sm text-muted-foreground'>窗口重置倒计时</p>
+                  <p className='text-sm text-muted-foreground'>{t('console.usage.window_reset_countdown')}</p>
                 </div>
                 <p className='text-2xl font-mono font-bold'>
-                  {countdown || '加载中...'}
+                  {countdown || t('console.common.loading')}
                 </p>
-                <p className='text-xs text-muted-foreground mt-1'>每30秒自动刷新</p>
+                <p className='text-xs text-muted-foreground mt-1'>{t('console.usage.auto_refresh')}</p>
               </div>
             </div>
           </CardContent>
@@ -363,17 +362,17 @@ const UsagePage = () => {
       {!hasSubscription && (
         <div className='grid gap-4 grid-cols-1 sm:grid-cols-3'>
           <StatCard
-            title={`当前${windowHours}h窗口请求`}
+            title={t('console.usage.current_window_requests', { hours: windowHours })}
             value={windowUsed.toLocaleString()}
             icon={Activity}
           />
           <StatCard
-            title='窗口周期'
-            value={`${windowHours} 小时`}
+            title={t('console.usage.window_period')}
+            value={t('console.usage.hours_label', { hours: windowHours })}
             icon={Clock}
           />
           <StatCard
-            title='今日请求'
+            title={t('console.usage.today_requests')}
             value={chartData.length > 0 ? chartData[chartData.length - 1].requests.toLocaleString() : '0'}
             icon={Zap}
           />
@@ -384,14 +383,14 @@ const UsagePage = () => {
       <div className='grid gap-4 grid-cols-1 lg:grid-cols-2'>
         <UsageChart
           data={chartData}
-          title='近 7 天请求趋势'
+          title={t('console.usage.request_trend_7d')}
           dataKey='requests'
           color='#1677ff'
           height={250}
         />
         <UsageChart
           data={chartData}
-          title='近 7 天 Token 消耗'
+          title={t('console.usage.token_trend_7d')}
           dataKey='tokens'
           color='#13c2c2'
           height={250}
@@ -403,13 +402,13 @@ const UsagePage = () => {
         <CardHeader className='pb-3'>
           <CardTitle className='text-sm font-medium flex items-center gap-2'>
             <Search className='h-4 w-4' />
-            日志筛选
+            {t('console.usage.log_filter')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className='grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'>
             <div className='space-y-1'>
-              <label className='text-xs font-medium text-muted-foreground'>开始时间</label>
+              <label className='text-xs font-medium text-muted-foreground'>{t('console.usage.start_time')}</label>
               <Input
                 type='datetime-local'
                 value={startTime}
@@ -418,7 +417,7 @@ const UsagePage = () => {
               />
             </div>
             <div className='space-y-1'>
-              <label className='text-xs font-medium text-muted-foreground'>结束时间</label>
+              <label className='text-xs font-medium text-muted-foreground'>{t('console.usage.end_time')}</label>
               <Input
                 type='datetime-local'
                 value={endTime}
@@ -427,13 +426,13 @@ const UsagePage = () => {
               />
             </div>
             <div className='space-y-1'>
-              <label className='text-xs font-medium text-muted-foreground'>模型名称</label>
+              <label className='text-xs font-medium text-muted-foreground'>{t('console.usage.model_name')}</label>
               <Select value={modelName} onValueChange={(v) => setModelName(v === '__all__' ? '' : v)}>
                 <SelectTrigger className='h-9'>
-                  <SelectValue placeholder='全部模型' />
+                  <SelectValue placeholder={t('console.usage.all_models')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='__all__'>全部模型</SelectItem>
+                  <SelectItem value='__all__'>{t('console.usage.all_models')}</SelectItem>
                   {availableModels.map((m) => (
                     <SelectItem key={m} value={m}>{m}</SelectItem>
                   ))}
@@ -441,11 +440,11 @@ const UsagePage = () => {
               </Select>
             </div>
             <div className='space-y-1'>
-              <label className='text-xs font-medium text-muted-foreground'>Token 名称</label>
+              <label className='text-xs font-medium text-muted-foreground'>{t('console.usage.token_name')}</label>
               <Input
                 value={tokenName}
                 onChange={(e) => setTokenName(e.target.value)}
-                placeholder='输入 Token 名称'
+                placeholder={t('console.usage.token_name_placeholder')}
                 className='h-9'
               />
             </div>
@@ -463,10 +462,10 @@ const UsagePage = () => {
             </Select>
             <Button size='sm' onClick={handleSearch}>
               <Search className='h-4 w-4 mr-1' />
-              查询
+              {t('console.usage.query')}
             </Button>
             <Button size='sm' variant='outline' onClick={handleReset}>
-              重置
+              {t('console.usage.reset')}
             </Button>
           </div>
         </CardContent>
@@ -475,7 +474,7 @@ const UsagePage = () => {
       {/* Log Details Table */}
       <Card>
         <CardHeader className='pb-2'>
-          <CardTitle className='text-sm font-medium'>调用明细</CardTitle>
+          <CardTitle className='text-sm font-medium'>{t('console.usage.call_details')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className='rounded-md border'>
@@ -487,7 +486,7 @@ const UsagePage = () => {
                     onClick={() => handleSort('created_at')}
                   >
                     <div className='flex items-center gap-1'>
-                      时间
+                      {t('console.usage.table.time')}
                       <ArrowUpDown className='h-3 w-3' />
                     </div>
                   </TableHead>
@@ -496,7 +495,7 @@ const UsagePage = () => {
                     onClick={() => handleSort('type')}
                   >
                     <div className='flex items-center gap-1'>
-                      类型
+                      {t('console.usage.table.type')}
                       <ArrowUpDown className='h-3 w-3' />
                     </div>
                   </TableHead>
@@ -505,17 +504,17 @@ const UsagePage = () => {
                     onClick={() => handleSort('model_name')}
                   >
                     <div className='flex items-center gap-1'>
-                      模型
+                      {t('console.usage.table.model')}
                       <ArrowUpDown className='h-3 w-3' />
                     </div>
                   </TableHead>
-                  <TableHead>Token 名称</TableHead>
+                  <TableHead>{t('console.usage.table.token_name')}</TableHead>
                   <TableHead
                     className='cursor-pointer select-none'
                     onClick={() => handleSort('prompt_tokens')}
                   >
                     <div className='flex items-center gap-1'>
-                      提示 Token
+                      {t('console.usage.table.prompt_tokens')}
                       <ArrowUpDown className='h-3 w-3' />
                     </div>
                   </TableHead>
@@ -524,7 +523,7 @@ const UsagePage = () => {
                     onClick={() => handleSort('completion_tokens')}
                   >
                     <div className='flex items-center gap-1'>
-                      完成 Token
+                      {t('console.usage.table.completion_tokens')}
                       <ArrowUpDown className='h-3 w-3' />
                     </div>
                   </TableHead>
@@ -533,24 +532,24 @@ const UsagePage = () => {
                     onClick={() => handleSort('quota')}
                   >
                     <div className='flex items-center gap-1'>
-                      消耗额度
+                      {t('console.usage.table.quota')}
                       <ArrowUpDown className='h-3 w-3' />
                     </div>
                   </TableHead>
-                  <TableHead>详情</TableHead>
+                  <TableHead>{t('console.usage.table.detail')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {logsLoading ? (
                   <TableRow>
                     <TableCell colSpan={8} className='text-center py-8 text-muted-foreground'>
-                      加载中...
+                      {t('console.common.loading')}
                     </TableCell>
                   </TableRow>
                 ) : sortedLogs.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className='text-center py-8 text-muted-foreground'>
-                      暂无调用记录
+                      {t('console.usage.no_records')}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -561,10 +560,10 @@ const UsagePage = () => {
                           className='cursor-pointer hover:text-primary'
                           onClick={async () => {
                             if (log.request_id && await copy(log.request_id)) {
-                              showSuccess(`已复制请求 ID：${log.request_id}`);
+                              showSuccess(t('console.usage.copied_request_id', { id: log.request_id }));
                             }
                           }}
-                          title={log.request_id ? `点击复制请求 ID: ${log.request_id}` : ''}
+                          title={log.request_id ? t('console.usage.click_copy_request_id', { id: log.request_id }) : ''}
                         >
                           {timestamp2string(log.created_at)}
                         </span>
@@ -606,10 +605,10 @@ const UsagePage = () => {
               disabled={logPage === 0}
               onClick={() => setLogPage((p) => Math.max(0, p - 1))}
             >
-              上一页
+              {t('console.common.prev_page')}
             </Button>
             <span className='flex items-center text-sm text-muted-foreground px-2'>
-              第 {logPage + 1} 页
+              {t('console.common.page_number', { page: logPage + 1 })}
             </span>
             <Button
               variant='outline'
@@ -617,7 +616,7 @@ const UsagePage = () => {
               disabled={logs.length < 10}
               onClick={() => setLogPage((p) => p + 1)}
             >
-              下一页
+              {t('console.common.next_page')}
             </Button>
           </div>
         </CardContent>

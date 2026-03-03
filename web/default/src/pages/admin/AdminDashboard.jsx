@@ -3,11 +3,13 @@ import { API, showError } from '../../helpers';
 import StatCard from '../../components/business/StatCard';
 import ModelUsageChart from '../../components/business/ModelUsageChart';
 import { Activity, Users, Hash, DollarSign } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const AdminDashboard = () => {
   const [overview, setOverview] = useState(null);
   const [modelStats, setModelStats] = useState([]);
   const [, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadData();
@@ -28,7 +30,7 @@ const AdminDashboard = () => {
         setModelStats(modelRes.data.data || []);
       }
     } catch (err) {
-      showError('加载数据失败');
+      showError(t('admin.dashboard.load_error'));
     }
     setLoading(false);
   };
@@ -36,34 +38,34 @@ const AdminDashboard = () => {
   return (
     <div className='space-y-6'>
       <div>
-        <h1 className='text-2xl font-bold tracking-tight'>数据看板</h1>
-        <p className='text-muted-foreground'>平台整体运营数据概览。</p>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('admin.dashboard.title')}</h1>
+        <p className='text-muted-foreground'>{t('admin.dashboard.description')}</p>
       </div>
 
       <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'>
         <StatCard
-          title='24h 请求总量'
+          title={t('admin.dashboard.requests_24h')}
           value={overview?.total_requests_24h?.toLocaleString() || '0'}
           icon={Activity}
         />
         <StatCard
-          title='24h Token 总量'
+          title={t('admin.dashboard.tokens_24h')}
           value={overview?.total_tokens_24h?.toLocaleString() || '0'}
           icon={Hash}
         />
         <StatCard
-          title='24h 消耗额度'
+          title={t('admin.dashboard.quota_24h')}
           value={overview?.total_quota_24h?.toLocaleString() || '0'}
           icon={DollarSign}
         />
         <StatCard
-          title='24h 活跃用户'
+          title={t('admin.dashboard.active_users_24h')}
           value={overview?.active_users_24h?.toLocaleString() || '0'}
           icon={Users}
         />
       </div>
 
-      <ModelUsageChart data={modelStats} title='模型用量分布（24h）' />
+      <ModelUsageChart data={modelStats} title={t('admin.dashboard.model_chart')} />
     </div>
   );
 };

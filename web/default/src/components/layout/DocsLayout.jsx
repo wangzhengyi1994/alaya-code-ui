@@ -4,22 +4,24 @@ import { Button } from '../ui/button';
 import { cn } from '../../lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { Menu } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-const docsSidebarItems = [
-  { name: '快速开始', to: '/docs' },
-  { name: 'API 文档', to: '/docs/api' },
-  { name: 'SDK 接入', to: '/docs/sdk' },
-  { name: '工具对接', to: '/docs/tools' },
-  { name: '错误处理', to: '/docs/errors' },
-  { name: '常见问题', to: '/docs/faq' },
+const docsSidebarItemKeys = [
+  { key: 'docs.sidebar.quick_start', to: '/docs' },
+  { key: 'docs.sidebar.api_docs', to: '/docs/api' },
+  { key: 'docs.sidebar.sdk', to: '/docs/sdk' },
+  { key: 'docs.sidebar.tools', to: '/docs/tools' },
+  { key: 'docs.sidebar.errors', to: '/docs/errors' },
+  { key: 'docs.sidebar.faq', to: '/docs/faq' },
 ];
 
 const DocsSidebarNav = ({ className }) => {
   const location = useLocation();
+  const { t } = useTranslation();
 
   return (
     <nav className={cn('flex flex-col gap-1', className)}>
-      {docsSidebarItems.map((item) => {
+      {docsSidebarItemKeys.map((item) => {
         const isActive = location.pathname === item.to;
         return (
           <Link
@@ -32,7 +34,7 @@ const DocsSidebarNav = ({ className }) => {
                 : 'text-muted-foreground'
             )}
           >
-            {item.name}
+            {t(item.key)}
           </Link>
         );
       })}
@@ -41,6 +43,8 @@ const DocsSidebarNav = ({ className }) => {
 };
 
 const DocsLayout = () => {
+  const { t } = useTranslation();
+
   return (
     <div className='flex min-h-screen flex-col'>
       {/* Header */}
@@ -54,12 +58,12 @@ const DocsLayout = () => {
               to='/docs'
               className='transition-colors text-foreground'
             >
-              文档
+              {t('nav.docs')}
             </Link>
           </nav>
           <div className='ml-auto flex items-center space-x-2'>
             <Button variant='ghost' size='sm' asChild>
-              <Link to='/login'>登录</Link>
+              <Link to='/login'>{t('nav.login')}</Link>
             </Button>
           </div>
           <Sheet>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { API, showError, showSuccess } from '../../helpers';
 import { timestamp2string } from '../../helpers';
 import PlanComparisonGrid from '../../components/business/PlanComparisonGrid';
@@ -16,6 +17,7 @@ import {
 } from '../../components/ui/dialog';
 
 const SubscriptionPage = () => {
+  const { t } = useTranslation();
   const [subscription, setSubscription] = useState(null);
   const [currentPlan, setCurrentPlan] = useState(null);
   const [plans, setPlans] = useState([]);
@@ -50,7 +52,7 @@ const SubscriptionPage = () => {
         setQuotaInfo(quotaRes.data.data);
       }
     } catch (err) {
-      showError('加载订阅信息失败');
+      showError(t('console.subscription.load_failed'));
     }
     setLoading(false);
   };
@@ -81,14 +83,14 @@ const SubscriptionPage = () => {
       }
 
       if (res.data.success) {
-        showSuccess(res.data.message || '操作成功');
+        showSuccess(res.data.message || t('console.subscription.operation_success'));
         setDialogOpen(false);
         loadData();
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('操作失败');
+      showError(t('console.subscription.operation_failed'));
     }
     setActionLoading(false);
   };
@@ -97,13 +99,13 @@ const SubscriptionPage = () => {
     try {
       const res = await API.post('/api/subscription/cancel');
       if (res.data.success) {
-        showSuccess(res.data.message || '已取消自动续费');
+        showSuccess(res.data.message || t('console.subscription.auto_renew_cancelled'));
         loadData();
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('取消失败');
+      showError(t('console.subscription.cancel_failed'));
     }
   };
 
@@ -111,26 +113,26 @@ const SubscriptionPage = () => {
     try {
       const res = await API.post('/api/subscription/renew');
       if (res.data.success) {
-        showSuccess('续费成功');
+        showSuccess(t('console.subscription.renew_success'));
         loadData();
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('续费失败');
+      showError(t('console.subscription.renew_failed'));
     }
   };
 
   const actionLabels = {
-    subscribe: '订阅',
-    upgrade: '升级',
-    downgrade: '降级',
+    subscribe: t('console.subscription.actions.subscribe'),
+    upgrade: t('console.subscription.actions.upgrade'),
+    downgrade: t('console.subscription.actions.downgrade'),
   };
 
   if (loading) {
     return (
       <div className='flex items-center justify-center py-20 text-muted-foreground'>
-        加载中...
+        {t('console.common.loading')}
       </div>
     );
   }
@@ -138,8 +140,8 @@ const SubscriptionPage = () => {
   return (
     <div className='space-y-6'>
       <div>
-        <h1 className='text-2xl font-bold tracking-tight'>订阅管理</h1>
-        <p className='text-muted-foreground'>管理您的套餐订阅。</p>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('console.subscription.title')}</h1>
+        <p className='text-muted-foreground'>{t('console.subscription.subtitle')}</p>
       </div>
 
       {/* Current subscription */}
@@ -147,42 +149,42 @@ const SubscriptionPage = () => {
         <Card>
           <CardHeader className='pb-2'>
             <div className='flex items-center justify-between'>
-              <CardTitle className='text-sm font-medium'>当前订阅</CardTitle>
+              <CardTitle className='text-sm font-medium'>{t('console.subscription.current')}</CardTitle>
               <Badge variant={subscription.status === 1 ? 'default' : 'secondary'}>
-                {subscription.status === 1 ? '活跃' : '已过期'}
+                {subscription.status === 1 ? t('console.subscription.status_active') : t('console.subscription.status_expired')}
               </Badge>
             </div>
           </CardHeader>
           <CardContent>
             <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
               <div>
-                <p className='text-xs text-muted-foreground'>套餐</p>
+                <p className='text-xs text-muted-foreground'>{t('console.subscription.plan_label')}</p>
                 <p className='font-medium'>{currentPlan?.display_name || '-'}</p>
               </div>
               <div>
-                <p className='text-xs text-muted-foreground'>当前周期</p>
+                <p className='text-xs text-muted-foreground'>{t('console.subscription.current_period')}</p>
                 <p className='text-sm'>
                   {timestamp2string(subscription.current_period_start).split(' ')[0]} ~{' '}
                   {timestamp2string(subscription.current_period_end).split(' ')[0]}
                 </p>
               </div>
               <div>
-                <p className='text-xs text-muted-foreground'>自动续费</p>
-                <p className='text-sm'>{subscription.auto_renew ? '是' : '否'}</p>
+                <p className='text-xs text-muted-foreground'>{t('console.subscription.auto_renew')}</p>
+                <p className='text-sm'>{subscription.auto_renew ? t('console.subscription.yes') : t('console.subscription.no')}</p>
               </div>
               <div>
-                <p className='text-xs text-muted-foreground'>本月消费</p>
+                <p className='text-xs text-muted-foreground'>{t('console.subscription.monthly_spent')}</p>
                 <p className='text-sm'>¥{(subscription.monthly_spent_cents / 100).toFixed(2)}</p>
               </div>
             </div>
             <div className='flex gap-2 mt-4'>
               {subscription.auto_renew ? (
                 <Button variant='outline' size='sm' onClick={handleCancelSubscription}>
-                  取消自动续费
+                  {t('console.subscription.cancel_auto_renew')}
                 </Button>
               ) : (
                 <Button variant='outline' size='sm' onClick={handleRenew}>
-                  续费
+                  {t('console.subscription.renew')}
                 </Button>
               )}
             </div>
@@ -191,7 +193,7 @@ const SubscriptionPage = () => {
       ) : (
         <Card>
           <CardContent className='p-6 text-center text-muted-foreground'>
-            您还没有订阅任何套餐，请在下方选择一个套餐开始使用。
+            {t('console.subscription.no_subscription')}
           </CardContent>
         </Card>
       )}
@@ -201,7 +203,7 @@ const SubscriptionPage = () => {
 
       {/* Plan comparison */}
       <div>
-        <h2 className='text-lg font-semibold mb-4'>选择套餐</h2>
+        <h2 className='text-lg font-semibold mb-4'>{t('console.subscription.select_plan')}</h2>
         <PlanComparisonGrid
           plans={plans}
           currentPlanId={currentPlan?.id}
@@ -214,25 +216,25 @@ const SubscriptionPage = () => {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>确认{actionLabels[dialogAction]}</DialogTitle>
+            <DialogTitle>{t('console.subscription.confirm_title', { action: actionLabels[dialogAction] })}</DialogTitle>
             <DialogDescription>
               {dialogAction === 'subscribe' && (
-                <>确定要订阅 {selectedPlan?.display_name} 套餐吗？</>
+                <>{t('console.subscription.confirm_subscribe', { plan: selectedPlan?.display_name })}</>
               )}
               {dialogAction === 'upgrade' && (
-                <>确定要从 {currentPlan?.display_name} 升级到 {selectedPlan?.display_name}？</>
+                <>{t('console.subscription.confirm_upgrade', { from: currentPlan?.display_name, to: selectedPlan?.display_name })}</>
               )}
               {dialogAction === 'downgrade' && (
-                <>确定要降级到 {selectedPlan?.display_name}？降级将在当前计费周期结束后生效。</>
+                <>{t('console.subscription.confirm_downgrade', { plan: selectedPlan?.display_name })}</>
               )}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant='outline' onClick={() => setDialogOpen(false)}>
-              取消
+              {t('console.common.cancel')}
             </Button>
             <Button onClick={handleConfirmAction} disabled={actionLoading}>
-              {actionLoading ? '处理中...' : `确认${actionLabels[dialogAction]}`}
+              {actionLoading ? t('console.common.processing') : t('console.subscription.confirm_btn', { action: actionLabels[dialogAction] })}
             </Button>
           </DialogFooter>
         </DialogContent>

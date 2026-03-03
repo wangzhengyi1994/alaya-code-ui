@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -10,19 +11,20 @@ import { Copy } from 'lucide-react';
 import { copy, showSuccess, showError } from '../../helpers';
 
 const ApiKeyCopyButton = ({ tokenKey }) => {
+  const { t } = useTranslation();
   const baseUrl = window.location.origin;
 
   const copyFormats = [
     {
-      label: '复制 Key',
+      label: t('console.api_key_copy.copy_key'),
       getValue: () => tokenKey,
     },
     {
-      label: 'Cursor 配置',
+      label: t('console.api_key_copy.cursor'),
       getValue: () => `OPENAI_API_KEY=${tokenKey}\nOPENAI_BASE_URL=${baseUrl}/v1`,
     },
     {
-      label: 'Claude Code (cc-switch)',
+      label: t('console.api_key_copy.claude_code'),
       getValue: () => JSON.stringify({
         name: 'Alaya Code',
         baseUrl: `${baseUrl}/anthropic/v1`,
@@ -30,7 +32,7 @@ const ApiKeyCopyButton = ({ tokenKey }) => {
       }, null, 2),
     },
     {
-      label: 'OpenAI SDK',
+      label: t('console.api_key_copy.openai_sdk'),
       getValue: () => `from openai import OpenAI\nclient = OpenAI(api_key="${tokenKey}", base_url="${baseUrl}/v1")`,
     },
   ];
@@ -39,9 +41,9 @@ const ApiKeyCopyButton = ({ tokenKey }) => {
     const text = format.getValue();
     const ok = await copy(text);
     if (ok) {
-      showSuccess(`已复制: ${format.label}`);
+      showSuccess(t('console.api_key_copy.copied', { label: format.label }));
     } else {
-      showError('复制失败');
+      showError(t('console.api_key_copy.copy_failed'));
     }
   };
 

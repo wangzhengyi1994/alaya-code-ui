@@ -18,6 +18,7 @@ import {
   Sparkles,
   CheckCircle2,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const typewriterLines = [
   '$ export OPENAI_API_BASE=https://api.alayanew.com/v1',
@@ -73,57 +74,59 @@ const TerminalAnimation = () => {
   );
 };
 
-const models = [
-  {
-    name: 'Kimi 2.5',
-    provider: 'Moonshot AI',
-    context: '200K',
-    highlight: '长文本理解',
-    description: '支持 200K 超长上下文，擅长文档分析、长篇翻译和复杂推理任务',
-    badge: '热门',
-  },
-  {
-    name: 'Qwen 3.5',
-    provider: '阿里通义',
-    context: '128K',
-    highlight: '中文能力',
-    description: '业界领先的中文理解与生成能力，代码和数学表现出色',
-    badge: '推荐',
-  },
-  {
-    name: 'GLM 5',
-    provider: '智谱 AI',
-    context: '128K',
-    highlight: '代码生成',
-    description: '强大的代码理解与生成能力，支持多种编程语言和框架',
-    badge: '新',
-  },
-];
-
-const tools = [
-  {
-    name: 'Cursor',
-    description: 'AI 代码编辑器，直接对接 Alaya Code API',
-    config: 'Settings > Models > OpenAI API Base',
-  },
-  {
-    name: 'Claude Code',
-    description: 'Anthropic 命令行 AI 助手',
-    config: 'ANTHROPIC_BASE_URL 环境变量',
-  },
-  {
-    name: 'VSCode + Cline',
-    description: 'VSCode 中的 AI 编程插件',
-    config: 'Extension Settings > API Base URL',
-  },
-  {
-    name: 'OpenCode',
-    description: '开源终端 AI 编程助手',
-    config: 'config.yaml > base_url',
-  },
-];
-
 const LandingPage = () => {
+  const { t } = useTranslation();
+
+  const models = [
+    {
+      name: 'Kimi 2.5',
+      provider: 'Moonshot AI',
+      context: '200K',
+      highlight: t('marketing.models.kimi_highlight'),
+      description: t('marketing.models.kimi_desc'),
+      badge: t('marketing.models.badge_popular'),
+    },
+    {
+      name: 'Qwen 3.5',
+      provider: t('marketing.models.qwen_provider'),
+      context: '128K',
+      highlight: t('marketing.models.qwen_highlight'),
+      description: t('marketing.models.qwen_desc'),
+      badge: t('marketing.models.badge_recommended'),
+    },
+    {
+      name: 'GLM 5',
+      provider: t('marketing.models.glm_provider'),
+      context: '128K',
+      highlight: t('marketing.models.glm_highlight'),
+      description: t('marketing.models.glm_desc'),
+      badge: t('marketing.models.badge_new'),
+    },
+  ];
+
+  const tools = [
+    {
+      name: 'Cursor',
+      description: t('marketing.tools.cursor_desc'),
+      config: 'Settings > Models > OpenAI API Base',
+    },
+    {
+      name: 'Claude Code',
+      description: t('marketing.tools.claude_code_desc'),
+      config: 'ANTHROPIC_BASE_URL',
+    },
+    {
+      name: 'VSCode + Cline',
+      description: t('marketing.tools.cline_desc'),
+      config: 'Extension Settings > API Base URL',
+    },
+    {
+      name: 'OpenCode',
+      description: t('marketing.tools.opencode_desc'),
+      config: 'config.yaml > base_url',
+    },
+  ];
+
   return (
     <div className='flex flex-col'>
       {/* Hero Section */}
@@ -133,40 +136,39 @@ const LandingPage = () => {
             <div className='space-y-6'>
               <Badge variant='secondary' className='px-3 py-1'>
                 <Sparkles className='mr-1 h-3 w-3' />
-                OpenAI 兼容接口 &middot; 国产大模型聚合
+                {t('marketing.hero.badge')}
               </Badge>
               <h1 className='text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl'>
-                面向开发者的
+                {t('marketing.hero.title_line1')}
                 <br />
-                <span className='text-primary'>AI Coding 助手平台</span>
+                <span className='text-primary'>{t('marketing.hero.title_line2')}</span>
               </h1>
               <p className='max-w-lg text-lg text-muted-foreground'>
-                Alaya Code 聚合 Kimi、通义千问、智谱 GLM 等国产大模型，提供 OpenAI 兼容接口。
-                无需切换 SDK，一行配置即可接入 Cursor、Claude Code 等 AI 工具链。
+                {t('marketing.hero.description')}
               </p>
               <div className='flex flex-wrap gap-3'>
                 <Button size='lg' asChild>
                   <Link to='/register'>
-                    立即开始
+                    {t('marketing.hero.cta_start')}
                     <ArrowRight className='ml-1 h-4 w-4' />
                   </Link>
                 </Button>
                 <Button size='lg' variant='outline' asChild>
-                  <Link to='/pricing'>查看定价</Link>
+                  <Link to='/pricing'>{t('marketing.hero.cta_pricing')}</Link>
                 </Button>
               </div>
               <div className='flex items-center gap-6 text-sm text-muted-foreground'>
                 <span className='flex items-center gap-1'>
                   <CheckCircle2 className='h-4 w-4 text-green-500' />
-                  免费试用
+                  {t('marketing.hero.free_trial')}
                 </span>
                 <span className='flex items-center gap-1'>
                   <CheckCircle2 className='h-4 w-4 text-green-500' />
-                  按量计费
+                  {t('marketing.hero.pay_as_you_go')}
                 </span>
                 <span className='flex items-center gap-1'>
                   <CheckCircle2 className='h-4 w-4 text-green-500' />
-                  无需翻墙
+                  {t('marketing.hero.no_vpn')}
                 </span>
               </div>
             </div>
@@ -182,10 +184,10 @@ const LandingPage = () => {
         <div className='container mx-auto max-w-screen-xl px-4'>
           <div className='mx-auto mb-12 max-w-2xl text-center'>
             <h2 className='text-3xl font-bold tracking-tight'>
-              接入顶级国产大模型
+              {t('marketing.models.title')}
             </h2>
             <p className='mt-3 text-lg text-muted-foreground'>
-              一个 API 聚合多家大模型，按需切换，按量付费
+              {t('marketing.models.subtitle')}
             </p>
           </div>
           <div className='grid gap-6 md:grid-cols-3'>
@@ -203,7 +205,7 @@ const LandingPage = () => {
                     <span className='font-medium text-primary'>
                       {model.context}
                     </span>{' '}
-                    上下文 &middot; {model.highlight}
+                    {t('marketing.models.context_label')} &middot; {model.highlight}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -217,7 +219,7 @@ const LandingPage = () => {
           <div className='mt-8 text-center'>
             <Button variant='outline' asChild>
               <Link to='/docs'>
-                查看全部支持的模型
+                {t('marketing.models.view_all')}
                 <ArrowRight className='ml-1 h-4 w-4' />
               </Link>
             </Button>
@@ -230,10 +232,10 @@ const LandingPage = () => {
         <div className='container mx-auto max-w-screen-xl px-4'>
           <div className='mx-auto mb-12 max-w-2xl text-center'>
             <h2 className='text-3xl font-bold tracking-tight'>
-              无缝对接你的 AI 工具
+              {t('marketing.tools.title')}
             </h2>
             <p className='mt-3 text-lg text-muted-foreground'>
-              兼容 OpenAI API 格式，主流 AI 编程工具一行配置即可接入
+              {t('marketing.tools.subtitle')}
             </p>
           </div>
           <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4'>
@@ -264,38 +266,38 @@ const LandingPage = () => {
         <div className='container mx-auto max-w-screen-xl px-4'>
           <div className='mx-auto mb-12 max-w-2xl text-center'>
             <h2 className='text-3xl font-bold tracking-tight'>
-              简单透明的定价
+              {t('marketing.pricing_preview.title')}
             </h2>
             <p className='mt-3 text-lg text-muted-foreground'>
-              从免费试用开始，按需升级
+              {t('marketing.pricing_preview.subtitle')}
             </p>
           </div>
           <div className='mx-auto grid max-w-3xl gap-6 md:grid-cols-2'>
             <Card>
               <CardHeader>
                 <CardTitle>Lite</CardTitle>
-                <CardDescription>适合个人学习和轻度使用</CardDescription>
+                <CardDescription>{t('marketing.pricing_preview.lite_desc')}</CardDescription>
                 <div className='mt-2'>
-                  <span className='text-3xl font-bold'>免费</span>
+                  <span className='text-3xl font-bold'>{t('marketing.pricing_preview.free')}</span>
                 </div>
               </CardHeader>
               <CardContent>
                 <ul className='space-y-2 text-sm text-muted-foreground'>
                   <li className='flex items-center gap-2'>
                     <CheckCircle2 className='h-4 w-4 text-green-500' />
-                    基础模型访问
+                    {t('marketing.pricing_preview.lite_feature1')}
                   </li>
                   <li className='flex items-center gap-2'>
                     <CheckCircle2 className='h-4 w-4 text-green-500' />
-                    10 次请求 / 5 小时
+                    {t('marketing.pricing_preview.lite_feature2')}
                   </li>
                   <li className='flex items-center gap-2'>
                     <CheckCircle2 className='h-4 w-4 text-green-500' />
-                    社区支持
+                    {t('marketing.pricing_preview.lite_feature3')}
                   </li>
                 </ul>
                 <Button variant='outline' className='mt-6 w-full' asChild>
-                  <Link to='/register'>免费注册</Link>
+                  <Link to='/register'>{t('marketing.pricing_preview.free_register')}</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -303,31 +305,31 @@ const LandingPage = () => {
               <CardHeader>
                 <div className='flex items-center justify-between'>
                   <CardTitle>Pro</CardTitle>
-                  <Badge>推荐</Badge>
+                  <Badge>{t('marketing.pricing_preview.badge_recommended')}</Badge>
                 </div>
-                <CardDescription>适合日常开发和中度使用</CardDescription>
+                <CardDescription>{t('marketing.pricing_preview.pro_desc')}</CardDescription>
                 <div className='mt-2'>
                   <span className='text-3xl font-bold'>&#xA5;140</span>
-                  <span className='text-muted-foreground'>/月</span>
+                  <span className='text-muted-foreground'>{t('marketing.pricing_preview.per_month')}</span>
                 </div>
               </CardHeader>
               <CardContent>
                 <ul className='space-y-2 text-sm text-muted-foreground'>
                   <li className='flex items-center gap-2'>
                     <CheckCircle2 className='h-4 w-4 text-green-500' />
-                    全部模型访问
+                    {t('marketing.pricing_preview.pro_feature1')}
                   </li>
                   <li className='flex items-center gap-2'>
                     <CheckCircle2 className='h-4 w-4 text-green-500' />
-                    45 次请求 / 5 小时
+                    {t('marketing.pricing_preview.pro_feature2')}
                   </li>
                   <li className='flex items-center gap-2'>
                     <CheckCircle2 className='h-4 w-4 text-green-500' />
-                    超额按 API 费率计费
+                    {t('marketing.pricing_preview.pro_feature3')}
                   </li>
                 </ul>
                 <Button className='mt-6 w-full' asChild>
-                  <Link to='/register'>开始使用</Link>
+                  <Link to='/register'>{t('marketing.pricing_preview.get_started')}</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -335,7 +337,7 @@ const LandingPage = () => {
           <div className='mt-8 text-center'>
             <Button variant='link' asChild>
               <Link to='/pricing'>
-                查看全部套餐对比
+                {t('marketing.pricing_preview.view_all')}
                 <ArrowRight className='ml-1 h-4 w-4' />
               </Link>
             </Button>
@@ -348,7 +350,7 @@ const LandingPage = () => {
         <div className='container mx-auto max-w-screen-xl px-4'>
           <div className='mx-auto mb-12 max-w-2xl text-center'>
             <h2 className='text-3xl font-bold tracking-tight'>
-              为什么选择 Alaya Code
+              {t('marketing.features.title')}
             </h2>
           </div>
           <div className='grid gap-8 md:grid-cols-3'>
@@ -356,27 +358,27 @@ const LandingPage = () => {
               <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10'>
                 <Globe className='h-5 w-5 text-primary' />
               </div>
-              <h3 className='font-semibold'>国内直连</h3>
+              <h3 className='font-semibold'>{t('marketing.features.direct_title')}</h3>
               <p className='text-sm text-muted-foreground'>
-                无需翻墙，国内服务器直连国产大模型，低延迟高稳定性。
+                {t('marketing.features.direct_desc')}
               </p>
             </div>
             <div className='space-y-3'>
               <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10'>
                 <Zap className='h-5 w-5 text-primary' />
               </div>
-              <h3 className='font-semibold'>OpenAI 兼容</h3>
+              <h3 className='font-semibold'>{t('marketing.features.compatible_title')}</h3>
               <p className='text-sm text-muted-foreground'>
-                100% 兼容 OpenAI API 格式，现有代码零改动迁移。
+                {t('marketing.features.compatible_desc')}
               </p>
             </div>
             <div className='space-y-3'>
               <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10'>
                 <Shield className='h-5 w-5 text-primary' />
               </div>
-              <h3 className='font-semibold'>安全可靠</h3>
+              <h3 className='font-semibold'>{t('marketing.features.secure_title')}</h3>
               <p className='text-sm text-muted-foreground'>
-                数据加密传输，不存储对话内容，企业级安全保障。
+                {t('marketing.features.secure_desc')}
               </p>
             </div>
           </div>
@@ -387,20 +389,20 @@ const LandingPage = () => {
       <section className='border-t bg-muted/30 py-20'>
         <div className='container mx-auto max-w-screen-xl px-4 text-center'>
           <h2 className='text-3xl font-bold tracking-tight'>
-            准备好开始了吗？
+            {t('marketing.cta.title')}
           </h2>
           <p className='mx-auto mt-3 max-w-lg text-lg text-muted-foreground'>
-            免费注册，几分钟内即可在你的 AI 工具中使用国产大模型。
+            {t('marketing.cta.description')}
           </p>
           <div className='mt-8 flex justify-center gap-4'>
             <Button size='lg' asChild>
               <Link to='/register'>
-                免费注册
+                {t('marketing.cta.register')}
                 <ArrowRight className='ml-1 h-4 w-4' />
               </Link>
             </Button>
             <Button size='lg' variant='outline' asChild>
-              <Link to='/docs'>查看文档</Link>
+              <Link to='/docs'>{t('marketing.cta.view_docs')}</Link>
             </Button>
           </div>
         </div>

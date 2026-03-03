@@ -12,22 +12,27 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
-import { LogOut, Menu } from 'lucide-react';
+import { Globe, LogOut, Menu } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { SidebarNav } from './ConsoleSidebar';
 
 const ConsoleTopBar = () => {
   const [userState, userDispatch] = useContext(UserContext);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const toggleLanguage = () => {
+    i18n.changeLanguage(i18n.language === 'zh' ? 'en' : 'zh');
+  };
 
   const logout = async () => {
     await API.get('/api/user/logout');
-    showSuccess('注销成功!');
+    showSuccess(t('nav.logout_success'));
     userDispatch({ type: 'logout' });
     localStorage.removeItem('user');
     navigate('/login');
   };
 
-  const username = userState.user?.username || '用户';
+  const username = userState.user?.username || t('nav.user_default');
   const initial = username.charAt(0).toUpperCase();
 
   return (
@@ -36,19 +41,23 @@ const ConsoleTopBar = () => {
         <SheetTrigger asChild>
           <Button variant='outline' size='icon' className='shrink-0 md:hidden'>
             <Menu className='h-5 w-5' />
-            <span className='sr-only'>切换菜单</span>
+            <span className='sr-only'>{t('nav.toggle_menu')}</span>
           </Button>
         </SheetTrigger>
         <SheetContent side='left' className='flex flex-col'>
           <nav className='grid gap-2 text-lg font-medium'>
             <Link to='/' className='flex items-center gap-2 text-lg font-semibold mb-4'>
-              <span>Alaya Code</span>
+              <img src='/logo.svg' alt='Alaya Code' className='h-8' />
             </Link>
             <SidebarNav />
           </nav>
         </SheetContent>
       </Sheet>
       <div className='flex-1' />
+      <Button variant='ghost' size='sm' onClick={toggleLanguage} className='gap-1'>
+        <Globe className='h-4 w-4' />
+        <span className='text-xs'>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
+      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant='ghost' className='relative h-8 w-8 rounded-full'>
@@ -66,7 +75,7 @@ const ConsoleTopBar = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout}>
             <LogOut className='mr-2 h-4 w-4' />
-            <span>退出登录</span>
+            <span>{t('nav.logout')}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

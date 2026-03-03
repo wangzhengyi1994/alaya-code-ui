@@ -53,32 +53,9 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const ITEMS_PER_PAGE = 10;
-
-function renderRole(role) {
-  switch (role) {
-    case 1:
-      return <Badge variant='secondary'>普通用户</Badge>;
-    case 10:
-      return <Badge variant='default'>管理员</Badge>;
-    case 100:
-      return <Badge variant='destructive'>超级管理员</Badge>;
-    default:
-      return <Badge variant='outline'>未知</Badge>;
-  }
-}
-
-function renderStatus(status) {
-  switch (status) {
-    case 1:
-      return <Badge className='bg-green-100 text-green-800 border-green-300 hover:bg-green-100'>正常</Badge>;
-    case 2:
-      return <Badge variant='destructive'>已封禁</Badge>;
-    default:
-      return <Badge variant='outline'>未知</Badge>;
-  }
-}
 
 const AdminKeysAudit = () => {
   const [users, setUsers] = useState([]);
@@ -88,6 +65,31 @@ const AdminKeysAudit = () => {
   const [orderBy, setOrderBy] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const { t } = useTranslation();
+
+  function renderRole(role) {
+    switch (role) {
+      case 1:
+        return <Badge variant='secondary'>{t('admin.users.role_normal')}</Badge>;
+      case 10:
+        return <Badge variant='default'>{t('admin.users.role_admin')}</Badge>;
+      case 100:
+        return <Badge variant='destructive'>{t('admin.users.role_super')}</Badge>;
+      default:
+        return <Badge variant='outline'>{t('admin.users.role_unknown')}</Badge>;
+    }
+  }
+
+  function renderStatus(status) {
+    switch (status) {
+      case 1:
+        return <Badge className='bg-green-100 text-green-800 border-green-300 hover:bg-green-100'>{t('admin.users.status_active')}</Badge>;
+      case 2:
+        return <Badge variant='destructive'>{t('admin.users.status_banned')}</Badge>;
+      default:
+        return <Badge variant='outline'>{t('admin.users.status_unknown')}</Badge>;
+    }
+  }
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
@@ -100,10 +102,10 @@ const AdminKeysAudit = () => {
         showError(message);
       }
     } catch (err) {
-      showError('加载用户列表失败');
+      showError(t('admin.users.load_error'));
     }
     setLoading(false);
-  }, [page, orderBy]);
+  }, [page, orderBy, t]);
 
   useEffect(() => {
     loadUsers();
@@ -126,7 +128,7 @@ const AdminKeysAudit = () => {
         showError(message);
       }
     } catch (err) {
-      showError('搜索失败');
+      showError(t('admin.users.search_error'));
     }
     setLoading(false);
   };
@@ -136,7 +138,7 @@ const AdminKeysAudit = () => {
       const res = await API.post('/api/user/manage', { username, action });
       const { success, message } = res.data;
       if (success) {
-        showSuccess('操作成功');
+        showSuccess(t('admin.users.operation_success'));
         if (action === 'delete') {
           setUsers((prev) => prev.filter((_, i) => i !== idx));
         } else {
@@ -151,7 +153,7 @@ const AdminKeysAudit = () => {
         showError(message);
       }
     } catch (err) {
-      showError('操作失败');
+      showError(t('admin.users.operation_error'));
     }
   };
 
@@ -171,29 +173,29 @@ const AdminKeysAudit = () => {
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold tracking-tight'>用户管理</h1>
+          <h1 className='text-2xl font-bold tracking-tight'>{t('admin.users.title')}</h1>
           <p className='text-muted-foreground'>
-            管理平台所有用户，包括角色、状态和配额。
+            {t('admin.users.description')}
           </p>
         </div>
         <Button asChild>
           <Link to='/user/add'>
             <Plus className='h-4 w-4 mr-1' />
-            创建用户
+            {t('admin.users.create')}
           </Link>
         </Button>
       </div>
 
       <Card>
         <CardHeader className='pb-2'>
-          <CardTitle className='text-sm font-medium'>用户列表</CardTitle>
+          <CardTitle className='text-sm font-medium'>{t('admin.users.list_title')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className='flex items-center gap-2 mb-4'>
             <div className='relative flex-1 max-w-sm'>
               <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
               <Input
-                placeholder='搜索用户名...'
+                placeholder={t('admin.users.search_placeholder')}
                 className='pl-8'
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
@@ -201,17 +203,17 @@ const AdminKeysAudit = () => {
               />
             </div>
             <Button variant='outline' size='sm' onClick={searchUsers}>
-              搜索
+              {t('admin.users.search')}
             </Button>
             <Select value={orderBy || '__default__'} onValueChange={handleOrderByChange}>
               <SelectTrigger className='w-[160px]'>
-                <SelectValue placeholder='排序方式' />
+                <SelectValue placeholder={t('admin.users.sort_by')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='__default__'>默认排序</SelectItem>
-                <SelectItem value='quota'>按剩余配额</SelectItem>
-                <SelectItem value='used_quota'>按已用配额</SelectItem>
-                <SelectItem value='request_count'>按请求次数</SelectItem>
+                <SelectItem value='__default__'>{t('admin.users.sort_default')}</SelectItem>
+                <SelectItem value='quota'>{t('admin.users.sort_quota')}</SelectItem>
+                <SelectItem value='used_quota'>{t('admin.users.sort_used')}</SelectItem>
+                <SelectItem value='request_count'>{t('admin.users.sort_requests')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -221,28 +223,28 @@ const AdminKeysAudit = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className='w-[60px]'>ID</TableHead>
-                  <TableHead>用户名</TableHead>
-                  <TableHead>显示名</TableHead>
-                  <TableHead>分组</TableHead>
-                  <TableHead>角色</TableHead>
-                  <TableHead>状态</TableHead>
-                  <TableHead>剩余配额</TableHead>
-                  <TableHead>已用配额</TableHead>
-                  <TableHead>请求数</TableHead>
-                  <TableHead className='w-[60px]'>操作</TableHead>
+                  <TableHead>{t('admin.users.col_username')}</TableHead>
+                  <TableHead>{t('admin.users.col_display_name')}</TableHead>
+                  <TableHead>{t('admin.users.col_group')}</TableHead>
+                  <TableHead>{t('admin.users.col_role')}</TableHead>
+                  <TableHead>{t('admin.users.col_status')}</TableHead>
+                  <TableHead>{t('admin.users.col_remaining_quota')}</TableHead>
+                  <TableHead>{t('admin.users.col_used_quota')}</TableHead>
+                  <TableHead>{t('admin.users.col_requests')}</TableHead>
+                  <TableHead className='w-[60px]'>{t('admin.users.col_actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {loading ? (
                   <TableRow>
                     <TableCell colSpan={10} className='text-center py-8 text-muted-foreground'>
-                      加载中...
+                      {t('admin.common.loading')}
                     </TableCell>
                   </TableRow>
                 ) : users.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={10} className='text-center py-8 text-muted-foreground'>
-                      暂无数据
+                      {t('admin.common.no_data')}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -280,7 +282,7 @@ const AdminKeysAudit = () => {
                             <DropdownMenuItem asChild>
                               <Link to={`/user/edit/${user.id}`} className='flex items-center'>
                                 <Pencil className='h-4 w-4 mr-2' />
-                                编辑
+                                {t('admin.users.action_edit')}
                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
@@ -289,14 +291,14 @@ const AdminKeysAudit = () => {
                               onClick={() => manageUser(user.username, 'promote', idx)}
                             >
                               <ShieldCheck className='h-4 w-4 mr-2' />
-                              升级角色
+                              {t('admin.users.action_promote')}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               disabled={user.role === 100}
                               onClick={() => manageUser(user.username, 'demote', idx)}
                             >
                               <ShieldMinus className='h-4 w-4 mr-2' />
-                              降级角色
+                              {t('admin.users.action_demote')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
@@ -312,12 +314,12 @@ const AdminKeysAudit = () => {
                               {user.status === 1 ? (
                                 <>
                                   <Ban className='h-4 w-4 mr-2' />
-                                  禁用
+                                  {t('admin.users.action_disable')}
                                 </>
                               ) : (
                                 <>
                                   <CheckCircle className='h-4 w-4 mr-2' />
-                                  启用
+                                  {t('admin.users.action_enable')}
                                 </>
                               )}
                             </DropdownMenuItem>
@@ -331,7 +333,7 @@ const AdminKeysAudit = () => {
                               }}
                             >
                               <Trash2 className='h-4 w-4 mr-2' />
-                              删除
+                              {t('admin.users.action_delete')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -345,7 +347,7 @@ const AdminKeysAudit = () => {
 
           <div className='flex items-center justify-between mt-4'>
             <p className='text-sm text-muted-foreground'>
-              第 {page + 1} 页 {users.length > 0 && `· 当前 ${users.length} 条`}
+              {t('admin.users.page_info', { page: page + 1 })} {users.length > 0 && `· ${t('admin.users.page_count', { count: users.length })}`}
             </p>
             <div className='flex gap-2'>
               <Button
@@ -355,7 +357,7 @@ const AdminKeysAudit = () => {
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
               >
                 <ChevronLeft className='h-4 w-4 mr-1' />
-                上一页
+                {t('admin.users.prev_page')}
               </Button>
               <Button
                 variant='outline'
@@ -363,7 +365,7 @@ const AdminKeysAudit = () => {
                 disabled={users.length < ITEMS_PER_PAGE}
                 onClick={() => setPage((p) => p + 1)}
               >
-                下一页
+                {t('admin.users.next_page')}
                 <ChevronRight className='h-4 w-4 ml-1' />
               </Button>
             </div>
@@ -374,18 +376,18 @@ const AdminKeysAudit = () => {
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>确认删除用户</DialogTitle>
+            <DialogTitle>{t('admin.users.delete_title')}</DialogTitle>
             <DialogDescription>
-              确定要删除用户 <strong>{deleteTarget?.username}</strong> 吗？此操作不可撤销。
+              {t('admin.users.delete_confirm', { username: deleteTarget?.username })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant='outline' onClick={() => setDeleteDialogOpen(false)}>
-              取消
+              {t('admin.users.cancel')}
             </Button>
             <Button variant='destructive' onClick={confirmDelete}>
               <Trash2 className='h-4 w-4 mr-1' />
-              确认删除
+              {t('admin.users.confirm_delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

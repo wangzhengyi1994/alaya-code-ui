@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { API, showError, showSuccess, timestamp2string } from '../../helpers';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
@@ -22,6 +23,7 @@ import {
 import { Rocket } from 'lucide-react';
 
 const BoosterPage = () => {
+  const { t } = useTranslation();
   const [boosterPacks, setBoosterPacks] = useState([]);
   const [myBoosters, setMyBoosters] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ const BoosterPage = () => {
         setMyBoosters(myRes.data.data || []);
       }
     } catch (err) {
-      showError('加载加油包信息失败');
+      showError(t('console.booster.load_failed'));
     }
     setLoading(false);
   };
@@ -61,14 +63,14 @@ const BoosterPage = () => {
         booster_pack_id: selectedPack.id,
       });
       if (res.data.success) {
-        showSuccess('购买成功');
+        showSuccess(t('console.booster.purchase_success'));
         setPurchaseDialogOpen(false);
         loadData();
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('购买失败');
+      showError(t('console.booster.purchase_failed'));
     }
     setPurchasing(false);
   };
@@ -76,20 +78,20 @@ const BoosterPage = () => {
   function renderBoosterStatus(status) {
     switch (status) {
       case 1:
-        return <Badge variant='default'>使用中</Badge>;
+        return <Badge variant='default'>{t('console.booster.status.active')}</Badge>;
       case 2:
-        return <Badge variant='secondary'>已用完</Badge>;
+        return <Badge variant='secondary'>{t('console.booster.status.depleted')}</Badge>;
       case 3:
-        return <Badge variant='outline'>已过期</Badge>;
+        return <Badge variant='outline'>{t('console.booster.status.expired')}</Badge>;
       default:
-        return <Badge variant='outline'>未知</Badge>;
+        return <Badge variant='outline'>{t('console.booster.status.unknown')}</Badge>;
     }
   }
 
   if (loading) {
     return (
       <div className='flex items-center justify-center py-20 text-muted-foreground'>
-        加载中...
+        {t('console.common.loading')}
       </div>
     );
   }
@@ -97,17 +99,17 @@ const BoosterPage = () => {
   return (
     <div className='space-y-6'>
       <div>
-        <h1 className='text-2xl font-bold tracking-tight'>加油包</h1>
-        <p className='text-muted-foreground'>购买额外请求额度，突破窗口限制。</p>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('console.booster.title')}</h1>
+        <p className='text-muted-foreground'>{t('console.booster.subtitle')}</p>
       </div>
 
       {/* Available booster packs */}
       <div>
-        <h2 className='text-lg font-semibold mb-4'>可购加油包</h2>
+        <h2 className='text-lg font-semibold mb-4'>{t('console.booster.available')}</h2>
         {boosterPacks.length === 0 ? (
           <Card>
             <CardContent className='p-6 text-center text-muted-foreground'>
-              暂无可购加油包
+              {t('console.booster.none_available')}
             </CardContent>
           </Card>
         ) : (
@@ -128,11 +130,11 @@ const BoosterPage = () => {
                     ¥{(pack.price_cents / 100).toFixed(0)}
                   </p>
                   <p className='text-sm text-muted-foreground mt-2'>
-                    +{pack.extra_count} 次额外请求
+                    {t('console.booster.extra_requests', { count: pack.extra_count })}
                   </p>
                   {pack.valid_duration_sec > 0 && (
                     <p className='text-xs text-muted-foreground'>
-                      有效期 {Math.floor(pack.valid_duration_sec / 86400)} 天
+                      {t('console.booster.valid_days', { days: Math.floor(pack.valid_duration_sec / 86400) })}
                     </p>
                   )}
                 </CardContent>
@@ -144,7 +146,7 @@ const BoosterPage = () => {
                       setPurchaseDialogOpen(true);
                     }}
                   >
-                    购买
+                    {t('console.booster.purchase')}
                   </Button>
                 </CardFooter>
               </Card>
@@ -156,25 +158,25 @@ const BoosterPage = () => {
       {/* My booster packs */}
       <Card>
         <CardHeader className='pb-2'>
-          <CardTitle className='text-sm font-medium'>我的加油包</CardTitle>
+          <CardTitle className='text-sm font-medium'>{t('console.booster.my_boosters')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className='rounded-md border'>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>加油包</TableHead>
-                  <TableHead>剩余次数</TableHead>
-                  <TableHead>状态</TableHead>
-                  <TableHead>过期时间</TableHead>
-                  <TableHead>购买时间</TableHead>
+                  <TableHead>{t('console.booster.table.booster')}</TableHead>
+                  <TableHead>{t('console.booster.table.remaining')}</TableHead>
+                  <TableHead>{t('console.booster.table.status')}</TableHead>
+                  <TableHead>{t('console.booster.table.expire_time')}</TableHead>
+                  <TableHead>{t('console.booster.table.purchase_time')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {myBoosters.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className='text-center py-8 text-muted-foreground'>
-                      暂无加油包
+                      {t('console.booster.no_boosters')}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -184,7 +186,7 @@ const BoosterPage = () => {
                       <TableCell>{bp.remain_count}</TableCell>
                       <TableCell>{renderBoosterStatus(bp.status)}</TableCell>
                       <TableCell className='text-xs text-muted-foreground'>
-                        {bp.expire_time > 0 ? timestamp2string(bp.expire_time) : '永不过期'}
+                        {bp.expire_time > 0 ? timestamp2string(bp.expire_time) : t('console.booster.never_expire')}
                       </TableCell>
                       <TableCell className='text-xs text-muted-foreground'>
                         {timestamp2string(bp.created_time)}
@@ -202,18 +204,20 @@ const BoosterPage = () => {
       <Dialog open={purchaseDialogOpen} onOpenChange={setPurchaseDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>确认购买</DialogTitle>
+            <DialogTitle>{t('console.booster.confirm_purchase')}</DialogTitle>
             <DialogDescription>
-              确定要购买 {selectedPack?.display_name || selectedPack?.name} 加油包吗？
-              价格: ¥{selectedPack ? (selectedPack.price_cents / 100).toFixed(2) : '0'}
+              {t('console.booster.confirm_purchase_desc', {
+                name: selectedPack?.display_name || selectedPack?.name,
+                price: selectedPack ? (selectedPack.price_cents / 100).toFixed(2) : '0',
+              })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant='outline' onClick={() => setPurchaseDialogOpen(false)}>
-              取消
+              {t('console.common.cancel')}
             </Button>
             <Button onClick={handlePurchase} disabled={purchasing}>
-              {purchasing ? '处理中...' : '确认购买'}
+              {purchasing ? t('console.common.processing') : t('console.booster.confirm_purchase_btn')}
             </Button>
           </DialogFooter>
         </DialogContent>

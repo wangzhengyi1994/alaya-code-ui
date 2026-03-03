@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -6,17 +7,18 @@ import { Check } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const PlanCard = ({ plan, currentPlanId, onSelect, isUpgrade, isDowngrade, className }) => {
+  const { t } = useTranslation();
   const isCurrent = plan.id === currentPlanId;
   const priceDisplay = plan.price_cents_monthly === 0
-    ? '免费'
-    : `¥${(plan.price_cents_monthly / 100).toFixed(0)}/月`;
+    ? t('console.plan.free')
+    : t('console.plan.per_month', { price: (plan.price_cents_monthly / 100).toFixed(0) });
 
   const features = [
-    `${plan.window_limit_count} 次请求 / ${plan.window_duration_sec / 3600}小时窗口`,
-    plan.overage_rate_type === 'api' ? '超出后按量计费' : '超出后暂停服务',
+    t('console.plan.requests_per_window', { count: plan.window_limit_count, hours: plan.window_duration_sec / 3600 }),
+    plan.overage_rate_type === 'api' ? t('console.plan.overage_pay_per_use') : t('console.plan.overage_blocked'),
     plan.monthly_spend_limit_cents > 0
-      ? `月消费上限 ¥${(plan.monthly_spend_limit_cents / 100).toFixed(0)}`
-      : '无月消费上限',
+      ? t('console.plan.monthly_limit', { amount: (plan.monthly_spend_limit_cents / 100).toFixed(0) })
+      : t('console.plan.no_monthly_limit'),
   ];
 
   return (
@@ -27,7 +29,7 @@ const PlanCard = ({ plan, currentPlanId, onSelect, isUpgrade, isDowngrade, class
     )}>
       {isCurrent && (
         <Badge className='absolute -top-2 left-1/2 -translate-x-1/2' variant='default'>
-          当前套餐
+          {t('console.plan.current')}
         </Badge>
       )}
       <CardHeader className='text-center pb-2'>
@@ -50,7 +52,7 @@ const PlanCard = ({ plan, currentPlanId, onSelect, isUpgrade, isDowngrade, class
       <CardFooter>
         {isCurrent ? (
           <Button variant='outline' className='w-full' disabled>
-            当前套餐
+            {t('console.plan.current')}
           </Button>
         ) : (
           <Button
@@ -58,7 +60,7 @@ const PlanCard = ({ plan, currentPlanId, onSelect, isUpgrade, isDowngrade, class
             variant={isUpgrade ? 'default' : 'outline'}
             onClick={() => onSelect && onSelect(plan)}
           >
-            {isUpgrade ? '升级' : isDowngrade ? '降级' : '选择'}
+            {isUpgrade ? t('console.plan.upgrade') : isDowngrade ? t('console.plan.downgrade') : t('console.plan.select')}
           </Button>
         )}
       </CardFooter>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Button } from '../ui/button';
@@ -6,6 +7,7 @@ import { Copy, Check } from 'lucide-react';
 import { copy, showSuccess } from '../../helpers';
 
 const ToolConfigSnippet = ({ apiKey }) => {
+  const { t } = useTranslation();
   const [copiedTab, setCopiedTab] = useState(null);
   const baseUrl = window.location.origin;
   const displayKey = apiKey || 'sk-your-api-key';
@@ -77,7 +79,7 @@ console.log(response.choices[0].message.content);`,
     const ok = await copy(configs[key].code);
     if (ok) {
       setCopiedTab(key);
-      showSuccess('已复制');
+      showSuccess(t('console.common.copied'));
       setTimeout(() => setCopiedTab(null), 2000);
     }
   };
@@ -85,7 +87,7 @@ console.log(response.choices[0].message.content);`,
   return (
     <Card>
       <CardHeader className='pb-2'>
-        <CardTitle className='text-sm font-medium'>工具配置速查</CardTitle>
+        <CardTitle className='text-sm font-medium'>{t('console.tool_config.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue='cursor'>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { API, showError } from '../../helpers';
 import { renderQuota } from '../../helpers/render';
 import StatCard from '../../components/business/StatCard';
@@ -43,6 +44,7 @@ const formatDate = (dateStr) => {
 };
 
 const DashboardPage = () => {
+  const { t } = useTranslation();
   const [quotaInfo, setQuotaInfo] = useState(null);
   const [dashboardData, setDashboardData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +69,7 @@ const DashboardPage = () => {
         setDashboardData(dashRes.data.data || []);
       }
     } catch (err) {
-      showError('加载数据失败');
+      showError(t('console.dashboard.load_failed'));
     }
     setLoading(false);
   };
@@ -143,24 +145,24 @@ const DashboardPage = () => {
   const todayQuota = todayData.reduce((sum, item) => sum + (item.Quota || 0), 0);
 
   const quickLinks = [
-    { name: 'API 密钥', to: '/keys', icon: Key },
-    { name: '订阅管理', to: '/subscription', icon: CreditCard },
-    { name: '用量统计', to: '/usage', icon: BarChart3 },
-    { name: '加油包', to: '/booster', icon: Rocket },
+    { name: t('console.dashboard.quick_links.api_keys'), to: '/keys', icon: Key },
+    { name: t('console.dashboard.quick_links.subscription'), to: '/subscription', icon: CreditCard },
+    { name: t('console.dashboard.quick_links.usage'), to: '/usage', icon: BarChart3 },
+    { name: t('console.dashboard.quick_links.booster'), to: '/booster', icon: Rocket },
   ];
 
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
         <div>
-          <h1 className='text-2xl font-bold tracking-tight'>数据看板</h1>
-          <p className='text-muted-foreground'>欢迎回来，这是您的使用概览。</p>
+          <h1 className='text-2xl font-bold tracking-tight'>{t('console.dashboard.title')}</h1>
+          <p className='text-muted-foreground'>{t('console.dashboard.subtitle')}</p>
         </div>
         <Button
           variant='outline'
           size='icon'
           onClick={loadData}
-          title='刷新'
+          title={t('console.common.refresh')}
         >
           <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
         </Button>
@@ -172,23 +174,23 @@ const DashboardPage = () => {
       {/* Stats */}
       <div className='grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'>
         <StatCard
-          title='今日请求'
+          title={t('console.dashboard.today_requests')}
           value={todayRequests.toLocaleString()}
           icon={Activity}
         />
         <StatCard
-          title='今日 Token'
+          title={t('console.dashboard.today_tokens')}
           value={todayTokens.toLocaleString()}
           icon={Hash}
         />
         <StatCard
-          title='今日配额消费'
+          title={t('console.dashboard.today_quota')}
           value={renderQuota(todayQuota)}
           icon={DollarSign}
         />
         <StatCard
-          title='当前套餐'
-          value={quotaInfo?.plan_name || '无'}
+          title={t('console.dashboard.current_plan')}
+          value={quotaInfo?.plan_name || t('console.dashboard.none')}
           icon={Zap}
         />
       </div>
@@ -196,7 +198,7 @@ const DashboardPage = () => {
       {/* Quick links */}
       <Card>
         <CardHeader className='pb-2'>
-          <CardTitle className='text-sm font-medium'>快捷入口</CardTitle>
+          <CardTitle className='text-sm font-medium'>{t('console.dashboard.quick_access')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
@@ -223,7 +225,7 @@ const DashboardPage = () => {
       {/* 7-day request trend */}
       <UsageChart
         data={chartData}
-        title='近 7 天请求趋势'
+        title={t('console.dashboard.request_trend_7d')}
         dataKey='requests'
         color='#1677ff'
         height={250}
@@ -232,7 +234,7 @@ const DashboardPage = () => {
       {/* 7-day token consumption trend */}
       <UsageChart
         data={chartData}
-        title='近 7 天 Token 消耗趋势'
+        title={t('console.dashboard.token_trend_7d')}
         dataKey='tokens'
         color='#13c2c2'
         height={250}
@@ -241,7 +243,7 @@ const DashboardPage = () => {
       {/* 7-day quota consumption trend */}
       <Card>
         <CardHeader className='pb-2'>
-          <CardTitle className='text-sm font-medium'>近 7 天配额消费趋势</CardTitle>
+          <CardTitle className='text-sm font-medium'>{t('console.dashboard.quota_trend_7d')}</CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width='100%' height={250}>
@@ -267,7 +269,7 @@ const DashboardPage = () => {
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 }}
                 labelFormatter={formatDate}
-                formatter={(value) => [typeof value === 'number' ? value.toFixed(6) : value, '配额']}
+                formatter={(value) => [typeof value === 'number' ? value.toFixed(6) : value, t('console.dashboard.quota_label')]}
               />
               <Line
                 type='monotone'
@@ -286,7 +288,7 @@ const DashboardPage = () => {
       {models.length > 0 && (
         <Card>
           <CardHeader className='pb-2'>
-            <CardTitle className='text-sm font-medium'>模型使用分布 (Token)</CardTitle>
+            <CardTitle className='text-sm font-medium'>{t('console.dashboard.model_distribution')}</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width='100%' height={300}>

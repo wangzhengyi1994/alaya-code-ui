@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -59,31 +60,8 @@ import {
 
 const ITEMS_PER_PAGE = 10;
 
-function renderStatus(status) {
-  switch (status) {
-    case 1:
-      return <Badge variant='default'>已启用</Badge>;
-    case 2:
-      return <Badge variant='destructive'>已禁用</Badge>;
-    case 3:
-      return <Badge variant='secondary'>已过期</Badge>;
-    case 4:
-      return <Badge variant='outline'>已耗尽</Badge>;
-    default:
-      return <Badge variant='outline'>未知</Badge>;
-  }
-}
-
-const SORT_OPTIONS = [
-  { value: '', label: '默认排序' },
-  { value: 'name', label: '按名称' },
-  { value: 'status', label: '按状态' },
-  { value: 'used_quota', label: '按已用额度' },
-  { value: 'remain_quota', label: '按剩余额度' },
-  { value: 'created_time', label: '按创建时间' },
-];
-
 const ApiKeyTable = ({ isAdmin = false }) => {
+  const { t } = useTranslation();
   const [tokens, setTokens] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -92,6 +70,30 @@ const ApiKeyTable = ({ isAdmin = false }) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [sortKey, setSortKey] = useState('');
+
+  function renderStatus(status) {
+    switch (status) {
+      case 1:
+        return <Badge variant='default'>{t('console.api_keys.status.enabled')}</Badge>;
+      case 2:
+        return <Badge variant='destructive'>{t('console.api_keys.status.disabled')}</Badge>;
+      case 3:
+        return <Badge variant='secondary'>{t('console.api_keys.status.expired')}</Badge>;
+      case 4:
+        return <Badge variant='outline'>{t('console.api_keys.status.depleted')}</Badge>;
+      default:
+        return <Badge variant='outline'>{t('console.api_keys.status.unknown')}</Badge>;
+    }
+  }
+
+  const SORT_OPTIONS = [
+    { value: '', label: t('console.api_keys.sort.default') },
+    { value: 'name', label: t('console.api_keys.sort.by_name') },
+    { value: 'status', label: t('console.api_keys.sort.by_status') },
+    { value: 'used_quota', label: t('console.api_keys.sort.by_used_quota') },
+    { value: 'remain_quota', label: t('console.api_keys.sort.by_remain_quota') },
+    { value: 'created_time', label: t('console.api_keys.sort.by_created_time') },
+  ];
 
   const loadTokens = async () => {
     setLoading(true);
@@ -109,7 +111,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
         showError(message);
       }
     } catch (err) {
-      showError('加载 API Key 失败');
+      showError(t('console.api_keys.load_failed'));
     }
     setLoading(false);
   };
@@ -140,7 +142,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
         showError(message);
       }
     } catch (err) {
-      showError('搜索失败');
+      showError(t('console.api_keys.search_failed'));
     }
     setLoading(false);
   };
@@ -157,13 +159,13 @@ const ApiKeyTable = ({ isAdmin = false }) => {
         status: newStatus,
       });
       if (res.data.success) {
-        showSuccess('状态更新成功');
+        showSuccess(t('console.api_keys.status_updated'));
         loadTokens();
       } else {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('操作失败');
+      showError(t('console.api_keys.operation_failed'));
     }
   };
 
@@ -172,7 +174,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
     try {
       const res = await API.delete(`/api/token/${deleteTarget}`);
       if (res.data.success) {
-        showSuccess('删除成功');
+        showSuccess(t('console.api_keys.delete_success'));
         setDeleteDialogOpen(false);
         setDeleteTarget(null);
         loadTokens();
@@ -180,7 +182,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
         showError(res.data.message);
       }
     } catch (err) {
-      showError('删除失败');
+      showError(t('console.api_keys.delete_failed'));
     }
   };
 
@@ -245,9 +247,9 @@ const ApiKeyTable = ({ isAdmin = false }) => {
     }
 
     if (await copy(url)) {
-      showSuccess('已复制');
+      showSuccess(t('console.common.copied'));
     } else {
-      showWarning('复制失败，请手动复制');
+      showWarning(t('console.api_keys.copy_failed'));
     }
   };
 
@@ -284,7 +286,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
 
   const renderExpiredTime = (expiredTime) => {
     if (expiredTime === -1) {
-      return <span className='text-xs text-muted-foreground'>永不过期</span>;
+      return <span className='text-xs text-muted-foreground'>{t('console.api_keys.never_expire')}</span>;
     }
     const now = Math.floor(Date.now() / 1000);
     const isExpired = expiredTime > 0 && expiredTime < now;
@@ -301,7 +303,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
         <div className='relative flex-1 min-w-[200px] max-w-sm'>
           <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
           <Input
-            placeholder='搜索 API Key...'
+            placeholder={t('console.api_keys.search_placeholder')}
             className='pl-8'
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
@@ -309,14 +311,14 @@ const ApiKeyTable = ({ isAdmin = false }) => {
           />
         </div>
         <Button variant='outline' size='sm' onClick={searchTokens}>
-          搜索
+          {t('console.common.search')}
         </Button>
         <Select
           value={sortKey || '__default__'}
           onValueChange={(v) => setSortKey(v === '__default__' ? '' : v)}
         >
           <SelectTrigger className='w-[140px] h-9'>
-            <SelectValue placeholder='排序方式' />
+            <SelectValue placeholder={t('console.api_keys.sort.default')} />
           </SelectTrigger>
           <SelectContent>
             {SORT_OPTIONS.map((opt) => (
@@ -331,14 +333,14 @@ const ApiKeyTable = ({ isAdmin = false }) => {
           size='icon'
           className='h-9 w-9'
           onClick={loadTokens}
-          title='刷新'
+          title={t('console.common.refresh')}
         >
           <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
         </Button>
         <div className='flex-1' />
         <Button size='sm' onClick={() => (window.location.href = '/token/add')}>
           <Plus className='h-4 w-4 mr-1' />
-          创建 Key
+          {t('console.api_keys.create')}
         </Button>
       </div>
 
@@ -346,33 +348,33 @@ const ApiKeyTable = ({ isAdmin = false }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>名称</TableHead>
-              <TableHead>Key</TableHead>
-              <TableHead>状态</TableHead>
-              <TableHead>已用额度</TableHead>
-              <TableHead>剩余额度</TableHead>
-              <TableHead>创建时间</TableHead>
-              <TableHead>过期时间</TableHead>
-              <TableHead className='text-right'>操作</TableHead>
+              <TableHead>{t('console.api_keys.table.name')}</TableHead>
+              <TableHead>{t('console.api_keys.table.key')}</TableHead>
+              <TableHead>{t('console.api_keys.table.status')}</TableHead>
+              <TableHead>{t('console.api_keys.table.used_quota')}</TableHead>
+              <TableHead>{t('console.api_keys.table.remaining_quota')}</TableHead>
+              <TableHead>{t('console.api_keys.table.created_time')}</TableHead>
+              <TableHead>{t('console.api_keys.table.expired_time')}</TableHead>
+              <TableHead className='text-right'>{t('console.api_keys.table.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
                 <TableCell colSpan={8} className='text-center py-8 text-muted-foreground'>
-                  加载中...
+                  {t('console.common.loading')}
                 </TableCell>
               </TableRow>
             ) : tokens.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={8} className='text-center py-8 text-muted-foreground'>
-                  暂无 API Key
+                  {t('console.api_keys.no_keys')}
                 </TableCell>
               </TableRow>
             ) : (
               tokens.map((token) => (
                 <TableRow key={token.id}>
-                  <TableCell className='font-medium'>{token.name || '未命名'}</TableCell>
+                  <TableCell className='font-medium'>{token.name || t('console.api_keys.unnamed')}</TableCell>
                   <TableCell>
                     <div className='flex items-center gap-1'>
                       <code className='text-xs bg-muted px-1 py-0.5 rounded'>
@@ -383,7 +385,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                         size='icon'
                         className='h-6 w-6'
                         onClick={() => toggleShowKey(token.id)}
-                        aria-label={showKey[token.id] ? '隐藏 Key' : '显示 Key'}
+                        aria-label={showKey[token.id] ? t('console.api_keys.hide_key') : t('console.api_keys.show_key')}
                       >
                         {showKey[token.id] ? (
                           <EyeOff className='h-3 w-3' />
@@ -394,41 +396,41 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                       {/* Copy dropdown with config links */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant='ghost' size='icon' className='h-6 w-6' aria-label='复制选项'>
+                          <Button variant='ghost' size='icon' className='h-6 w-6' aria-label={t('console.api_keys.copy_options_label')}>
                             <Copy className='h-3 w-3' />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align='end'>
                           <DropdownMenuItem onClick={() => onCopyConfigLink('', token.key)}>
-                            复制 Key
+                            {t('console.api_keys.copy_key')}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => onCopyConfigLink('cursor', token.key)}>
-                            复制 Cursor 配置
+                            {t('console.api_keys.copy_cursor')}
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onCopyConfigLink('claude-code', token.key)}>
-                            复制 Claude Code 配置
+                            {t('console.api_keys.copy_claude_code')}
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onCopyConfigLink('next', token.key)}>
-                            复制 NextChat 链接
+                            {t('console.api_keys.copy_nextchat')}
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onCopyConfigLink('lobechat', token.key)}>
-                            复制 LobeChat 链接
+                            {t('console.api_keys.copy_lobechat')}
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onCopyConfigLink('ama', token.key)}>
-                            复制 AMA 链接
+                            {t('console.api_keys.copy_ama')}
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onCopyConfigLink('opencat', token.key)}>
-                            复制 OpenCat 链接
+                            {t('console.api_keys.copy_opencat')}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => onOpenLink('next', token.key)}>
                             <ExternalLink className='h-3 w-3 mr-2' />
-                            打开 NextChat
+                            {t('console.api_keys.open_nextchat')}
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => onOpenLink('lobechat', token.key)}>
                             <ExternalLink className='h-3 w-3 mr-2' />
-                            打开 LobeChat
+                            {t('console.api_keys.open_lobechat')}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -442,7 +444,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                     {token.unlimited_quota ? (
                       <Badge variant='secondary' className='gap-1'>
                         <Infinity className='h-3 w-3' />
-                        无限
+                        {t('console.api_keys.unlimited')}
                       </Badge>
                     ) : (
                       renderQuota(token.remain_quota, undefined, 2)
@@ -462,7 +464,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                         className='h-7 w-7'
                         asChild
                       >
-                        <Link to={`/token/edit/${token.id}`} title='编辑'>
+                        <Link to={`/token/edit/${token.id}`} title={t('console.api_keys.edit')}>
                           <Pencil className='h-4 w-4' />
                         </Link>
                       </Button>
@@ -471,7 +473,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                         size='icon'
                         className='h-7 w-7'
                         onClick={() => toggleToken(token.id, token.status)}
-                        title={token.status === 1 ? '禁用' : '启用'}
+                        title={token.status === 1 ? t('console.api_keys.disable') : t('console.api_keys.enable')}
                       >
                         {token.status === 1 ? (
                           <ToggleRight className='h-4 w-4 text-green-600' />
@@ -487,7 +489,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
                           setDeleteTarget(token.id);
                           setDeleteDialogOpen(true);
                         }}
-                        aria-label='删除'
+                        aria-label={t('console.common.delete')}
                       >
                         <Trash2 className='h-4 w-4 text-destructive' />
                       </Button>
@@ -507,7 +509,7 @@ const ApiKeyTable = ({ isAdmin = false }) => {
           disabled={page === 0}
           onClick={() => setPage((p) => Math.max(0, p - 1))}
         >
-          上一页
+          {t('console.common.prev_page')}
         </Button>
         <Button
           variant='outline'
@@ -515,24 +517,24 @@ const ApiKeyTable = ({ isAdmin = false }) => {
           disabled={tokens.length < ITEMS_PER_PAGE}
           onClick={() => setPage((p) => p + 1)}
         >
-          下一页
+          {t('console.common.next_page')}
         </Button>
       </div>
 
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>确认删除</DialogTitle>
+            <DialogTitle>{t('console.api_keys.confirm_delete')}</DialogTitle>
             <DialogDescription>
-              确定要删除此 API Key 吗？此操作不可撤销。
+              {t('console.api_keys.confirm_delete_desc')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant='outline' onClick={() => setDeleteDialogOpen(false)}>
-              取消
+              {t('console.common.cancel')}
             </Button>
             <Button variant='destructive' onClick={deleteToken}>
-              删除
+              {t('console.common.delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

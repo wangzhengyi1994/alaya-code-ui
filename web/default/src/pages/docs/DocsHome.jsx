@@ -8,59 +8,62 @@ import {
   CardTitle,
 } from '../../components/ui/card';
 import { BookOpen, Code2, Wrench, HelpCircle, AlertTriangle, Wallet } from 'lucide-react';
-
-const quickLinks = [
-  {
-    icon: BookOpen,
-    title: 'API 概述',
-    description: '了解 Alaya Code API 的基本概念和请求格式',
-    to: '/docs/api-overview',
-  },
-  {
-    icon: Code2,
-    title: 'SDK 接入',
-    description: 'Python 和 Node.js SDK 快速接入指南',
-    to: '/docs/sdk',
-  },
-  {
-    icon: Wrench,
-    title: '工具对接',
-    description: 'Cursor、Claude Code、VSCode+Cline 配置教程',
-    to: '/docs/tools',
-  },
-  {
-    icon: Wallet,
-    title: '计费说明',
-    description: '了解套餐、窗口限额和计费规则',
-    to: '/docs/billing',
-  },
-  {
-    icon: AlertTriangle,
-    title: '错误处理',
-    description: '常见错误码和排查指南',
-    to: '/docs/error-handling',
-  },
-  {
-    icon: HelpCircle,
-    title: '常见问题',
-    description: '使用过程中的常见问题解答',
-    to: '/docs/faq',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const DocsHome = () => {
+  const { t } = useTranslation();
+
+  const quickLinks = [
+    {
+      icon: BookOpen,
+      title: t('docs.home.link_api_title'),
+      description: t('docs.home.link_api_desc'),
+      to: '/docs/api',
+    },
+    {
+      icon: Code2,
+      title: t('docs.home.link_sdk_title'),
+      description: t('docs.home.link_sdk_desc'),
+      to: '/docs/sdk',
+    },
+    {
+      icon: Wrench,
+      title: t('docs.home.link_tools_title'),
+      description: t('docs.home.link_tools_desc'),
+      to: '/docs/tools',
+    },
+    {
+      icon: Wallet,
+      title: t('docs.home.link_billing_title'),
+      description: t('docs.home.link_billing_desc'),
+      to: '/docs/billing',
+    },
+    {
+      icon: AlertTriangle,
+      title: t('docs.home.link_errors_title'),
+      description: t('docs.home.link_errors_desc'),
+      to: '/docs/errors',
+    },
+    {
+      icon: HelpCircle,
+      title: t('docs.home.link_faq_title'),
+      description: t('docs.home.link_faq_desc'),
+      to: '/docs/faq',
+    },
+  ];
+
   return (
     <div className='space-y-8'>
       <div>
-        <h1 className='text-3xl font-bold tracking-tight'>快速开始</h1>
+        <h1 className='text-3xl font-bold tracking-tight'>{t('docs.home.title')}</h1>
         <p className='mt-2 text-lg text-muted-foreground'>
-          几分钟内开始使用 Alaya Code API 调用国产大模型。
+          {t('docs.home.description')}
         </p>
       </div>
 
       {/* Step by step guide */}
       <div className='space-y-6'>
-        <h2 className='text-2xl font-semibold'>三步接入</h2>
+        <h2 className='text-2xl font-semibold'>{t('docs.home.steps_title')}</h2>
 
         <div className='space-y-4'>
           <div className='rounded-lg border p-4'>
@@ -68,18 +71,18 @@ const DocsHome = () => {
               <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground'>
                 1
               </span>
-              注册账号并获取 API Key
+              {t('docs.home.step1_title')}
             </h3>
             <p className='mt-2 text-sm text-muted-foreground'>
-              访问{' '}
+              {t('docs.home.step1_desc_prefix')}{' '}
               <Link to='/register' className='text-primary hover:underline'>
-                注册页面
+                {t('docs.home.step1_register_link')}
               </Link>{' '}
-              创建账号，然后在控制台的{' '}
+              {t('docs.home.step1_desc_middle')}{' '}
               <Link to='/keys' className='text-primary hover:underline'>
                 API Keys
               </Link>{' '}
-              页面创建一个新的 API Key。
+              {t('docs.home.step1_desc_suffix')}
             </p>
           </div>
 
@@ -88,13 +91,13 @@ const DocsHome = () => {
               <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground'>
                 2
               </span>
-              配置 API 地址
+              {t('docs.home.step2_title')}
             </h3>
             <p className='mt-2 text-sm text-muted-foreground'>
-              将 API Base URL 设置为 Alaya Code 的接口地址：
+              {t('docs.home.step2_desc')}
             </p>
             <pre className='mt-2 overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`# 设置环境变量
+              <code>{`# ${t('docs.home.step2_comment')}
 export OPENAI_API_BASE=https://api.alayanew.com/v1
 export OPENAI_API_KEY=sk-your-api-key-here`}</code>
             </pre>
@@ -105,10 +108,10 @@ export OPENAI_API_KEY=sk-your-api-key-here`}</code>
               <span className='mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground'>
                 3
               </span>
-              发送第一个请求
+              {t('docs.home.step3_title')}
             </h3>
             <p className='mt-2 text-sm text-muted-foreground'>
-              使用 curl 或你喜欢的编程语言发送请求：
+              {t('docs.home.step3_desc')}
             </p>
             <pre className='mt-2 overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
               <code>{`curl https://api.alayanew.com/v1/chat/completions \\
@@ -117,7 +120,7 @@ export OPENAI_API_KEY=sk-your-api-key-here`}</code>
   -d '{
     "model": "kimi-2.5",
     "messages": [
-      {"role": "user", "content": "你好，请介绍一下自己"}
+      {"role": "user", "content": "Hello"}
     ]
   }'`}</code>
             </pre>
@@ -127,7 +130,7 @@ export OPENAI_API_KEY=sk-your-api-key-here`}</code>
 
       {/* Quick Links */}
       <div className='space-y-4'>
-        <h2 className='text-2xl font-semibold'>文档导航</h2>
+        <h2 className='text-2xl font-semibold'>{t('docs.home.nav_title')}</h2>
         <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
           {quickLinks.map((link) => (
             <Link key={link.to} to={link.to} className='block'>
@@ -149,15 +152,15 @@ export OPENAI_API_KEY=sk-your-api-key-here`}</code>
 
       {/* Supported Models */}
       <div className='space-y-4'>
-        <h2 className='text-2xl font-semibold'>支持的模型</h2>
+        <h2 className='text-2xl font-semibold'>{t('docs.home.models_title')}</h2>
         <div className='overflow-x-auto'>
           <table className='w-full text-sm'>
             <thead>
               <tr className='border-b'>
-                <th className='pb-2 text-left font-medium'>模型</th>
-                <th className='pb-2 text-left font-medium'>提供商</th>
-                <th className='pb-2 text-left font-medium'>上下文长度</th>
-                <th className='pb-2 text-left font-medium'>特点</th>
+                <th className='pb-2 text-left font-medium'>{t('docs.home.models_col_model')}</th>
+                <th className='pb-2 text-left font-medium'>{t('docs.home.models_col_provider')}</th>
+                <th className='pb-2 text-left font-medium'>{t('docs.home.models_col_context')}</th>
+                <th className='pb-2 text-left font-medium'>{t('docs.home.models_col_features')}</th>
               </tr>
             </thead>
             <tbody className='text-muted-foreground'>
@@ -165,39 +168,39 @@ export OPENAI_API_KEY=sk-your-api-key-here`}</code>
                 <td className='py-2 font-mono text-foreground'>kimi-2.5</td>
                 <td className='py-2'>Moonshot AI</td>
                 <td className='py-2'>200K</td>
-                <td className='py-2'>超长上下文，文档分析</td>
+                <td className='py-2'>{t('docs.home.model_kimi_feature')}</td>
               </tr>
               <tr className='border-b'>
                 <td className='py-2 font-mono text-foreground'>qwen-3.5</td>
-                <td className='py-2'>阿里通义</td>
+                <td className='py-2'>{t('docs.home.model_qwen_provider')}</td>
                 <td className='py-2'>128K</td>
-                <td className='py-2'>中文理解，代码生成</td>
+                <td className='py-2'>{t('docs.home.model_qwen_feature')}</td>
               </tr>
               <tr className='border-b'>
                 <td className='py-2 font-mono text-foreground'>glm-5</td>
-                <td className='py-2'>智谱 AI</td>
+                <td className='py-2'>{t('docs.home.model_glm_provider')}</td>
                 <td className='py-2'>128K</td>
-                <td className='py-2'>代码生成，多语言</td>
+                <td className='py-2'>{t('docs.home.model_glm_feature')}</td>
               </tr>
               <tr className='border-b'>
                 <td className='py-2 font-mono text-foreground'>deepseek-v3</td>
                 <td className='py-2'>DeepSeek</td>
                 <td className='py-2'>128K</td>
-                <td className='py-2'>推理能力强</td>
+                <td className='py-2'>{t('docs.home.model_deepseek_feature')}</td>
               </tr>
               <tr>
                 <td className='py-2 font-mono text-foreground'>doubao-pro</td>
-                <td className='py-2'>字节跳动</td>
+                <td className='py-2'>{t('docs.home.model_doubao_provider')}</td>
                 <td className='py-2'>128K</td>
-                <td className='py-2'>通用对话</td>
+                <td className='py-2'>{t('docs.home.model_doubao_feature')}</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p className='text-sm text-muted-foreground'>
-          更多模型持续更新中。完整模型列表请查看{' '}
-          <Link to='/docs/api-overview' className='text-primary hover:underline'>
-            API 概述
+          {t('docs.home.models_more')}{' '}
+          <Link to='/docs/api' className='text-primary hover:underline'>
+            {t('docs.home.models_more_link')}
           </Link>
           。
         </p>
