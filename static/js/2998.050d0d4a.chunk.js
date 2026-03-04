@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkreact_template=self.webpackChunkreact_template||[]).push([[2998],{2998(e,t,a){a.r(t),a.d(t,{default:()=>c});a(5043);var r=a(579);const c=()=>{const e=localStorage.getItem("chat_link");return(0,r.jsx)("iframe",{src:e,style:{width:"100%",height:"85vh",border:"none"}})}}}]);
+//# sourceMappingURL=2998.050d0d4a.chunk.js.map

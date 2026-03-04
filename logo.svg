@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="3 12 155 140" fill="none">
+<path d="M120.195 58L69 38.7034V12L158 46.5V69.3051L69 104V77.1017L120.195 58Z" fill="white"/>
+<path d="M157 132V152H3V132H157Z" fill="white"/>
+<path d="M24 74H54L34 104H4L24 74Z" fill="#4362FF">
+<animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+</path>
+</svg>
