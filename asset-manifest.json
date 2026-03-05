@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/alaya-code-ui/static/css/main.363afa05.css",
+    "main.css": "/alaya-code-ui/static/css/main.313eb8e1.css",
     "main.js": "/alaya-code-ui/static/js/main.d620b8d8.js",
     "static/js/9216.e823e26c.chunk.js": "/alaya-code-ui/static/js/9216.e823e26c.chunk.js",
     "static/js/1968.25a7db01.chunk.js": "/alaya-code-ui/static/js/1968.25a7db01.chunk.js",
@@ -55,7 +55,7 @@
     "static/js/9224.cf8402cf.chunk.js": "/alaya-code-ui/static/js/9224.cf8402cf.chunk.js",
     "static/media/lark.svg": "/alaya-code-ui/static/media/lark.1b9042a352169e05421905663cc10fd0.svg",
     "index.html": "/alaya-code-ui/index.html",
-    "main.363afa05.css.map": "/alaya-code-ui/static/css/main.363afa05.css.map",
+    "main.313eb8e1.css.map": "/alaya-code-ui/static/css/main.313eb8e1.css.map",
     "main.d620b8d8.js.map": "/alaya-code-ui/static/js/main.d620b8d8.js.map",
     "9216.e823e26c.chunk.js.map": "/alaya-code-ui/static/js/9216.e823e26c.chunk.js.map",
     "1968.25a7db01.chunk.js.map": "/alaya-code-ui/static/js/1968.25a7db01.chunk.js.map",
@@ -110,7 +110,7 @@
     "9224.cf8402cf.chunk.js.map": "/alaya-code-ui/static/js/9224.cf8402cf.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.363afa05.css",
+    "static/css/main.313eb8e1.css",
     "static/js/main.d620b8d8.js"
   ]
 }
