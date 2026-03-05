@@ -183,31 +183,21 @@ const LandingPage = () => {
               className='justify-center'
             />
             <br />
-            <span className='inline-flex items-baseline justify-center gap-6'>
-              <BlurText
-                text='AICoding'
-                delay={80}
-                animateBy='words'
-                direction='bottom'
-                className='justify-center font-mono'
-                stepDuration={0.4}
-              />
-              <BlurText
-                text='助手平台'
-                delay={80}
-                animateBy='words'
-                direction='bottom'
-                className='justify-center'
-                stepDuration={0.4}
-              />
-            </span>
+            <BlurText
+              text='AICoding 助手平台'
+              delay={80}
+              animateBy='words'
+              direction='bottom'
+              className='justify-center whitespace-nowrap'
+              stepDuration={0.4}
+            />
           </h1>
           <FadeIn delay={0.4} distance={20}>
             <div className='flex flex-col gap-1 items-center'>
-              <p className='text-base font-light leading-6 text-xyz-white-9 m-0'>
+              <p className='text-base font-normal leading-6 text-xyz-white-9 m-0'>
                 Alaya Code 聚合 Kimi、通义千问、智谱 GLM 等国产大模型，提供 OpenAI 兼容接口。
               </p>
-              <p className='text-base font-light leading-6 text-xyz-white-9 m-0'>
+              <p className='text-base font-normal leading-6 text-xyz-white-9 m-0'>
                 无需切换 SDK，一行配置即可接入 Cursor、Claude Code 等 AI 工具链。
               </p>
             </div>
@@ -216,7 +206,7 @@ const LandingPage = () => {
             <div className='flex justify-center pt-6'>
               <Link
                 to='/register'
-                className='inline-flex items-center justify-center gap-2 bg-xyz-blue-6 text-white text-base font-light h-10 w-[200px] no-underline transition-colors hover:bg-[#3451e6]'
+                className='inline-flex items-center justify-center gap-2 bg-xyz-blue-6 text-white text-base font-normal h-10 w-[200px] no-underline transition-colors hover:bg-[#3451e6]'
               >
                 立即开始
                 <svg width='18' height='18' viewBox='0 0 14 12' fill='none' className='rotate-[-45deg]'>
@@ -226,7 +216,7 @@ const LandingPage = () => {
             </div>
           </FadeIn>
           <FadeIn delay={0.8} distance={15}>
-            <div className='flex justify-center gap-8 pt-4 text-base font-light text-xyz-white-9'>
+            <div className='flex justify-center gap-8 pt-4 text-base font-normal text-xyz-white-9'>
               <span className='flex items-center gap-2'>
                 <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' className='text-xyz-white-9'>
                   <path d='M20 12v10H4V12' /><path d='M2 7h20v5H2z' /><path d='M12 22V7' /><path d='M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z' /><path d='M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z' />
@@ -270,7 +260,7 @@ const LandingPage = () => {
                 />
               </h2>
               <FadeIn delay={0.2} distance={15}>
-                <p className='text-base font-light leading-6 text-[#344256]'>
+                <p className='text-base font-normal leading-6 text-[#344256]'>
                   从免费试用开始，按需升级
                 </p>
               </FadeIn>
@@ -346,7 +336,7 @@ const LandingPage = () => {
                         </h3>
                         {plan.recommended && (
                           <span
-                            className='text-xs font-light text-white leading-5 px-1 flex-shrink-0'
+                            className='text-xs font-normal text-white leading-5 px-1 flex-shrink-0'
                             style={{
                               background: 'linear-gradient(to right, #ff6321, #ff3212)',
                               borderRadius: '4px',
@@ -356,7 +346,7 @@ const LandingPage = () => {
                           </span>
                         )}
                       </div>
-                      <p className='text-sm font-light leading-[22px] text-[#344256] m-0'>
+                      <p className='text-sm font-normal leading-[22px] text-[#344256] m-0'>
                         {plan.desc}
                       </p>
                     </div>
@@ -391,7 +381,7 @@ const LandingPage = () => {
                   {/* Features */}
                   <ul className='list-none p-0 m-0 flex flex-col flex-1' style={{ gap: '8px' }}>
                     {plan.features.map((f, i) => (
-                      <li key={i} className='flex items-center text-sm font-light leading-[22px] text-[#344256]' style={{ gap: '4px' }}>
+                      <li key={i} className='flex items-center text-sm font-normal leading-[22px] text-[#344256]' style={{ gap: '4px' }}>
                         <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#4362ff' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' className='flex-shrink-0'>
                           <polyline points='20 6 9 17 4 12' />
                         </svg>
@@ -417,7 +407,7 @@ const LandingPage = () => {
             <FadeIn delay={0.3} className='mt-10 text-center'>
               <Link
                 to='/pricing'
-                className='inline-flex items-center gap-2 text-sm font-light text-xyz-blue-6 no-underline transition-colors hover:text-xyz-blue-8'
+                className='inline-flex items-center gap-2 text-sm font-normal text-xyz-blue-6 no-underline transition-colors hover:text-xyz-blue-8'
               >
                 {t('marketing.pricing_preview.view_all')}
                 <svg width='14' height='12' viewBox='0 0 14 12' fill='none'>
@@ -449,7 +439,7 @@ const LandingPage = () => {
                 />
               </h2>
               <FadeIn delay={0.2} distance={15}>
-                <p className='text-lg font-light text-xyz-gray-6'>
+                <p className='text-lg font-normal text-xyz-gray-6'>
                   {t('marketing.models.subtitle')}
                 </p>
               </FadeIn>
@@ -469,16 +459,16 @@ const LandingPage = () => {
                     <span className='text-xs font-medium text-xyz-blue-6 border border-xyz-blue-6/30 px-2 py-0.5'>
                       {model.badge}
                     </span>
-                    <span className='text-xs font-light text-xyz-gray-5'>
+                    <span className='text-xs font-normal text-xyz-gray-5'>
                       {model.provider}
                     </span>
                   </div>
                   <h3 className='text-xl font-medium text-xyz-gray-10 mb-2'>{model.name}</h3>
-                  <p className='text-sm font-light text-xyz-gray-6 mb-4'>
+                  <p className='text-sm font-normal text-xyz-gray-6 mb-4'>
                     <span className='text-xyz-blue-6 font-medium'>{model.context}</span>{' '}
                     {t('marketing.models.context_label')} &middot; {model.highlight}
                   </p>
-                  <p className='text-sm font-light text-xyz-gray-6 leading-relaxed'>
+                  <p className='text-sm font-normal text-xyz-gray-6 leading-relaxed'>
                     {model.description}
                   </p>
                 </div>
@@ -487,7 +477,7 @@ const LandingPage = () => {
             <FadeIn delay={0.3} className='mt-10 text-center'>
               <Link
                 to='/docs'
-                className='inline-flex items-center gap-2 text-sm font-light text-xyz-blue-6 no-underline transition-colors hover:text-xyz-blue-8'
+                className='inline-flex items-center gap-2 text-sm font-normal text-xyz-blue-6 no-underline transition-colors hover:text-xyz-blue-8'
               >
                 {t('marketing.models.view_all')}
                 <svg width='14' height='12' viewBox='0 0 14 12' fill='none'>
@@ -519,7 +509,7 @@ const LandingPage = () => {
                 />
               </h2>
               <FadeIn delay={0.2} distance={15}>
-                <p className='text-lg font-light text-xyz-gray-6'>
+                <p className='text-lg font-normal text-xyz-gray-6'>
                   {t('marketing.tools.subtitle')}
                 </p>
               </FadeIn>
@@ -539,7 +529,7 @@ const LandingPage = () => {
                     {toolLogos[tool.name]}
                     <h3 className='text-lg font-medium text-xyz-gray-10'>{tool.name}</h3>
                   </div>
-                  <p className='text-sm font-light text-xyz-gray-6 leading-relaxed flex-1'>
+                  <p className='text-sm font-normal text-xyz-gray-6 leading-relaxed flex-1'>
                     {tool.description}
                   </p>
                   <code className='block text-xs font-code text-xyz-gray-7 bg-xyz-gray-1 px-3 py-2'>
@@ -590,7 +580,7 @@ const LandingPage = () => {
                           {item.title}
                         </h3>
                         <p
-                          className='text-sm font-light leading-relaxed'
+                          className='text-sm font-normal leading-relaxed'
                           style={{
                             color: isActive ? 'rgba(255,255,255,0.50)' : 'rgba(255,255,255,0.25)',
                             transition: 'color 0.3s ease',
@@ -644,7 +634,7 @@ const LandingPage = () => {
                 </h2>
               </FadeIn>
               <FadeIn delay={0.2} distance={15}>
-                <p className='text-lg font-light text-xyz-white-6 max-w-lg mx-auto mb-10'>
+                <p className='text-lg font-normal text-xyz-white-6 max-w-lg mx-auto mb-10'>
                   {t('marketing.cta.description')}
                 </p>
               </FadeIn>
@@ -652,7 +642,7 @@ const LandingPage = () => {
                 <div className='flex justify-center gap-4'>
                   <Link
                     to='/register'
-                    className='inline-flex items-center justify-center gap-2 bg-white text-xyz-blue-6 text-base font-light h-10 px-6 no-underline transition-colors hover:bg-xyz-gray-1'
+                    className='inline-flex items-center justify-center gap-2 bg-white text-xyz-blue-6 text-base font-normal h-10 px-6 no-underline transition-colors hover:bg-xyz-gray-1'
                   >
                     {t('marketing.cta.register')}
                     <svg width='14' height='12' viewBox='0 0 14 12' fill='none' className='rotate-[-45deg]'>
@@ -661,7 +651,7 @@ const LandingPage = () => {
                   </Link>
                   <Link
                     to='/docs'
-                    className='inline-flex items-center justify-center gap-2 border border-xyz-white-3 text-white text-base font-light h-10 px-6 no-underline transition-colors hover:border-xyz-white-5'
+                    className='inline-flex items-center justify-center gap-2 border border-xyz-white-3 text-white text-base font-normal h-10 px-6 no-underline transition-colors hover:border-xyz-white-5'
                   >
                     {t('marketing.cta.view_docs')}
                   </Link>

@@ -2,36 +2,39 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { useTranslation } from 'react-i18next';
 
+const CodeBlock = ({ children }) => (
+  <pre className='overflow-x-auto border border-[#e1e7ef] bg-[#0a0f1a] p-4 text-sm text-xyz-white-7 font-code'>
+    <code>{children}</code>
+  </pre>
+);
+
 const DocsSdk = () => {
   const { t } = useTranslation();
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-10'>
       <div>
-        <h1 className='text-3xl font-bold tracking-tight'>{t('docs.sdk.title')}</h1>
-        <p className='mt-2 text-lg text-muted-foreground'>
+        <h1 className='text-3xl font-medium tracking-tight text-[#090e1a]'>{t('docs.sdk.title')}</h1>
+        <p className='mt-2 text-base font-normal text-[#344256]'>
           {t('docs.sdk.description')}
         </p>
       </div>
 
       <Tabs defaultValue='python'>
-        <TabsList>
-          <TabsTrigger value='python'>Python</TabsTrigger>
-          <TabsTrigger value='nodejs'>Node.js</TabsTrigger>
+        <TabsList className='bg-[#f8fafc] border border-[#e1e7ef]'>
+          <TabsTrigger value='python' className='data-[state=active]:bg-xyz-blue-6 data-[state=active]:text-white text-[#344256]'>Python</TabsTrigger>
+          <TabsTrigger value='nodejs' className='data-[state=active]:bg-xyz-blue-6 data-[state=active]:text-white text-[#344256]'>Node.js</TabsTrigger>
         </TabsList>
 
-        <TabsContent value='python' className='space-y-6 pt-4'>
+        <TabsContent value='python' className='space-y-8 pt-4'>
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>{t('docs.sdk.install')}</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>pip install openai</code>
-            </pre>
+            <h2 className='text-xl font-medium text-[#090e1a]'>{t('docs.sdk.install')}</h2>
+            <CodeBlock>pip install openai</CodeBlock>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>{t('docs.sdk.basic_usage')}</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`from openai import OpenAI
+            <h2 className='text-xl font-medium text-[#090e1a]'>{t('docs.sdk.basic_usage')}</h2>
+            <CodeBlock>{`from openai import OpenAI
 
 client = OpenAI(
     api_key="sk-your-api-key",
@@ -47,14 +50,12 @@ response = client.chat.completions.create(
     temperature=0.7
 )
 
-print(response.choices[0].message.content)`}</code>
-            </pre>
+print(response.choices[0].message.content)`}</CodeBlock>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>{t('docs.sdk.streaming')}</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`stream = client.chat.completions.create(
+            <h2 className='text-xl font-medium text-[#090e1a]'>{t('docs.sdk.streaming')}</h2>
+            <CodeBlock>{`stream = client.chat.completions.create(
     model="qwen-3.5",
     messages=[
         {"role": "user", "content": "Explain what RAG is"}
@@ -64,32 +65,26 @@ print(response.choices[0].message.content)`}</code>
 
 for chunk in stream:
     if chunk.choices[0].delta.content is not None:
-        print(chunk.choices[0].delta.content, end="")`}</code>
-            </pre>
+        print(chunk.choices[0].delta.content, end="")`}</CodeBlock>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>Embeddings</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`response = client.embeddings.create(
+            <h2 className='text-xl font-medium text-[#090e1a]'>Embeddings</h2>
+            <CodeBlock>{`response = client.embeddings.create(
     model="text-embedding-v3",
     input="Hello world"
 )
 
 embedding = response.data[0].embedding
-print(f"Dimensions: {len(embedding)}")`}</code>
-            </pre>
+print(f"Dimensions: {len(embedding)}")`}</CodeBlock>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>{t('docs.sdk.env_vars')}</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`# .env
+            <h2 className='text-xl font-medium text-[#090e1a]'>{t('docs.sdk.env_vars')}</h2>
+            <CodeBlock>{`# .env
 OPENAI_API_KEY=sk-your-api-key
-OPENAI_API_BASE=https://api.alayanew.com/v1`}</code>
-            </pre>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`import os
+OPENAI_API_BASE=https://api.alayanew.com/v1`}</CodeBlock>
+            <CodeBlock>{`import os
 from openai import OpenAI
 
 # SDK auto-reads OPENAI_API_KEY and OPENAI_API_BASE
@@ -99,23 +94,19 @@ response = client.chat.completions.create(
     model="kimi-2.5",
     messages=[{"role": "user", "content": "Hello"}]
 )
-print(response.choices[0].message.content)`}</code>
-            </pre>
+print(response.choices[0].message.content)`}</CodeBlock>
           </div>
         </TabsContent>
 
-        <TabsContent value='nodejs' className='space-y-6 pt-4'>
+        <TabsContent value='nodejs' className='space-y-8 pt-4'>
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>{t('docs.sdk.install')}</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>npm install openai</code>
-            </pre>
+            <h2 className='text-xl font-medium text-[#090e1a]'>{t('docs.sdk.install')}</h2>
+            <CodeBlock>npm install openai</CodeBlock>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>{t('docs.sdk.basic_usage')}</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`import OpenAI from 'openai';
+            <h2 className='text-xl font-medium text-[#090e1a]'>{t('docs.sdk.basic_usage')}</h2>
+            <CodeBlock>{`import OpenAI from 'openai';
 
 const client = new OpenAI({
   apiKey: 'sk-your-api-key',
@@ -135,14 +126,12 @@ async function main() {
   console.log(response.choices[0].message.content);
 }
 
-main();`}</code>
-            </pre>
+main();`}</CodeBlock>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>{t('docs.sdk.streaming')}</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`const stream = await client.chat.completions.create({
+            <h2 className='text-xl font-medium text-[#090e1a]'>{t('docs.sdk.streaming')}</h2>
+            <CodeBlock>{`const stream = await client.chat.completions.create({
   model: 'qwen-3.5',
   messages: [
     { role: 'user', content: 'Explain what RAG is' },
@@ -153,23 +142,18 @@ main();`}</code>
 for await (const chunk of stream) {
   const content = chunk.choices[0]?.delta?.content || '';
   process.stdout.write(content);
-}`}</code>
-            </pre>
+}`}</CodeBlock>
           </div>
 
           <div className='space-y-3'>
-            <h2 className='text-2xl font-semibold'>{t('docs.sdk.env_vars')}</h2>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`# .env
+            <h2 className='text-xl font-medium text-[#090e1a]'>{t('docs.sdk.env_vars')}</h2>
+            <CodeBlock>{`# .env
 OPENAI_API_KEY=sk-your-api-key
-OPENAI_BASE_URL=https://api.alayanew.com/v1`}</code>
-            </pre>
-            <pre className='overflow-x-auto rounded-md bg-zinc-950 p-3 text-sm text-zinc-100'>
-              <code>{`// SDK auto-reads OPENAI_API_KEY
+OPENAI_BASE_URL=https://api.alayanew.com/v1`}</CodeBlock>
+            <CodeBlock>{`// SDK auto-reads OPENAI_API_KEY
 const client = new OpenAI({
   baseURL: process.env.OPENAI_BASE_URL,
-});`}</code>
-            </pre>
+});`}</CodeBlock>
           </div>
         </TabsContent>
       </Tabs>

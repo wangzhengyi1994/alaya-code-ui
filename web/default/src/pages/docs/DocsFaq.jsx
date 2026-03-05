@@ -50,23 +50,29 @@ const DocsFaq = () => {
   ];
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-10'>
       <div>
-        <h1 className='text-3xl font-bold tracking-tight'>{t('docs.faq.title')}</h1>
-        <p className='mt-2 text-lg text-muted-foreground'>
+        <h1 className='text-3xl font-medium tracking-tight text-[#090e1a]'>{t('docs.faq.title')}</h1>
+        <p className='mt-2 text-base font-normal text-[#344256]'>
           {t('docs.faq.description')}
         </p>
       </div>
 
       {faqCategories.map((category) => (
         <div key={category.title} className='space-y-3'>
-          <h2 className='text-2xl font-semibold'>{category.title}</h2>
-          <Accordion type='single' collapsible>
+          <h2 className='text-xl font-medium text-[#090e1a]'>{category.title}</h2>
+          <Accordion type='single' collapsible className='border border-[#e1e7ef]'>
             {category.items.map((item, i) => (
-              <AccordionItem key={i} value={`${category.title}-${i}`}>
-                <AccordionTrigger>{item.q}</AccordionTrigger>
+              <AccordionItem
+                key={i}
+                value={`${category.title}-${i}`}
+                className='border-b border-[#e1e7ef] last:border-b-0 px-5'
+              >
+                <AccordionTrigger className='text-sm font-medium text-[#090e1a] hover:text-xyz-blue-6 py-4 no-underline hover:no-underline'>
+                  {item.q}
+                </AccordionTrigger>
                 <AccordionContent>
-                  <p className='text-muted-foreground'>{item.a}</p>
+                  <p className='text-sm font-normal text-[#344256] pb-2'>{item.a}</p>
                 </AccordionContent>
               </AccordionItem>
             ))}
@@ -74,15 +80,15 @@ const DocsFaq = () => {
         </div>
       ))}
 
-      <div className='rounded-lg border p-4'>
-        <h3 className='font-semibold'>{t('docs.faq.more_questions')}</h3>
-        <p className='mt-1 text-sm text-muted-foreground'>
+      <div className='border border-[#e1e7ef] p-5'>
+        <h3 className='font-medium text-[#090e1a]'>{t('docs.faq.more_questions')}</h3>
+        <p className='mt-1 text-sm font-normal text-[#344256]'>
           {t('docs.faq.more_questions_prefix')}{' '}
-          <Link to='/docs' className='text-primary hover:underline'>
+          <Link to='/docs' className='text-xyz-blue-6 hover:text-xyz-blue-5 no-underline'>
             {t('docs.faq.full_docs_link')}
           </Link>{' '}
           {t('docs.faq.more_questions_or')}{' '}
-          <Link to='/docs/errors' className='text-primary hover:underline'>
+          <Link to='/docs/errors' className='text-xyz-blue-6 hover:text-xyz-blue-5 no-underline'>
             {t('docs.faq.errors_link')}
           </Link>
           {t('docs.faq.more_questions_suffix')}

@@ -90,7 +90,7 @@ body {
     margin: 0;
     overflow-y: scroll;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    font-weight: 300;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scrollbar-width: none;
@@ -242,24 +242,28 @@ code {
   outline: none;
 }
 
-/* === Feature menu left indicator === */
+/* === Feature menu items with border + left indicator === */
 .feature-menu-list {
   margin-left: -20px;
 }
 .feature-menu-item {
   position: relative;
   padding-left: 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-right: none;
+  margin-bottom: -1px;
 }
+/* Left indicator */
 .feature-menu-item::before {
   content: '';
   position: absolute;
   left: -1px;
-  top: 0;
-  bottom: 0;
+  top: -1px;
+  bottom: -1px;
   width: 2px;
   background: transparent;
   transition: background 0.3s ease;
+  z-index: 1;
 }
 .feature-menu-item.active::before {
   background: #4362ff;

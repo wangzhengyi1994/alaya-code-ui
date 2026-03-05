@@ -128,7 +128,7 @@ const PricingPage = () => {
         <p className='text-xyz-gray-6'>{t('admin.plan.load_error')}</p>
         <button
           onClick={() => window.location.reload()}
-          className='border border-xyz-gray-4 text-xyz-gray-10 text-sm font-light h-10 px-6 bg-transparent cursor-pointer transition-colors hover:border-xyz-gray-7'
+          className='border border-xyz-gray-4 text-xyz-gray-10 text-sm font-normal h-10 px-6 bg-transparent cursor-pointer transition-colors hover:border-xyz-gray-7'
         >
           {t('pricing.retry', '重试')}
         </button>
@@ -157,7 +157,7 @@ const PricingPage = () => {
             />
           </h1>
           <FadeIn delay={0.3} distance={15}>
-            <p className='text-xl font-light text-xyz-gray-6 max-w-2xl mx-auto'>
+            <p className='text-xl font-normal text-xyz-gray-6 max-w-2xl mx-auto'>
               {t('pricing.hero.description')}
             </p>
           </FadeIn>
@@ -195,16 +195,16 @@ const PricingPage = () => {
                       </span>
                     )}
                   </div>
-                  <p className='text-sm font-light text-xyz-white-6 mb-4'>{plan.description}</p>
+                  <p className='text-sm font-normal text-xyz-white-6 mb-4'>{plan.description}</p>
                   <div className='mb-6'>
                     <span className='text-4xl font-medium text-white'>{plan.price}</span>
                     {plan.priceSuffix && (
-                      <span className='text-sm font-light text-xyz-white-5 ml-1'>{plan.priceSuffix}</span>
+                      <span className='text-sm font-normal text-xyz-white-5 ml-1'>{plan.priceSuffix}</span>
                     )}
                   </div>
                   <ul className='space-y-3 mb-8 list-none p-0 flex-1'>
                     {plan.features.map((feature, i) => (
-                      <li key={i} className='flex items-start gap-2 text-sm font-light text-xyz-white-6'>
+                      <li key={i} className='flex items-start gap-2 text-sm font-normal text-xyz-white-6'>
                         <span className='w-1.5 h-1.5 rounded-full bg-green-400 mt-1.5 shrink-0' />
                         {feature}
                       </li>
@@ -212,7 +212,7 @@ const PricingPage = () => {
                   </ul>
                   <Link
                     to='/register'
-                    className={`block w-full text-center text-sm font-light h-10 leading-10 no-underline transition-colors ${
+                    className={`block w-full text-center text-sm font-normal h-10 leading-10 no-underline transition-colors ${
                       plan.highlighted
                         ? 'bg-xyz-blue-6 text-white hover:bg-[#3451e6]'
                         : 'border border-xyz-white-3 text-white hover:border-xyz-white-5'
@@ -273,11 +273,11 @@ const PricingPage = () => {
                           viewport={{ once: true, amount: 0.5 }}
                           transition={{ duration: 0.4, delay: rowIdx * 0.08 }}
                         >
-                          <td className='text-sm font-light text-xyz-gray-8 py-4 pr-8'>
+                          <td className='text-sm font-normal text-xyz-gray-8 py-4 pr-8'>
                             {row.feature}
                           </td>
                           {plans.map((p) => (
-                            <td key={p.id} className='text-center text-sm font-light text-xyz-gray-6 py-4 px-4'>
+                            <td key={p.id} className='text-center text-sm font-normal text-xyz-gray-6 py-4 px-4'>
                               {row[p.name]}
                             </td>
                           ))}
@@ -337,7 +337,7 @@ const PricingPage = () => {
               </h2>
             </FadeIn>
             <FadeIn delay={0.2} distance={15}>
-              <p className='text-lg font-light text-xyz-gray-6 max-w-lg mx-auto mb-10'>
+              <p className='text-lg font-normal text-xyz-gray-6 max-w-lg mx-auto mb-10'>
                 {t('pricing.cta.description')}
               </p>
             </FadeIn>
@@ -345,7 +345,7 @@ const PricingPage = () => {
               <div className='flex justify-center gap-4'>
                 <Link
                   to='/register'
-                  className='inline-flex items-center justify-center gap-2 bg-xyz-blue-6 text-white text-base font-light h-10 px-6 no-underline transition-colors hover:bg-[#3451e6]'
+                  className='inline-flex items-center justify-center gap-2 bg-xyz-blue-6 text-white text-base font-normal h-10 px-6 no-underline transition-colors hover:bg-[#3451e6]'
                 >
                   {t('marketing.cta.register')}
                   <svg width='14' height='12' viewBox='0 0 14 12' fill='none' className='rotate-[-45deg]'>
@@ -354,7 +354,7 @@ const PricingPage = () => {
                 </Link>
                 <Link
                   to='/docs'
-                  className='inline-flex items-center justify-center gap-2 border border-xyz-gray-4 text-xyz-gray-10 text-base font-light h-10 px-6 no-underline transition-colors hover:border-xyz-gray-7'
+                  className='inline-flex items-center justify-center gap-2 border border-xyz-gray-4 text-xyz-gray-10 text-base font-normal h-10 px-6 no-underline transition-colors hover:border-xyz-gray-7'
                 >
                   {t('marketing.cta.view_docs')}
                 </Link>
@@ -401,7 +401,7 @@ const FaqItem = ({ question, answer, index }) => {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <p className='px-5 pb-5 text-sm font-light text-xyz-white-6 leading-relaxed'>
+            <p className='px-5 pb-5 text-sm font-normal text-xyz-white-6 leading-relaxed'>
               {answer}
             </p>
           </motion.div>

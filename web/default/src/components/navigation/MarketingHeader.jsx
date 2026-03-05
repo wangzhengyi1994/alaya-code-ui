@@ -22,19 +22,19 @@ const MarketingHeader = () => {
         <nav className='flex items-center h-16'>
           <Link
             to='/'
-            className='font-light text-sm text-[#090e1a] no-underline px-6 h-16 flex items-center transition-colors hover:text-xyz-blue-6'
+            className='font-normal text-sm text-[#090e1a] no-underline px-6 h-16 flex items-center transition-colors hover:text-xyz-blue-6'
           >
             {t('nav.product')}
           </Link>
           <Link
             to='/pricing'
-            className='font-light text-sm text-[#090e1a] no-underline px-6 h-16 flex items-center transition-colors hover:text-xyz-blue-6'
+            className='font-normal text-sm text-[#090e1a] no-underline px-6 h-16 flex items-center transition-colors hover:text-xyz-blue-6'
           >
             {t('nav.pricing')}
           </Link>
           <Link
             to='/docs'
-            className='font-light text-sm text-[#090e1a] no-underline px-6 h-16 flex items-center transition-colors hover:text-xyz-blue-6'
+            className='font-normal text-sm text-[#090e1a] no-underline px-6 h-16 flex items-center transition-colors hover:text-xyz-blue-6'
           >
             {t('nav.docs')}
           </Link>
@@ -61,7 +61,7 @@ const MarketingHeader = () => {
         </Link>
         <Link
           to='/login'
-          className='font-light text-base leading-6 text-white no-underline bg-xyz-blue-6 w-[120px] h-16 flex items-center justify-center gap-2 transition-colors hover:bg-[#3451e6]'
+          className='font-normal text-base leading-6 text-white no-underline bg-xyz-blue-6 w-[120px] h-16 flex items-center justify-center gap-2 transition-colors hover:bg-[#3451e6]'
         >
           {t('nav.login')}
           <svg width='18' height='18' viewBox='0 0 14 12' fill='none' className='rotate-[-45deg]'>

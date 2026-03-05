@@ -21,7 +21,7 @@ const DocsSidebarNav = ({ className }) => {
   const { t } = useTranslation();
 
   return (
-    <nav className={cn('flex flex-col gap-1', className)}>
+    <nav className={cn('flex flex-col gap-0', className)}>
       {docsSidebarItemKeys.map((item) => {
         const isActive = location.pathname === item.to;
         return (
@@ -29,10 +29,10 @@ const DocsSidebarNav = ({ className }) => {
             key={item.to}
             to={item.to}
             className={cn(
-              'rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent',
+              'relative px-4 py-2.5 text-sm font-normal transition-colors border-l-2 no-underline',
               isActive
-                ? 'bg-accent text-accent-foreground font-medium'
-                : 'text-muted-foreground'
+                ? 'border-l-xyz-blue-6 text-xyz-blue-6 bg-xyz-blue-1'
+                : 'border-l-transparent text-[#344256] hover:text-[#090e1a] hover:bg-[#f8fafc]'
             )}
           >
             {t(item.key)}
@@ -50,37 +50,50 @@ const DocsLayout = () => {
   };
 
   return (
-    <div className='flex min-h-screen flex-col'>
+    <div className='flex min-h-screen flex-col bg-white'>
       {/* Header */}
-      <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+      <header className='sticky top-0 z-50 w-full border-b border-[#e1e7ef] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80'>
         <div className='container mx-auto flex h-14 max-w-screen-xl items-center px-4'>
-          <Link to='/' className='mr-6 flex items-center space-x-2'>
-            <span className='text-xl font-bold'>Alaya Code</span>
+          <Link to='/' className='mr-6 flex items-center gap-2 no-underline'>
+            <img src={process.env.PUBLIC_URL + '/logo-dark.svg'} alt='logo' className='h-6 w-6' />
+            <span className='text-lg font-medium text-[#090e1a]' style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+              Alaya Code
+            </span>
           </Link>
-          <nav className='hidden md:flex items-center space-x-6 text-sm font-medium'>
+          <nav className='hidden md:flex items-center space-x-6 text-sm font-normal'>
             <Link
               to='/docs'
-              className='transition-colors text-foreground'
+              className='transition-colors text-xyz-blue-6 no-underline'
             >
               {t('nav.docs')}
             </Link>
           </nav>
           <div className='ml-auto flex items-center space-x-2'>
-            <Button variant='ghost' size='sm' onClick={toggleLanguage} className='gap-1'>
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={toggleLanguage}
+              className='gap-1 text-[#344256] hover:text-[#090e1a] hover:bg-[#f8fafc]'
+            >
               <Globe className='h-4 w-4' />
               <span className='text-xs'>{i18n.language === 'zh' ? 'EN' : '中文'}</span>
             </Button>
-            <Button variant='ghost' size='sm' asChild>
+            <Button
+              variant='ghost'
+              size='sm'
+              asChild
+              className='text-[#344256] hover:text-[#090e1a] hover:bg-[#f8fafc]'
+            >
               <Link to='/login'>{t('nav.login')}</Link>
             </Button>
           </div>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant='outline' size='icon' className='shrink-0 md:hidden ml-2'>
+              <Button variant='outline' size='icon' className='shrink-0 md:hidden ml-2 border-[#e1e7ef] text-[#090e1a] hover:bg-[#f8fafc]'>
                 <Menu className='h-5 w-5' />
               </Button>
             </SheetTrigger>
-            <SheetContent side='left'>
+            <SheetContent side='left' className='bg-white border-r-[#e1e7ef]'>
               <div className='mt-6'>
                 <DocsSidebarNav />
               </div>
@@ -91,12 +104,12 @@ const DocsLayout = () => {
       {/* Content */}
       <div className='container mx-auto flex max-w-screen-xl flex-1 px-4'>
         {/* Desktop sidebar */}
-        <aside className='hidden md:block md:w-64 md:shrink-0 md:border-r md:pr-6 md:pt-6'>
+        <aside className='hidden md:block md:w-56 md:shrink-0 md:border-r md:border-[#e1e7ef] md:pr-0 md:pt-6'>
           <DocsSidebarNav />
         </aside>
         {/* Main content */}
-        <main className='flex-1 py-6 md:pl-6'>
-          <div className='prose prose-neutral max-w-none'>
+        <main className='flex-1 py-6 md:pl-8'>
+          <div className='max-w-none'>
             <Outlet />
           </div>
         </main>
