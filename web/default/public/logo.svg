@@ -1,22 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
-  <defs>
-    <linearGradient id="mark-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1677ff"/>
-      <stop offset="100%" stop-color="#0958d9"/>
-    </linearGradient>
-  </defs>
-  <!-- Code bracket mark with stylized A -->
-  <g transform="translate(4, 6)">
-    <!-- Left bracket -->
-    <path d="M16 4 L6 24 L16 44" stroke="#1677ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <!-- Right bracket -->
-    <path d="M36 4 L46 24 L36 44" stroke="#1677ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    <!-- Stylized A inside -->
-    <path d="M20 36 L26 12 L32 36 M22 28 L30 28" stroke="url(#mark-grad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  </g>
-  <!-- Text: Alaya Code -->
-  <text x="62" y="37" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" fill="#1a1a1a" letter-spacing="-0.02em">
-    <tspan>Alaya</tspan>
-    <tspan dx="5" fill="#1677ff">Code</tspan>
-  </text>
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="3 12 155 140" fill="none">
+<path d="M120.195 58L69 38.7034V12L158 46.5V69.3051L69 104V77.1017L120.195 58Z" fill="white"/>
+<path d="M157 132V152H3V132H157Z" fill="white"/>
+<path d="M24 74H54L34 104H4L24 74Z" fill="#4362FF">
+<animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.5;1" dur="1.2s" repeatCount="indefinite"/>
+</path>
 </svg>
