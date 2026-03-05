@@ -158,8 +158,8 @@ const LandingPage = () => {
   return (
     <div className='flex flex-col'>
 
-      {/* ══════ Hero Section (深紫蓝渐变) ══════ */}
-      <section className='relative min-h-[680px] bg-xyz-gray-10 overflow-hidden flex flex-col items-center justify-center'>
+      {/* ══════ Hero Section (深色背景) ══════ */}
+      <section className='relative min-h-[684px] bg-xyz-gray-10 overflow-hidden flex flex-col items-center justify-center'>
         <div className='absolute inset-0 z-[1]'>
           <PixelBlast
             color='#4362ff'
@@ -173,79 +173,91 @@ const LandingPage = () => {
             transparent={true}
           />
         </div>
-        <div className='relative z-10 text-center max-w-xyz px-5 py-32'>
-          <h1 className='text-[64px] font-medium leading-[76px] text-white mb-4'>
+        <div className='relative z-10 text-center max-w-[695px] px-5 py-32'>
+          <h1 className='text-[72px] font-medium leading-[80px] text-white mb-4'>
             <BlurText
-              text={t('marketing.hero.title_line1')}
+              text='面向开发者的'
               delay={80}
               animateBy='words'
               direction='bottom'
               className='justify-center'
             />
             <br />
-            <BlurText
-              text={t('marketing.hero.title_line2')}
-              delay={80}
-              animateBy='words'
-              direction='bottom'
-              className='justify-center text-white'
-              stepDuration={0.4}
-            />
+            <span className='inline-flex items-baseline justify-center gap-6'>
+              <BlurText
+                text='AICoding'
+                delay={80}
+                animateBy='words'
+                direction='bottom'
+                className='justify-center font-mono'
+                stepDuration={0.4}
+              />
+              <BlurText
+                text='助手平台'
+                delay={80}
+                animateBy='words'
+                direction='bottom'
+                className='justify-center'
+                stepDuration={0.4}
+              />
+            </span>
           </h1>
           <FadeIn delay={0.4} distance={20}>
-            <p className='text-base font-light leading-7 text-xyz-white-7 mb-1'>
-              Alaya Code 聚合 Kimi、通义千问、智谱 GLM 等国产大模型，提供 OpenAI 兼容接口。
-            </p>
-            <p className='text-base font-light leading-7 text-xyz-white-7 mb-10'>
-              无需切换 SDK，一行配置即可接入 Cursor、Claude Code 等 AI 工具链。
-            </p>
+            <div className='flex flex-col gap-1 items-center'>
+              <p className='text-base font-light leading-6 text-xyz-white-9 m-0'>
+                Alaya Code 聚合 Kimi、通义千问、智谱 GLM 等国产大模型，提供 OpenAI 兼容接口。
+              </p>
+              <p className='text-base font-light leading-6 text-xyz-white-9 m-0'>
+                无需切换 SDK，一行配置即可接入 Cursor、Claude Code 等 AI 工具链。
+              </p>
+            </div>
           </FadeIn>
           <FadeIn delay={0.6} distance={20}>
-            <div className='flex justify-center gap-4'>
+            <div className='flex justify-center pt-6'>
               <Link
                 to='/register'
-                className='inline-flex items-center justify-center gap-2 bg-white text-xyz-blue-6 text-base font-light h-10 px-6 no-underline transition-colors hover:bg-xyz-gray-1'
+                className='inline-flex items-center justify-center gap-2 bg-xyz-blue-6 text-white text-base font-light h-10 w-[200px] no-underline transition-colors hover:bg-[#3451e6]'
               >
-                {t('marketing.hero.cta_start')}
-                <svg width='14' height='12' viewBox='0 0 14 12' fill='none' className='rotate-[-45deg]'>
+                立即开始
+                <svg width='18' height='18' viewBox='0 0 14 12' fill='none' className='rotate-[-45deg]'>
                   <path d='M1 6H13M13 6L8 1M13 6L8 11' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round'/>
                 </svg>
-              </Link>
-              <Link
-                to='/pricing'
-                className='inline-flex items-center justify-center gap-2 border border-xyz-white-3 text-white text-base font-light h-10 px-6 no-underline transition-colors hover:border-xyz-white-5'
-              >
-                {t('marketing.hero.cta_pricing')}
               </Link>
             </div>
           </FadeIn>
           <FadeIn delay={0.8} distance={15}>
-            <div className='flex justify-center gap-8 mt-8 text-sm font-light text-xyz-white-6'>
+            <div className='flex justify-center gap-8 pt-4 text-base font-light text-xyz-white-9'>
               <span className='flex items-center gap-2'>
-                <span className='w-1.5 h-1.5 rounded-full bg-green-400' />
-                {t('marketing.hero.free_trial')}
+                <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' className='text-xyz-white-9'>
+                  <path d='M20 12v10H4V12' /><path d='M2 7h20v5H2z' /><path d='M12 22V7' /><path d='M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z' /><path d='M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z' />
+                </svg>
+                免费试用
               </span>
               <span className='flex items-center gap-2'>
-                <span className='w-1.5 h-1.5 rounded-full bg-green-400' />
-                {t('marketing.hero.pay_as_you_go')}
+                <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' className='text-xyz-white-9'>
+                  <line x1='12' y1='1' x2='12' y2='23' /><path d='M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
+                </svg>
+                按量计费
               </span>
               <span className='flex items-center gap-2'>
-                <span className='w-1.5 h-1.5 rounded-full bg-green-400' />
-                {t('marketing.hero.no_vpn')}
+                <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' className='text-xyz-white-9'>
+                  <circle cx='12' cy='12' r='10' /><path d='M2 12h20' /><path d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z' />
+                </svg>
+                无需翻墙
               </span>
             </div>
           </FadeIn>
         </div>
       </section>
 
-      {/* ══════ Pricing Preview (白底 LIGHT) — 定价放上面 ══════ */}
+      {/* ══════ Pricing Preview (白底 LIGHT) — Figma 对齐 ══════ */}
       <section className='xyz-section-light'>
         <div className='max-w-xyz mx-auto'>
           <div className='xyz-section-light-inner px-5 py-20'>
-            <FadeIn className='text-center mb-20'>
-              <h2 className='text-5xl font-medium leading-[56px] text-xyz-gray-10 mb-4'>
+            <FadeIn className='text-center mb-10'>
+              <h2 className='text-[40px] font-medium leading-[48px] text-[#090e1a] mb-4'>
                 <BlurText
-                  text={t('marketing.pricing_preview.title')}
+                  text='简单透明的定价'
                   delay={60}
                   animateBy='words'
                   direction='bottom'
@@ -258,8 +270,8 @@ const LandingPage = () => {
                 />
               </h2>
               <FadeIn delay={0.2} distance={15}>
-                <p className='text-lg font-light text-xyz-gray-6'>
-                  {t('marketing.pricing_preview.subtitle')}
+                <p className='text-base font-light leading-6 text-[#344256]'>
+                  从免费试用开始，按需升级
                 </p>
               </FadeIn>
             </FadeIn>
@@ -274,84 +286,127 @@ const LandingPage = () => {
                 {
                   tier: 'GLOW',
                   price: '免费',
+                  priceNum: false,
                   priceNote: '',
                   desc: '个人开发者入门',
+                  icon: '/membership/glow-free.png',
                   features: ['5 个模型可用', '100 次/天调用', '社区支持'],
-                  cta: '免费注册',
-                  ctaStyle: 'border',
-                  highlight: false,
+                  cta: '立即使用',
+                  ctaStyle: 'blue',
+                  recommended: false,
                 },
                 {
-                  tier: 'STAR',
+                  tier: 'GLOW',
                   price: '¥99',
+                  priceNum: true,
                   priceNote: '/月',
-                  desc: '独立开发者进阶',
+                  desc: '个人开发者入门',
+                  icon: '/membership/glow-paid.png',
                   features: ['20+ 模型可用', '5,000 次/天调用', '邮件支持'],
-                  cta: '开始使用',
-                  ctaStyle: 'border',
-                  highlight: false,
+                  cta: '立即购买',
+                  ctaStyle: 'blue',
+                  recommended: false,
                 },
                 {
                   tier: 'SOLAR',
                   price: '¥299',
+                  priceNum: true,
                   priceNote: '/月',
                   desc: '团队协作首选',
+                  icon: '/membership/solar.png',
                   features: ['全部模型可用', '50,000 次/天调用', '专属客服'],
-                  cta: '立即升级',
-                  ctaStyle: 'fill',
-                  highlight: true,
-                  badge: '推荐',
+                  cta: '立即购买',
+                  ctaStyle: 'blue',
+                  recommended: true,
                 },
                 {
                   tier: 'GALAXY',
-                  price: '联系我们',
+                  price: '定制',
+                  priceNum: false,
                   priceNote: '',
                   desc: '企业级定制方案',
+                  icon: '/membership/galaxy.png',
                   features: ['无限模型 & 调用', '私有化部署', 'SLA 保障'],
-                  cta: '联系销售',
-                  ctaStyle: 'border',
-                  highlight: false,
+                  cta: '联系客服',
+                  ctaStyle: 'dark',
+                  recommended: false,
                 },
-              ].map((plan) => (
+              ].map((plan, planIdx) => (
                 <div
-                  key={plan.tier}
-                  className={`p-6 transition-all duration-300 ${
-                    plan.highlight
-                      ? 'border border-xyz-blue-6 bg-[rgba(67,98,255,0.05)]'
-                      : 'border border-xyz-gray-3 hover:border-xyz-gray-5 hover:bg-xyz-gray-1'
-                  }`}
+                  key={`${plan.tier}-${planIdx}`}
+                  className='bg-white border border-[#e1e7ef] flex flex-col transition-all duration-300 hover:border-xyz-gray-5'
+                  style={{ padding: '40px 20px', gap: '24px' }}
                 >
-                  {plan.badge && (
-                    <span className='inline-block text-xs font-medium text-xyz-blue-6 border border-xyz-blue-6/30 px-2 py-0.5 mb-3'>
-                      {plan.badge}
-                    </span>
-                  )}
-                  <h3 className='mb-1'>
-                    <span className='text-xs font-light text-xyz-gray-5 tracking-wider'>ALAYA CODE</span>
-                    <br />
-                    <span className='text-2xl font-medium text-xyz-gray-10'>{plan.tier}</span>
-                  </h3>
-                  <p className='text-sm font-light text-xyz-gray-6 mb-4'>{plan.desc}</p>
-                  <div className='mb-6'>
-                    <span className='text-3xl font-medium text-xyz-gray-10'>{plan.price}</span>
-                    {plan.priceNote && (
-                      <span className='text-sm font-light text-xyz-gray-6 ml-1'>{plan.priceNote}</span>
+                  {/* Card Header: left name+desc, right icon */}
+                  <div className='flex items-start justify-between' style={{ gap: '8px' }}>
+                    <div className='flex flex-col' style={{ gap: '8px' }}>
+                      <div className='flex items-center' style={{ gap: '4px' }}>
+                        <h3 className='text-[28px] font-medium leading-8 text-[#090e1a] m-0 font-mono'>
+                          {plan.tier}
+                        </h3>
+                        {plan.recommended && (
+                          <span
+                            className='text-xs font-light text-white leading-5 px-1 flex-shrink-0'
+                            style={{
+                              background: 'linear-gradient(to right, #ff6321, #ff3212)',
+                              borderRadius: '4px',
+                            }}
+                          >
+                            推荐
+                          </span>
+                        )}
+                      </div>
+                      <p className='text-sm font-light leading-[22px] text-[#344256] m-0'>
+                        {plan.desc}
+                      </p>
+                    </div>
+                    <img
+                      src={process.env.PUBLIC_URL + plan.icon}
+                      alt={plan.tier}
+                      className='w-12 h-12 flex-shrink-0'
+                    />
+                  </div>
+
+                  {/* Price */}
+                  <div className='flex items-end' style={{ gap: '4px' }}>
+                    {plan.priceNum ? (
+                      <>
+                        <span
+                          className='text-[40px] font-normal leading-10 text-[#344256]'
+                          style={{ fontFamily: "'D-DIN', 'JetBrains Mono', monospace" }}
+                        >
+                          {plan.price}
+                        </span>
+                        <span className='text-sm font-medium leading-[22px] text-[#344256]'>
+                          {plan.priceNote}
+                        </span>
+                      </>
+                    ) : (
+                      <span className='text-[32px] font-medium leading-10 text-[#090e1a]'>
+                        {plan.price}
+                      </span>
                     )}
                   </div>
-                  <ul className='space-y-3 mb-8 list-none p-0'>
+
+                  {/* Features */}
+                  <ul className='list-none p-0 m-0 flex flex-col flex-1' style={{ gap: '8px' }}>
                     {plan.features.map((f, i) => (
-                      <li key={i} className='flex items-center gap-2 text-sm font-light text-xyz-gray-7'>
-                        <span className='w-1.5 h-1.5 rounded-full bg-green-500 flex-shrink-0' />
+                      <li key={i} className='flex items-center text-sm font-light leading-[22px] text-[#344256]' style={{ gap: '4px' }}>
+                        <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='#4362ff' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' className='flex-shrink-0'>
+                          <polyline points='20 6 9 17 4 12' />
+                        </svg>
                         {f}
                       </li>
                     ))}
                   </ul>
+
+                  {/* Button */}
                   <Link
-                    to='/register'
-                    className={`block w-full text-center text-sm font-light h-10 leading-10 no-underline transition-colors ${
-                      plan.ctaStyle === 'fill'
-                        ? 'bg-xyz-blue-6 text-white hover:bg-[#3451e6]'
-                        : 'border border-xyz-gray-4 text-xyz-gray-10 hover:border-xyz-gray-7'
+                    to={plan.ctaStyle === 'dark' ? '/contact' : '/register'}
+                    className={`block w-full text-center text-base font-medium h-10 leading-10 no-underline transition-colors ${
+                      plan.ctaStyle === 'dark'
+                        ? 'bg-[#0f1728] text-white hover:bg-xyz-gray-8'
+                        : 'bg-xyz-blue-6 text-white hover:bg-[#3451e6]'
                     }`}
                   >
                     {plan.cta}
@@ -374,22 +429,27 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* ══════ Models Section (深色 DARK) ══════ */}
-      <section className='bg-xyz-gray-10'>
+      {/* ══════ Models Section (白底 LIGHT) ══════ */}
+      <section className='xyz-section-light'>
         <div className='max-w-xyz mx-auto'>
-          <div className='xyz-section-inner px-5 py-20'>
+          <div className='xyz-section-light-inner px-5 py-20'>
             <FadeIn className='text-center mb-20'>
-              <h2 className='text-5xl font-medium leading-[56px] text-white mb-4'>
+              <h2 className='text-5xl font-medium leading-[56px] text-xyz-gray-10 mb-4'>
                 <BlurText
                   text={t('marketing.models.title')}
                   delay={60}
                   animateBy='words'
                   direction='bottom'
                   className='justify-center'
+                  animationFrom={{ filter: 'blur(10px)', opacity: 0, y: 30 }}
+                  animationTo={[
+                    { filter: 'blur(5px)', opacity: 0.5, y: -5 },
+                    { filter: 'blur(0px)', opacity: 1, y: 0 },
+                  ]}
                 />
               </h2>
               <FadeIn delay={0.2} distance={15}>
-                <p className='text-lg font-light text-xyz-white-6'>
+                <p className='text-lg font-light text-xyz-gray-6'>
                   {t('marketing.models.subtitle')}
                 </p>
               </FadeIn>
@@ -403,22 +463,22 @@ const LandingPage = () => {
               {models.map((model) => (
                 <div
                   key={model.name}
-                  className='border border-xyz-white-2 p-5 transition-all duration-300 hover:border-xyz-white-5 hover:bg-[rgba(255,255,255,0.03)]'
+                  className='border border-xyz-gray-3 p-5 transition-all duration-300 hover:border-xyz-gray-5 hover:bg-xyz-gray-1'
                 >
                   <div className='flex items-center justify-between mb-3'>
-                    <span className='text-xs font-medium text-xyz-blue-5 border border-xyz-blue-6/30 px-2 py-0.5'>
+                    <span className='text-xs font-medium text-xyz-blue-6 border border-xyz-blue-6/30 px-2 py-0.5'>
                       {model.badge}
                     </span>
-                    <span className='text-xs font-light text-xyz-white-5'>
+                    <span className='text-xs font-light text-xyz-gray-5'>
                       {model.provider}
                     </span>
                   </div>
-                  <h3 className='text-xl font-medium text-white mb-2'>{model.name}</h3>
-                  <p className='text-sm font-light text-xyz-white-6 mb-4'>
-                    <span className='text-xyz-blue-5 font-medium'>{model.context}</span>{' '}
+                  <h3 className='text-xl font-medium text-xyz-gray-10 mb-2'>{model.name}</h3>
+                  <p className='text-sm font-light text-xyz-gray-6 mb-4'>
+                    <span className='text-xyz-blue-6 font-medium'>{model.context}</span>{' '}
                     {t('marketing.models.context_label')} &middot; {model.highlight}
                   </p>
-                  <p className='text-sm font-light text-xyz-white-5 leading-relaxed'>
+                  <p className='text-sm font-light text-xyz-gray-6 leading-relaxed'>
                     {model.description}
                   </p>
                 </div>
@@ -427,7 +487,7 @@ const LandingPage = () => {
             <FadeIn delay={0.3} className='mt-10 text-center'>
               <Link
                 to='/docs'
-                className='inline-flex items-center gap-2 text-sm font-light text-xyz-white-6 no-underline transition-colors hover:text-white'
+                className='inline-flex items-center gap-2 text-sm font-light text-xyz-blue-6 no-underline transition-colors hover:text-xyz-blue-8'
               >
                 {t('marketing.models.view_all')}
                 <svg width='14' height='12' viewBox='0 0 14 12' fill='none'>
@@ -496,18 +556,18 @@ const LandingPage = () => {
       <section className='bg-xyz-gray-10'>
         <div className='max-w-xyz mx-auto'>
           <div className='xyz-section-inner px-5 py-20'>
-            <FadeIn>
-              <h2 className='text-5xl font-medium leading-[56px] text-white mb-4'>
-                <BlurText
-                  text={t('marketing.features.title')}
-                  delay={60}
-                  animateBy='words'
-                  direction='bottom'
-                />
-              </h2>
-            </FadeIn>
-            <div className='grid items-center gap-16 lg:grid-cols-2 mt-10'>
-              <div className='feature-menu-list'>
+            <div className='grid items-stretch gap-0 lg:grid-cols-2'>
+              <div className='feature-menu-list' style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}>
+                <FadeIn>
+                  <h2 className='text-5xl font-medium leading-[56px] text-white mb-4'>
+                    <BlurText
+                      text={t('marketing.features.title')}
+                      delay={60}
+                      animateBy='words'
+                      direction='bottom'
+                    />
+                  </h2>
+                </FadeIn>
                 {[
                   { title: t('marketing.features.direct_title'), desc: t('marketing.features.direct_desc'), delay: 0.1 },
                   { title: t('marketing.features.compatible_title'), desc: t('marketing.features.compatible_desc'), delay: 0.2 },
@@ -532,11 +592,8 @@ const LandingPage = () => {
                         <p
                           className='text-sm font-light leading-relaxed'
                           style={{
-                            color: isActive ? 'rgba(255,255,255,0.50)' : 'rgba(255,255,255,0.30)',
-                            maxHeight: isActive ? '100px' : '0',
-                            opacity: isActive ? 1 : 0,
-                            overflow: 'hidden',
-                            transition: 'color 0.3s ease, opacity 0.3s ease, max-height 0.4s ease',
+                            color: isActive ? 'rgba(255,255,255,0.50)' : 'rgba(255,255,255,0.25)',
+                            transition: 'color 0.3s ease',
                           }}
                         >
                           {item.desc}
